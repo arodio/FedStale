@@ -1,14 +1,6 @@
 # Tmp
 
-## Test of the original code
-
-```bash
-cd data/mnist
-python generate_data.py --n_tasks 24 --s_frac 0.2 --test_tasks_frac 0.0 --seed 12345
-cd ../..
-python train.py ...
-```
-**Output generate_data:**
+**First output of generate_data:**
 
 (venv_fedstale) C:\Users\charlotte.rodriguez\Downloads\gitlab-REPOSITORIES\FedStale\data\mnist>python generate_data.py --n_tasks 24 --s_frac 0.2 --test_tasks_frac 0.0 --seed 12345
 Downloading http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz
@@ -57,15 +49,7 @@ cd ../..
 python train.py ...
 ```
 
-
 ## Requirements
-
-**Need to install:**
-```bash
-pip install numpy
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
-pip install scikit-learn
-```
 
 **For requirements.txt file:**
 ```
@@ -73,4 +57,7 @@ numpy
 --extra-index-url https://download.pytorch.org/whl/cu121
 torch torchvision
 scikit-learn
+tqdm
+tensorboard
+tensorflow
 ```
