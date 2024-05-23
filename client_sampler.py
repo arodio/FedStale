@@ -92,6 +92,8 @@ class ClientsSampler(ABC):
 
         return {client.id: weight for client, weight in zip(clients, clients_weights)}
 
+    # --- CHANGE HERE --- #
+
     @staticmethod
     def get_participation_dict(n_clients, participation_probs):
         """return a dictionary mapping client_id to participation_prob

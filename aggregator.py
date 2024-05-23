@@ -41,10 +41,6 @@ class Aggregator(ABC):
 
     device:
 
-    sampling_rate: proportion of clients used at each round; default is `1.`
-
-    sample_with_replacement: is True, client are sampled with replacement; default is False
-
     n_clients_per_round:
 
     sampled_clients:

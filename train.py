@@ -167,6 +167,8 @@ def run_experiment(arguments_manager_):
             hidden_dimension=args_.hidden_dimension,
             history_coefficient=args_.history_coefficient
         )
+    
+    # --- CHANGE HERE --- #
 
     activity_simulator_rng = np.random.default_rng(args_.seed)
     activity_simulator = \
@@ -190,6 +192,8 @@ def run_experiment(arguments_manager_):
             activity_estimator=activity_estimator,
             unknown_participation_probs=args_.unknown_participation_probs
         )
+    
+    # --- --- --- --- --- #
 
     history_tracker = \
         get_history_tracker(

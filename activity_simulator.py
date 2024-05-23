@@ -1,6 +1,7 @@
 import time
 import numpy as np
 
+    # --- CHANGE HERE --- #
 
 class ActivitySimulator:
     r"""Simulates clients activity
