@@ -17,6 +17,7 @@
 - use the activity estimator and compare the estimated participation probabilities with the exact participation probability of each client. This will permit to evaluate the performance of the activity estimator.
 
 **For the new experiement (cross silo with CI based availability):**
+
 *We have tested:*
 ```bash
 cd data/mnist
