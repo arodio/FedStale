@@ -14,11 +14,12 @@ cd ../..
 
 participation="0.5"
 heterogeneities="0.0 0.2 0.4 0.6 0.8 1.0"
-weights="0.5"
+weights="0.5" # is the beta parameter in the FedStale paper
 seeds="12"
 lrs="5e-3"
 device="cuda"
 
+# Experiments for FedVARP:
 for heterogeneity in $heterogeneities; do
     for lr in $lrs; do
         for seed in $seeds; do
@@ -43,6 +44,7 @@ for heterogeneity in $heterogeneities; do
     done
 done
 
+# Experiments for FedAvg:
 for heterogeneity in $heterogeneities; do
     for lr in $lrs; do
         for seed in $seeds; do
@@ -67,6 +69,7 @@ for heterogeneity in $heterogeneities; do
     done
 done
 
+# Experiments for FedStale:
 for heterogeneity in $heterogeneities; do
     for lr in $lrs; do
         for weight in $weights; do
