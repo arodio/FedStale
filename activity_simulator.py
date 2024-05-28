@@ -1,7 +1,9 @@
 import time
 import numpy as np
+import pandas as pd 
 
-    # --- CHANGE HERE --- #
+
+# --- CHANGE HERE --- #
 
 class ActivitySimulator:
     r"""Simulates clients activity
@@ -41,12 +43,16 @@ class ActivitySimulator:
         """
         self.__rng = (np.random.default_rng(int(time.time())) if (rng is None) else rng)
 
-        clients_per_prob = n_clients // len(participation_probs)
+        # clients_per_prob = n_clients // len(participation_probs)
 
-        self.participation_matrix = np.concatenate(
-            [self.__rng.binomial(1, participation_prob, size=(clients_per_prob, n_rounds))
-             for participation_prob in participation_probs]
-        )
+        # self.participation_matrix = np.concatenate(
+        #     [self.__rng.binomial(1, participation_prob, size=(clients_per_prob, n_rounds))
+        #      for participation_prob in participation_probs]
+        # )
+
+        df = pd.DataFrame(pd.read_csv("data_availability/availability_matrix.csv", index_col=[0]))
+
+        self.participation_matrix = df.to_numpy()
 
     def get_active_clients(self, c_round):
         """returns indices of active clients (i.e., with participation=1)

@@ -5,7 +5,7 @@
 Install the follwoing in a virtual environment:
 ```bash
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
-pip install numpy scikit-learn tqdm tensorboard tensorflow
+pip install numpy scikit-learn tqdm tensorboard tensorflow pandas
 ```
 
 ## Quickstart

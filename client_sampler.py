@@ -62,7 +62,8 @@ class ClientsSampler(ABC):
 
         self.clients_weights_dict = self.get_client_weights_dict(clients)
 
-        self.participation_dict = self.get_participation_dict(n_clients, participation_probs)
+        # self.participation_dict = self.get_participation_dict(n_clients, participation_probs)
+        self.participation_dict = self.get_participation_dict(activity_simulator.participation_matrix)
 
         self.activity_simulator = activity_simulator
 
@@ -95,20 +96,22 @@ class ClientsSampler(ABC):
     # --- CHANGE HERE --- #
 
     @staticmethod
-    def get_participation_dict(n_clients, participation_probs):
+    def get_participation_dict(participation_matrix):
         """return a dictionary mapping client_id to participation_prob
 
         Parameters
         ----------
-        n_clients : int
-        participation_probs : list
+        participation_matrix : pandas.DataFrame (rows are clients-countries and columns are FL rounds)
 
         Returns
         -------
         dict : key is client_id and value is participation_prob
         """
-        client_probs = np.tile(participation_probs, n_clients // len(participation_probs))
-        return dict(enumerate(client_probs))
+        # client_probs = np.tile(participation_probs, n_clients // len(participation_probs))
+        # return dict(enumerate(client_probs))
+
+        row_means = participation_matrix.mean(axis=1)
+        return dict(enumerate(row_means))
 
     def get_active_clients(self, c_round):
         """receive the list of active clients
