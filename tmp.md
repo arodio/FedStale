@@ -7,7 +7,7 @@
 **First experiment:**
 - train with FedAvg, 2 clients, --participation_probs 1.0 1.0, --n_rounds 100
 - do not use the parameters --swap_labels --swap_proportion 0.0 (we don't want to swap labels at the moment).
-- do not use the ectivity estimator but rather provide the participation probabilities. However, we cannot rely for this on the argument --participation_probs because it entails the presence of 2 groups of clients with a participation probability for each of the two groups. In our case we want to provide the exact participation probability for each client (not groups of clients).
+- do not use the activity estimator but rather provide the participation probabilities. However, we cannot rely for this on the argument --participation_probs because it entails the presence of 2 groups of clients with a participation probability for each of the two groups. In our case we want to provide the exact participation probability for each client (not groups of clients).
 - create a participation_matrix (rows are clients and columns are participation 0 or 1 for each round of the federated training). Save this matrix with numpy.save.
 - need to change the class ActivitySimulator. This class should just use the participation_matrix that will be passed as an input.
 - change the function get_participation_dict

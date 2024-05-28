@@ -10,7 +10,7 @@ raw_data/
 *.ipynb
 *.npy
 *.pth
-*.csv
+# *.csv
 *.json
 *.txt
 *.pt
