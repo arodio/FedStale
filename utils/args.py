@@ -183,19 +183,6 @@ class TrainArgumentsManager(ArgumentsManager):
             action='store_true'
         )
         self.parser.add_argument(
-            '--swap_labels',
-            help='enables label swapping for the MNIST and CIFAR-10 datasets;'
-                 'in task 0, labels 0 and 1 are swapped, while in task 1, labels 8 and 9 are swapped',
-            action='store_true'
-        )
-        self.parser.add_argument(
-            "--swap_proportion",
-            help='proportion of indices to swap for label;, used when --swap_labels;'
-                 'default is `1.`',
-            type=float,
-            default=1.
-        )
-        self.parser.add_argument(
             "--logs_dir",
             help='directory to write logs; if not passed, it is set using arguments',
             default=argparse.SUPPRESS

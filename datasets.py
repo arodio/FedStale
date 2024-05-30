@@ -75,22 +75,13 @@ class SubMNIST(Dataset):
             mnist_data=None,
             mnist_targets=None,
             transform=None,
-            swap_labels=False,
-            swap_proportion=0.,
-            seed=None
     ):
         """
         :param path: path to .pkl file; expected to store list of indices
         :param mnist_data: MNIST dataset inputs stored as torch.tensor
         :param mnist_targets: MNIST dataset labels stored as torch.tensor
         :param transform:
-        :param swap_labels: the dataset is modified by swapping out two pairs of labels; default is None
-        :param swap_proportion: proportion of indices to swap for each label; only used when swap_labels is True
-        :param seed: seed for numpy random number generator; only used when swap_labels is True; default is None
-
         """
-        rng_seed = (seed if (seed is not None and seed >= 0) else int(time.time()))
-        self.np_rng = np.random.default_rng(rng_seed)
 
         with open(path, "rb") as f:
             self.indices = pickle.load(f)
@@ -109,36 +100,6 @@ class SubMNIST(Dataset):
 
         self.data = self.data[self.indices]
         self.targets = self.targets[self.indices]
-
-        if swap_labels:
-            # Extracting the task_id using regular expression
-            match = re.search(r"task_(\d+)/", path)
-            task_id = int(match.group(1)) if match else None
-
-            # Defining labels to swap
-            if task_id % 2 == 0:
-                labels_to_swap = [[0, 1]]
-            else:
-                labels_to_swap = [[8, 9]]
-
-            # Swapping labels
-            for val1, val2 in labels_to_swap:
-                print(f"Task {task_id}: swapping {val1} and {val2}, proportion {swap_proportion}")
-
-                # Get indices for each label to swap
-                indices_val1 = np.where(self.targets == val1)[0]
-                indices_val2 = np.where(self.targets == val2)[0]
-
-                # Randomly sample indices according to the proportion
-                num_to_swap_val1 = int(len(indices_val1) * swap_proportion)
-                num_to_swap_val2 = int(len(indices_val2) * swap_proportion)
-
-                indices_to_swap_val1 = self.np_rng.choice(indices_val1, num_to_swap_val1, replace=False)
-                indices_to_swap_val2 = self.np_rng.choice(indices_val2, num_to_swap_val2, replace=False)
-
-                # Labels swap
-                self.targets[indices_to_swap_val1] = val2
-                self.targets[indices_to_swap_val2] = val1
 
     def __len__(self):
         return self.data.size(0)
@@ -182,22 +143,13 @@ class SubCIFAR10(Dataset):
             cifar10_data=None,
             cifar10_targets=None,
             transform=None,
-            swap_labels=False,
-            swap_proportion=0.,
-            seed=None
     ):
         """
         :param path: path to .pkl file; expected to store list of indices
         :param cifar10_data: Cifar-10 dataset inputs stored as torch.tensor
         :param cifar10_targets: Cifar-10 dataset labels stored as torch.tensor
         :param transform:
-        :param swap_labels: the dataset is modified by swapping out two pairs of labels; default is None
-        :param swap_proportion: proportion of indices to swap for each label; only used when swap_labels is True
-        :param seed: seed for numpy random number generator; only used when swap_labels is True; default is None
-
         """
-        rng_seed = (seed if (seed is not None and seed >= 0) else int(time.time()))
-        self.np_rng = np.random.default_rng(rng_seed)
 
         with open(path, "rb") as f:
             self.indices = pickle.load(f)
@@ -219,36 +171,6 @@ class SubCIFAR10(Dataset):
 
         self.data = self.data[self.indices]
         self.targets = self.targets[self.indices]
-
-        if swap_labels:
-            # Extracting the task_id using regular expression
-            match = re.search(r"task_(\d+)/", path)
-            task_id = int(match.group(1)) if match else None
-
-            # Defining labels to swap
-            if task_id % 2 == 0:
-                labels_to_swap = [[3, 5]]  # swap cat and dog
-            else:
-                labels_to_swap = [[2, 6]]  # swap bird and frog
-
-            # Swapping labels
-            for val1, val2 in labels_to_swap:
-                print(f"Task {task_id}: swapping {val1} and {val2}, proportion {swap_proportion}")
-
-                # Get indices for each label to swap
-                indices_val1 = np.where(self.targets == val1)[0]
-                indices_val2 = np.where(self.targets == val2)[0]
-
-                # Randomly sample indices according to the proportion
-                num_to_swap_val1 = int(len(indices_val1) * swap_proportion)
-                num_to_swap_val2 = int(len(indices_val2) * swap_proportion)
-
-                indices_to_swap_val1 = self.np_rng.choice(indices_val1, num_to_swap_val1, replace=False)
-                indices_to_swap_val2 = self.np_rng.choice(indices_val2, num_to_swap_val2, replace=False)
-
-                # Labels swap
-                self.targets[indices_to_swap_val1] = val2
-                self.targets[indices_to_swap_val2] = val1
 
     def __len__(self):
         return self.data.size(0)

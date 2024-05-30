@@ -36,9 +36,6 @@ def get_loader(
         train,
         inputs=None,
         targets=None,
-        swap_labels=False,
-        swap_proportion=0.,
-        seed=None
 ):
     """
     constructs a torch.utils.DataLoader object from the given path
@@ -49,9 +46,6 @@ def get_loader(
     :param train: flag indicating if train loader or test loader
     :param inputs: tensor storing the input data; only used with `cifar10`, `cifar100` and `emnist`; default is None
     :param targets: tensor storing the labels; only used with `cifar10`, `cifar100` and `emnist`; default is None
-    :param swap_labels: the dataset is modified by swapping out two pairs of labels; default is None
-    :param swap_proportion: proportion of indices to swap for each label; only used when swap_labels is True
-    :param seed: seed for numpy rng; only used when swap_labels is True; default is None
 
     :return: torch.utils.DataLoader
     """
@@ -63,9 +57,6 @@ def get_loader(
                 path,
                 mnist_data=inputs,
                 mnist_targets=targets,
-                swap_labels=swap_labels,
-                swap_proportion=swap_proportion,
-                seed=seed
             )
     elif type_ == "cifar10":
         dataset = \
@@ -73,7 +64,6 @@ def get_loader(
                 path,
                 cifar10_data=inputs,
                 cifar10_targets=targets,
-                swap_labels=swap_labels
             )
     elif type_ == "cifar100":
         dataset = \
@@ -102,7 +92,7 @@ def get_loader(
     return DataLoader(dataset, batch_size=batch_size, shuffle=train, drop_last=drop_last)
 
 
-def get_loaders(type_, data_dir, batch_size, is_validation, swap_labels=False, swap_proportion=0., seed=None):
+def get_loaders(type_, data_dir, batch_size, is_validation):
     """
     constructs lists of `torch.utils.DataLoader` object from the given files in `root_path`;
      corresponding to `train_iterator`, `val_iterator` and `test_iterator`;
@@ -111,9 +101,6 @@ def get_loaders(type_, data_dir, batch_size, is_validation, swap_labels=False, s
     :param data_dir: directory of the data folder
     :param batch_size:
     :param is_validation: (bool) if `True` validation part is used as test
-    :param swap_labels: the dataset is modified by swapping out two pairs of labels; default is None
-    :param swap_proportion: proportion of indices to swap for each label; only used when swap_labels is True
-    :param seed: seed for numpy rng; only used when swap_labels is True; default is None
 
     :return:
         train_iterator, val_iterator, test_iterator
@@ -140,9 +127,6 @@ def get_loaders(type_, data_dir, batch_size, is_validation, swap_labels=False, s
                 batch_size=batch_size,
                 inputs=inputs,
                 targets=targets,
-                swap_labels=swap_labels,
-                swap_proportion=swap_proportion,
-                seed=seed,
                 train=True
             )
 
@@ -153,9 +137,6 @@ def get_loaders(type_, data_dir, batch_size, is_validation, swap_labels=False, s
                 batch_size=batch_size,
                 inputs=inputs,
                 targets=targets,
-                swap_labels=swap_labels,
-                swap_proportion=swap_proportion,
-                seed=seed,
                 train=False
             )
 
@@ -171,9 +152,6 @@ def get_loaders(type_, data_dir, batch_size, is_validation, swap_labels=False, s
                 batch_size=batch_size,
                 inputs=inputs,
                 targets=targets,
-                swap_labels=swap_labels,
-                swap_proportion=swap_proportion,
-                seed=seed,
                 train=False
             )
 

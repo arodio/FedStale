@@ -12,7 +12,7 @@ from torch.utils.data import ConcatDataset
 
 from sklearn.model_selection import train_test_split
 
-from utils import by_labels_non_iid_split, pathological_non_iid_split, by_correlation, iid_split
+from utils import by_labels_non_iid_split, pathological_non_iid_split, iid_split
 
 
 N_CLASSES = 10
@@ -57,13 +57,6 @@ def parse_args():
         action='store_true'
     )
     parser.add_argument(
-        '--by_correlation',
-        help='if selected, the dataset will be split as follow:'
-             '  1) classes are split into `n_distributions`'
-             '  2) for each distribution, samples are partitioned iid across clients',
-        action='store_true'
-    )
-    parser.add_argument(
         '--n_shards',
         help='number of shards given to each clients/task; ignored if `--pathological_split` is not used;'
              'default is 2',
@@ -75,13 +68,6 @@ def parse_args():
         help='number of components/clusters; ignored if `--by_labels_split` is not used; default is -1',
         type=int,
         default=-1
-    )
-    parser.add_argument(
-        '--n_distributions',
-        help='number of underlying data distributions to consider; ignored if `--by_correlation` is not used;'
-             'default is 2',
-        type=int,
-        default=2
     )
     parser.add_argument(
         '--alpha',
@@ -121,17 +107,7 @@ def main():
             MNIST(root=RAW_DATA_PATH, download=False, train=False)
         ])
 
-    if args.by_correlation:
-        clients_indices =\
-            by_correlation(
-                dataset=dataset,
-                n_classes=N_CLASSES,
-                n_distributions=args.n_distributions,
-                n_clients=args.n_tasks,
-                frac=args.s_frac,
-                seed=args.seed
-            )
-    elif args.pathological_split:
+    if args.pathological_split:
         clients_indices =\
             pathological_non_iid_split(
                 dataset=dataset,

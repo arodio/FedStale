@@ -42,9 +42,6 @@ def init_clients(args_, data_dir, logs_dir, chkpts_dir):
             data_dir=data_dir,
             batch_size=args_.bz,
             is_validation=args_.validation,
-            swap_labels=args_.swap_labels,
-            swap_proportion=args_.swap_proportion,
-            seed=args_.seed
         )
 
     if args_.verbose > 0:

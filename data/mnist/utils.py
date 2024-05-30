@@ -3,9 +3,6 @@ import time
 
 import numpy as np
 
-import warnings
-
-
 def iid_divide(l, g):
     """
     https://github.com/TalwalkarLab/leaf/blob/master/data/utils/sample.py
@@ -90,8 +87,7 @@ def by_labels_non_iid_split(dataset, n_classes, n_clients, n_clusters, alpha, fr
     np.random.seed(rng_seed)
 
     all_labels = list(range(n_classes))
-    # TODO : remove
-    # rng.shuffle(all_labels)
+    rng.shuffle(all_labels)
     clusters_labels = iid_divide(all_labels, n_clusters)
 
     label2cluster = dict()  # maps label to its cluster
@@ -111,9 +107,8 @@ def by_labels_non_iid_split(dataset, n_classes, n_clients, n_clusters, alpha, fr
         clusters_sizes[group_id] += 1
         clusters[group_id].append(idx)
 
-    # TODO : remove
-    # for _, cluster in clusters.items():
-    #     rng.shuffle(cluster)
+    for _, cluster in clusters.items():
+        rng.shuffle(cluster)
 
     clients_counts = np.zeros((n_clusters, n_clients), dtype=np.int64)  # number of samples by client from each cluster
 
@@ -172,60 +167,12 @@ def pathological_non_iid_split(dataset, n_classes, n_clients, n_classes_per_clie
 
     n_shards = n_clients * n_classes_per_client
     shards = iid_divide(sorted_indices, n_shards)
-    # TODO : removed
-    # random.shuffle(shards)
+    random.shuffle(shards)
     tasks_shards = iid_divide(shards, n_clients)
 
     clients_indices = [[] for _ in range(n_clients)]
     for client_id in range(n_clients):
         for shard in tasks_shards[client_id]:
             clients_indices[client_id] += shard
-
-    return clients_indices
-
-
-def by_correlation(dataset, n_classes, n_distributions, n_clients, frac=1, seed=1234):
-    """
-    split classification dataset among `n_distributions` in `pathological_non_iid_split`, then `iid` among clients.
-    The dataset is split as follows:
-        1) the data is split among `n_distributions` in `pathological_non_iid_split`
-        2) for each underlying distribution, the data is split iid among clients.
-
-    :param dataset:
-    :type dataset: torch.utils.Dataset
-    :param n_classes: number of classes present in `dataset`
-    :param n_distributions: number of underlying distributions
-    :param n_clients: number of clients
-    :param frac: fraction of dataset to use
-    :param seed:
-    :return: list (size `n_clients`) of subgroups, each subgroup is a list of indices.
-    """
-    warnings.warn(
-        "There is a potential correlation between data distribution and client availability.",
-        RuntimeWarning
-    )
-
-    n_classes_per_distribution = n_classes // n_distributions
-    n_clients_per_distribution = n_clients // n_distributions
-
-    distributions_indices = \
-        by_labels_non_iid_split(
-            dataset=dataset,
-            n_classes=n_classes,
-            n_clients=n_distributions,
-            n_clusters=n_distributions,
-            alpha=10000000,
-            frac=frac,
-            seed=seed
-        )
-
-    nested_indices = [iid_divide(distribution_indices, n_clients_per_distribution) for distribution_indices in
-                      distributions_indices]
-
-    clients_indices = [client_indices for distribution_indices in nested_indices for client_indices in
-                       distribution_indices]
-
-    # TODO : fix
-    clients_indices = clients_indices[0:25] + clients_indices[50:75] + clients_indices[25:50] + clients_indices[75:100]
 
     return clients_indices
