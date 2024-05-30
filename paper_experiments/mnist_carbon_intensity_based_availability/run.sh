@@ -128,10 +128,37 @@ n_rounds="100"
 # done
 # done
 
-# ------------------------------- #
-# --- Experiments for FedStale --- #
-# ------------------------------- #
-# known participation probs:
+# # ------------------------------- #
+# # --- Experiments for FedStale --- #
+# # ------------------------------- #
+# # known participation probs:
+# for heterogeneity in $heterogeneities; do
+# for lr in $lrs; do
+# for weight in $weights; do
+# for seed in $seeds ; do
+# echo "Run FedStale : p ${participation}, h ${heterogeneity}, beta ${weight}, lr ${lr}, seed ${seed}"
+# (
+# python train.py \
+# mnist \
+# --n_rounds ${n_rounds} \
+# --participation_probs 1.0 ${participation} \
+# --bz 128 \
+# --lr ${lr} \
+# --log_freq 1 \
+# --device ${device} \
+# --optimizer sgd \
+# --server_optimizer history \
+# --history_coefficient ${weight} \
+# --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/fedstale/known_participation_probs/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+# --seed ${seed} \
+# --verbose 0
+# )
+# done
+# done
+# done
+# done
+
+# unknown participation probs:
 for heterogeneity in $heterogeneities; do
 for lr in $lrs; do
 for weight in $weights; do
@@ -142,6 +169,7 @@ python train.py \
 mnist \
 --n_rounds ${n_rounds} \
 --participation_probs 1.0 ${participation} \
+--unknown_participation_probs \
 --bz 128 \
 --lr ${lr} \
 --log_freq 1 \
@@ -157,5 +185,3 @@ done
 done
 done
 done
-
-# known participation probs:
