@@ -44,16 +44,18 @@ class ActivityEstimator:
                     # If the client didn't participate, carry over the previous weight
                     self.weights_matrix[n, t] = self.weights_matrix[n, t - 1]
 
-    def estimate_clients_weights(self, c_round):
-        """returns estimated aggregation weights of clients at current round
+    def estimate_participation_probs(self, c_round):
+        """returns estimated participation probabilities of clients at the current round
 
         Parameters
         ----------
 
-        c_round:
+        c_round: int
 
         Returns
         -------
-            * List[int]
+            * Dict[int]: a dictionary with client_id as keys and estimated participation probabilities as values
         """
-        return self.weights_matrix[:, c_round].tolist()
+
+        participation_probs = 1 / self.weights_matrix[:, c_round]
+        return {client_id: participation_prob for client_id, participation_prob in enumerate(participation_probs)}

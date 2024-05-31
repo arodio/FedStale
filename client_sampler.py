@@ -105,8 +105,8 @@ class ClientsSampler(ABC):
         -------
         dict : key is client_id and value is participation_prob
         """
-        client_probs = np.repeat(participation_probs, n_clients // len(participation_probs))
-        return dict(enumerate(np.tile(client_probs, n_clients // len(client_probs))))
+        client_probs = np.tile(participation_probs, n_clients // len(participation_probs))
+        return dict(enumerate(client_probs))
 
     def get_active_clients(self, c_round):
         """receive the list of active clients
@@ -122,19 +122,19 @@ class ClientsSampler(ABC):
         """
         return self.activity_simulator.get_active_clients(c_round)
 
-    def estimate_clients_weights(self, c_round):
-        """receive the list of estimated clients from the ActivityEstimator
+    def estimate_participation_probs(self, c_round):
+        """receive the list of estimated client participations from the ActivityEstimator
 
         Parameters
         ----------
 
-        c_round:
+        c_round: int
 
         Returns
         -------
-            * List[int]
+            * Dict[int]: a dictionary with client_id as keys and estimated participation probabilities as values
         """
-        return self.activity_estimator.estimate_clients_weights(c_round)
+        return self.activity_estimator.estimate_participation_probs(c_round)
 
     def step(self):
         """update the internal step of the clients sampler
@@ -188,22 +188,14 @@ class UnbiasedClientsSampler(ClientsSampler):
 
         active_clients = self.get_active_clients(c_round)
 
-        clients_weights_estimated = self.estimate_clients_weights(c_round)
+        if self.unknown_participation_probs:
+            participation_probs = self.estimate_participation_probs(c_round)
+        else:
+            participation_probs = self.participation_dict
 
         for client_id in active_clients:
             sampled_clients_ids.append(client_id)
-
-            if self.unknown_participation_probs:
-
-                sampled_clients_weights.append(
-                    clients_weights_estimated[client_id]
-                )
-
-            else:
-
-                sampled_clients_weights.append(
-                    self.clients_weights_dict[client_id] / self.participation_dict[client_id]
-                )
+            sampled_clients_weights.append(self.clients_weights_dict[client_id] / participation_probs[client_id])
 
         self.step()
 
