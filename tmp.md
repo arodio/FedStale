@@ -24,7 +24,6 @@ cd data/mnist
 python generate_data.py --n_tasks 2 --s_frac 0.2 --test_tasks_frac 0.0 --seed 12345
 cd ../..
 python train.py mnist --n_rounds 100 --participation_probs 1.0 1.0 --unknown_participation_probs --bz 128 --lr 5e-3 --log_freq 1 --device cuda --optimizer sgd --server_optimizer history --swap_labels --swap_proportion 0.0 --logs_dir logs/mnist/p_0.5/h_0.0/fedvarp/lr_5e-3/seed_12 --seed 12 --verbose 0
-tensorboard --logdir logs/mnist/p_0.5/h_0.0/fedvarp/lr_5e-3/seed_12
 ```
 
 *Test 2:*
@@ -33,7 +32,6 @@ cd data/mnist
 python generate_data.py --n_tasks 7 --s_frac 0.2 --test_tasks_frac 0.0 --seed 12345
 cd ../..
 python train.py mnist --n_rounds 100 --participation_probs 1.0 1.0 --bz 128 --lr 5e-3 --log_freq 1 --device cuda --optimizer sgd --server_optimizer sgd --logs_dir logs/CI_based_availability/7clients/fedavg/100rounds --seed 12 --verbose 0
-tensorboard --logdir logs/CI_based_availability/7clients/100rounds
 ```
 
 
