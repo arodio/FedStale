@@ -16,8 +16,9 @@ Clone the repository and go inside the created folder. Then, the following comma
 cd data/mnist
 python generate_data.py --n_tasks 24 --s_frac 0.2 --test_tasks_frac 0.0 --seed 12345
 cd ../..
-python train.py mnist --n_rounds 4 --participation_probs 1.0 0.5 --unknown_participation_probs --bz 128 --lr 5e-3 --log_freq 1 --device cuda --optimizer sgd --server_optimizer history --swap_labels --swap_proportion 0.0 --logs_dir logs/mnist/p_0.5/h_0.0/fedvarp/lr_5e-3/seed_12 --seed 12 --verbose 0
-tensorboard --logdir logs/mnist/p_0.5/h_0.0/fedvarp/lr_5e-3/seed_12
+python train.py mnist --n_rounds 4 --participation_probs 1.0 0.5 --unknown_participation_probs --bz 128 --lr 5e-3 --log_freq 1 --device cuda --optimizer sgd --server_optimizer history --swap_labels --swap_proportion 0.0 --logs_dir logs/mnist_CI_based_availability/clients_7/test --seed 12 --verbose 0
+set TF_ENABLE_ONEDNN_OPTS=0
+tensorboard --logdir tensorboard --logdir logs/mnist_CI_based_availability/clients_7/
 ```
 
 ## Organization of this repository
