@@ -193,8 +193,13 @@ class UnbiasedClientsSampler(ClientsSampler):
 
         active_clients = self.get_active_clients(c_round)
 
+        print('x === === === x')    
         if self.unknown_participation_probs:
             participation_probs = self.estimate_participation_probs(c_round)
+            print('x --- x')
+            print('---> Estimated participation probs', {key : round(participation_probs[key], 2) for key in participation_probs})
+            print('---> Participation dict', {key : round(self.participation_dict[key], 2) for key in self.participation_dict})
+            print('x --- x')
         else:
             participation_probs = self.participation_dict
 
