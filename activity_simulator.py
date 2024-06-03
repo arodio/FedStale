@@ -52,7 +52,7 @@ class ActivitySimulator:
 
         df = pd.DataFrame(pd.read_csv("data_availability/availability_matrix.csv", index_col=[0]))
 
-        self.participation_matrix = df.to_numpy()
+        self.participation_matrix = df.iloc[:, :n_rounds].to_numpy()
 
     def get_active_clients(self, c_round):
         """returns indices of active clients (i.e., with participation=1)
