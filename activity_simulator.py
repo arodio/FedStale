@@ -26,32 +26,36 @@ class ActivitySimulator:
 
     """
 
-    def __init__(self, n_clients, n_rounds, participation_probs, rng=None):
-        """
+    ### Previous version of the constructor:
+    # def __init__(self, n_clients, n_rounds, participation_probs, rng=None):
+    #     """
+    #     Parameters
+    #     ----------
+    #     n_clients:
+    #     n_rounds:
+    #     participation_probs : 1-D list (dtype=float)
+    #     rng: numpy.random._generator.Generator
+    #     """
 
+    #     self.__rng = (np.random.default_rng(int(time.time())) if (rng is None) else rng)
+    #     clients_per_prob = n_clients // len(participation_probs)
+    #     self.participation_matrix = np.concatenate(
+    #         [self.__rng.binomial(1, participation_prob, size=(clients_per_prob, n_rounds))
+    #          for participation_prob in participation_probs]
+    #     )
+
+    def __init__(self, n_rounds, availability_matrix_path):
+        """
         Parameters
         ----------
-
-        n_clients:
-
-        n_rounds:
-
-        participation_probs : 1-D list (dtype=float)
-
-        rng: numpy.random._generator.Generator
-
+        n_rounds: int (number of rounds)
+        availability_matrix_path: str (path to the availability matrix)
         """
-        self.__rng = (np.random.default_rng(int(time.time())) if (rng is None) else rng)
 
-        # clients_per_prob = n_clients // len(participation_probs)
-
-        # self.participation_matrix = np.concatenate(
-        #     [self.__rng.binomial(1, participation_prob, size=(clients_per_prob, n_rounds))
-        #      for participation_prob in participation_probs]
-        # )
-
-        df = pd.DataFrame(pd.read_csv("data_availability/availability_matrix.csv", index_col=[0]))
-
+        df = pd.DataFrame(pd.read_csv(availability_matrix_path, index_col=[0]))
+        
+        # In case the availability matrix has more than n_rounds columns, 
+        # we truncate it here:
         self.participation_matrix = df.iloc[:, :n_rounds].to_numpy()
 
     def get_active_clients(self, c_round):

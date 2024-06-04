@@ -504,20 +504,25 @@ def get_client(
         save_path=save_path
     )
 
+### Version with the previous constructor:
+# def get_activity_simulator(n_clients, n_rounds, participation_probs, rng):
+#     """
+#     :param n_clients:
+#     :param n_rounds:
+#     :param participation_probs: list of participation probabilities
+#     :param rng: random number generator, used to simulate participation; default is None
+#     :return: ActivitySimulator
+#     """
+#     return ActivitySimulator(n_clients, n_rounds, participation_probs, rng)
 
-def get_activity_simulator(n_clients, n_rounds, participation_probs, rng):
+def get_activity_simulator(n_rounds, availability_matrix_path):
     """
-
-    :param n_clients:
-    :param n_rounds:
-    :param participation_probs: list of participation probabilities
-    :param rng: random number generator, used to simulate participation; default is None
+    :param n_rounds: int
+    :param particiaption_matrix_path: str
 
     :return: ActivitySimulator
-
     """
-    return ActivitySimulator(n_clients, n_rounds, participation_probs, rng)
-
+    return ActivitySimulator(n_rounds, availability_matrix_path)
 
 def get_activity_estimator(participation_matrix):
     """

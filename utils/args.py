@@ -198,6 +198,12 @@ class TrainArgumentsManager(ArgumentsManager):
             type=int,
             default=0
         )
+        self.parser.add_argument(
+            "--availability_matrix_path",
+            help='path to the availability matrix',
+            type=str,
+            default='data_availability/availability_matrix.csv'
+        )
 
     def args_to_string(self):
         """

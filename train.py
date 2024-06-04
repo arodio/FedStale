@@ -170,15 +170,21 @@ def run_experiment(arguments_manager_):
     
     # --- CHANGE HERE --- #
 
-    activity_simulator_rng = np.random.default_rng(args_.seed)
+    # activity_simulator_rng = np.random.default_rng(args_.seed)
+    # activity_simulator = \
+    #     get_activity_simulator(
+    #         n_clients=len(clients),
+    #         n_rounds=args_.n_rounds,
+    #         participation_probs=args_.participation_probs,
+    #         rng=activity_simulator_rng,
+    #     )
+
     activity_simulator = \
         get_activity_simulator(
-            n_clients=len(clients),
             n_rounds=args_.n_rounds,
-            participation_probs=args_.participation_probs,
-            rng=activity_simulator_rng,
+            availability_matrix_path=args_.availability_matrix_path
         )
-
+    
     activity_estimator = \
         get_activity_estimator(
             participation_matrix=activity_simulator.participation_matrix
