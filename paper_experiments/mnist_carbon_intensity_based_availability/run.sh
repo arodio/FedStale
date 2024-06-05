@@ -27,11 +27,14 @@ seeds="12"
 lrs="5e-3"
 device="cuda"
 n_rounds="100"
+availabilities="global_mean"
 
 # ------------------------------ #
 # --- Experiments for FedAvg --- #
 # ------------------------------ #
 # known participation probs:
+for availability in $availabilities; do
+availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
 for heterogeneity in $heterogeneities; do
 for lr in $lrs; do
 for seed in $seeds; do
@@ -47,15 +50,19 @@ mnist \
 --device ${device} \
 --optimizer sgd \
 --server_optimizer sgd \
---logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/fedavg/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+--logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/fedavg/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
 --seed ${seed} \
---verbose 0
+--verbose 0 \
+--availability_matrix_path ${availability_matrix_path}
 )
+done
 done
 done
 done
 
 # unknown participation probs:
+for availability in $availabilities; do
+availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
 for heterogeneity in $heterogeneities; do
 for lr in $lrs; do
 for seed in $seeds; do
@@ -72,10 +79,12 @@ mnist \
 --device ${device} \
 --optimizer sgd \
 --server_optimizer sgd \
---logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/fedavg/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+--logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/fedavg/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
 --seed ${seed} \
---verbose 0
+--verbose 0 \
+--availability_matrix_path ${availability_matrix_path}
 )
+done
 done
 done
 done
@@ -84,6 +93,8 @@ done
 # --- Experiments for FedVARP --- #
 # ------------------------------- #
 # known participation probs:
+for availability in $availabilities; do
+availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
 for heterogeneity in $heterogeneities; do
 for lr in $lrs; do
 for seed in $seeds; do
@@ -99,15 +110,19 @@ mnist \
 --device ${device} \
 --optimizer sgd \
 --server_optimizer history \
---logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/fedvarp/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+--logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/fedvarp/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
 --seed ${seed} \
---verbose 0
+--verbose 0 \
+--availability_matrix_path ${availability_matrix_path}
 )
+done
 done
 done
 done
 
 # unknown participation probs:
+for availability in $availabilities; do
+availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
 for heterogeneity in $heterogeneities; do
 for lr in $lrs; do
 for seed in $seeds; do
@@ -124,10 +139,12 @@ mnist \
 --device ${device} \
 --optimizer sgd \
 --server_optimizer history \
---logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/fedvarp/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+--logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/fedvarp/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
 --seed ${seed} \
---verbose 0
+--verbose 0 \
+--availability_matrix_path ${availability_matrix_path}
 )
+done
 done
 done
 done
@@ -136,6 +153,8 @@ done
 # --- Experiments for FedStale --- #
 # ------------------------------- #
 # known participation probs:
+for availability in $availabilities; do
+availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
 for heterogeneity in $heterogeneities; do
 for lr in $lrs; do
 for weight in $weights; do
@@ -153,16 +172,20 @@ mnist \
 --optimizer sgd \
 --server_optimizer history \
 --history_coefficient ${weight} \
---logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/fedstale/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+--logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/fedstale/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
 --seed ${seed} \
---verbose 0
+--verbose 0 \
+--availability_matrix_path ${availability_matrix_path}
 )
+done
 done
 done
 done
 done
 
 # unknown participation probs:
+for availability in $availabilities; do
+availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
 for heterogeneity in $heterogeneities; do
 for lr in $lrs; do
 for weight in $weights; do
@@ -181,10 +204,12 @@ mnist \
 --optimizer sgd \
 --server_optimizer history \
 --history_coefficient ${weight} \
---logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/fedstale/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+--logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/fedstale/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
 --seed ${seed} \
---verbose 0
+--verbose 0 \
+--availability_matrix_path ${availability_matrix_path}
 )
+done
 done
 done
 done

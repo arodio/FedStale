@@ -7,7 +7,6 @@ chkpts_list_cifar100
 notebooks/
 raw_data/
 
-*.ipynb
 *.npy
 *.pth
 # *.csv
