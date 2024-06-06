@@ -17,9 +17,51 @@ cd data/mnist
 python generate_data.py --n_tasks 24 --s_frac 0.2 --test_tasks_frac 0.0 --seed 12345
 cd ../..
 python train.py mnist --n_rounds 4 --participation_probs 1.0 0.5 --unknown_participation_probs --bz 128 --lr 5e-3 --log_freq 1 --device cuda --optimizer sgd --server_optimizer history --swap_labels --swap_proportion 0.0 --logs_dir logs/mnist_CI_based_availability/clients_7/test --seed 12 --verbose 0
+```
+
+## Displaying the results with tensorboard
+
+Below change the path to the logs folder if needed.
+```bash
 set TF_ENABLE_ONEDNN_OPTS=0
 tensorboard --logdir tensorboard --logdir logs/mnist_CI_based_availability/clients_7/
 ```
+
+Go to *SCALARS* and use regular expression to filter results. For instance, 
+`.*train\\global$` or 
+`^local_mean\\.*train\\global$`
+.
+Below are regular expression focusing on 5 different availability matrices.
+
+*Local_mean:*  
+- `^local_mean\\.*alpha_0\.1.*train\\global$`  
+Fedavg is not as good as the others.
+- `^local_mean\\.*alpha_100000.*train\\global$`  
+All seem to work similarly.
+
+*Global_mean:*  
+- `^global_mean\\.*alpha_0\.1.*train\\global$`  
+Similar to local_mean.
+- `^global_mean\\.*alpha_100000.*train\\global$`  
+Similar to local_mean.
+
+*Local_mean_green:*  
+- `^local_mean_green\\.*alpha_0\.1.*train\\global$`  
+Fedavg is not as good as the others.
+- `^local_mean_green\\.*alpha_100000.*train\\global$`  
+All seem to work similarly.
+
+*Random:*
+- `^random\\.*alpha_0\.1.*train\\global$`  
+Fedavg is not as good as the others.
+- `^random\\.*alpha_100000.*train\\global$`  
+All seem to work similarly.
+
+*Cyclic:*
+- `^cyclic\\.*alpha_0\.1.*train\\global$`  
+Fedavg is not as good as the others.
+- `^cyclic\\.*alpha_100000.*train\\global$`  
+All seem to work similarly.
 
 ## Organization of this repository
 
