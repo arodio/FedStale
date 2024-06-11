@@ -4,7 +4,7 @@ echo "=> generate data"
 
 n_tasks="7"
 # alpha="100000"
-alpha="-1"
+alpha="-1" # use this when true iid
 
 # cd data/mnist || exit 1
 cd data/mnist
@@ -28,7 +28,17 @@ seeds="12"
 lrs="5e-3"
 device="cuda"
 n_rounds="100"
-availabilities="random local_mean global_mean local_mean_green"
+availabilities="random_for_carbon-budget"
+
+# CI-threshold-local-mean CI-threshold-global-mean 
+# CI-threshold-median CI-threshold-penalized-local-mean
+# carbon-budget 
+# random_for_CI-threshold-local-mean 
+# random_for_CI-threshold-global-mean random_for_CI-threshold-median 
+# random_for_CI-threshold-penalized-local-mean 
+# random_for_carbon-budget 
+
+# carbon-budget-fine-tuning random_for_carbon-budget-fine-tuning
 
 # ------------------------------ #
 # --- Experiments for FedAvg --- #

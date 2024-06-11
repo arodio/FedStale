@@ -88,6 +88,8 @@ This repository is organized as follows:
 ¦           generate_data.py     # Same as for cifar10 above
 ¦           README.md
 ¦           utils.py
+¦   
++---data_availability/           # Contains different availability matrices in csv files
 ¦           
 +---learners/
 ¦       learner.py               # Class Learner: Responsible for training and evaluating a (deep-)learning model (also LanguageModelingLearner class)
@@ -98,6 +100,9 @@ This repository is organized as follows:
 ¦   ¦       run.sh               # Runs the scripts generate_data.py and train.py with appropriate arguments
 ¦   ¦       
 ¦   +---mnist/
+¦   ¦       run.sh               # Same as for cifar10 above
+¦   ¦       
+¦   +---mnist_CI_based_availability/
 ¦           run.sh               # Same as for cifar10 above
 ¦           
 +---utils/
