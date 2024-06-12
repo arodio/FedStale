@@ -28,7 +28,7 @@ seeds="12"
 lrs="5e-3"
 device="cuda"
 n_rounds="100"
-availabilities="random_for_carbon-budget"
+availabilities="carbon-budget-fine-tuning random_for_carbon-budget-fine-tuning"
 
 # CI-threshold-local-mean CI-threshold-global-mean 
 # CI-threshold-median CI-threshold-penalized-local-mean
@@ -37,7 +37,6 @@ availabilities="random_for_carbon-budget"
 # random_for_CI-threshold-global-mean random_for_CI-threshold-median 
 # random_for_CI-threshold-penalized-local-mean 
 # random_for_carbon-budget 
-
 # carbon-budget-fine-tuning random_for_carbon-budget-fine-tuning
 
 # ------------------------------ #
