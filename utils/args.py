@@ -189,7 +189,7 @@ class TrainArgumentsManager(ArgumentsManager):
         )
         self.parser.add_argument(
             "--chkpts_dir",
-            help='directory to save checkpoints once the training is over; if not specified checkpoints are not saved',
+            help='directory to save checkpoints once the training is over; if not specified checkpoints are not saved;',
             default=argparse.SUPPRESS
         )
         self.parser.add_argument(
@@ -203,6 +203,12 @@ class TrainArgumentsManager(ArgumentsManager):
             help='path to the availability matrix',
             type=str,
             default='data_availability/availability_matrix.csv'
+        )
+        self.parser.add_argument(
+            "--biased",
+            help='biased aggregation, `0` for unbiased and `1` for biased: default is `0`;',
+            type=int,
+            default=0
         )
 
     def args_to_string(self):

@@ -540,7 +540,8 @@ def get_client_sampler(
         participation_probs,
         activity_simulator,
         activity_estimator,
-        unknown_participation_probs
+        unknown_participation_probs,
+        biased
 ):
     """
 
@@ -549,17 +550,28 @@ def get_client_sampler(
     :param activity_simulator:
     :param activity_estimator:
     :param unknown_participation_probs:
+    :param biased:
 
     :return: ClientsSampler
 
     """
-    return UnbiasedClientsSampler(
-        clients,
-        participation_probs,
-        activity_simulator,
-        activity_estimator,
-        unknown_participation_probs
-    )
+
+    if biased == 0:
+        return UnbiasedClientsSampler(
+            clients,
+            participation_probs,
+            activity_simulator,
+            activity_estimator,
+            unknown_participation_probs
+        )
+    elif biased == 1:
+        return BiasedClientsSampler(
+            clients,
+            participation_probs,
+            activity_simulator,
+            activity_estimator,
+            unknown_participation_probs
+        )
 
 
 def get_history_tracker(

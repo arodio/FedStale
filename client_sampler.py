@@ -192,8 +192,7 @@ class UnbiasedClientsSampler(ClientsSampler):
         sampled_clients_ids, sampled_clients_weights = [], []
 
         active_clients = self.get_active_clients(c_round)
-
-        print('x === === === x')    
+ 
         if self.unknown_participation_probs:
             participation_probs = self.estimate_participation_probs(c_round)
             print('x --- x')
@@ -206,6 +205,42 @@ class UnbiasedClientsSampler(ClientsSampler):
         for client_id in active_clients:
             sampled_clients_ids.append(client_id)
             sampled_clients_weights.append(self.clients_weights_dict[client_id] / participation_probs[client_id])
+
+        self.step()
+
+        return sampled_clients_ids, sampled_clients_weights
+    
+
+
+class BiasedClientsSampler(ClientsSampler):
+    """
+    Samples all active clients with aggregation weight 1/nb_clients
+    """
+
+    def sample(self, c_round):
+        """implementation of the abstract method ClientSampler.sample for the UnbiasedClientSampler
+
+        Samples all active clients with aggregation weight 1/nb_clients.
+
+        Parameters
+        ----------
+        c_round: int
+
+        Returns
+        -------
+            * List[int]: indices of the sampled clients_dict
+            * List[float]: weights to be associated to the sampled clients_dict
+        """
+        sampled_clients_ids, sampled_clients_weights = [], []
+
+        active_clients = self.get_active_clients(c_round)
+
+        # print('---> ', len(active_clients))
+        # biased_weight = 1/len(active_clients)
+
+        for client_id in active_clients:
+            sampled_clients_ids.append(client_id)
+            sampled_clients_weights.append(self.clients_weights_dict[client_id])
 
         self.step()
 

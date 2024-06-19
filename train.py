@@ -196,7 +196,8 @@ def run_experiment(arguments_manager_):
             participation_probs=args_.participation_probs,
             activity_simulator=activity_simulator,
             activity_estimator=activity_estimator,
-            unknown_participation_probs=args_.unknown_participation_probs
+            unknown_participation_probs=args_.unknown_participation_probs,
+            biased=args_.biased
         )
     
     # --- --- --- --- --- #
