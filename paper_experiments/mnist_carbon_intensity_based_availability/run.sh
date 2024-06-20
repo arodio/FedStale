@@ -2,7 +2,7 @@ cd ../..
 
 echo "=> generate data"
 
-alpha="0.1"
+alpha="100000"
 biased="1"
 # alpha="-1" # use this when true iid
 
@@ -93,10 +93,11 @@ availabilities="random_for_carbon-budget carbon-budget"
 # --device ${device} \
 # --optimizer sgd \
 # --server_optimizer sgd \
-# --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/fedavg/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+# --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedavg/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
 # --seed ${seed} \
 # --verbose 0 \
-# --availability_matrix_path ${availability_matrix_path}
+# --availability_matrix_path ${availability_matrix_path} \
+# --biased ${biased}
 # )
 # done
 # done
@@ -124,10 +125,11 @@ mnist \
 --device ${device} \
 --optimizer sgd \
 --server_optimizer history \
---logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/fedvarp/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+--logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedvarp/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
 --seed ${seed} \
 --verbose 0 \
---availability_matrix_path ${availability_matrix_path}
+--availability_matrix_path ${availability_matrix_path} \
+--biased ${biased}
 )
 done
 done
@@ -153,10 +155,11 @@ done
 # --device ${device} \
 # --optimizer sgd \
 # --server_optimizer history \
-# --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/fedvarp/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+# --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedvarp/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
 # --seed ${seed} \
 # --verbose 0 \
-# --availability_matrix_path ${availability_matrix_path}
+# --availability_matrix_path ${availability_matrix_path} \
+# --biased ${biased}
 # )
 # done
 # done
@@ -186,10 +189,11 @@ mnist \
 --optimizer sgd \
 --server_optimizer history \
 --history_coefficient ${weight} \
---logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/fedstale/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+--logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedstale/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
 --seed ${seed} \
 --verbose 0 \
---availability_matrix_path ${availability_matrix_path}
+--availability_matrix_path ${availability_matrix_path} \
+--biased ${biased}
 )
 done
 done
@@ -218,10 +222,11 @@ done
 # --optimizer sgd \
 # --server_optimizer history \
 # --history_coefficient ${weight} \
-# --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/fedstale/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+# --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedstale/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
 # --seed ${seed} \
 # --verbose 0 \
-# --availability_matrix_path ${availability_matrix_path}
+# --availability_matrix_path ${availability_matrix_path} \
+# --biased ${biased}
 # )
 # done
 # done
