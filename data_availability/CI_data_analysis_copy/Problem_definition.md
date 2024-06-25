@@ -29,34 +29,6 @@ We are creating different types of availability sequences. (1) For each country,
 
 We are testing various FL algorthms with these availability sequences, for the training of a ML model on mnist, where the clients' datasets are not iid.
 
-<!-- ## Status
-
-**Ongoing:**
-
-*CI data analysis:*
-
-- Identify cooperation opportunities between countries. For instance, if country 1 has a low CI when country 2 has a high CI, and vis versa, then these 2 countries can collaborate on a training.
-
-- Decide on scales on which we will anlayze/use the CI data: hour, day, week.
-
-- Make FFT plots not continuous, and check and correct the xaxis labels. DONE
-
-- Analysis of each country's time scale of variations. -- RELATED TO SPECTRUM ?
-
-*Experiments:*
-
-- Experiments: Test artificial availability matrices (random, cyclic, etc.) and also other type of availability matrices discussed above (1, 2, 3).
-
-- Add centralized experiments.
-
-**Done:**
-
-- Analyzing historical CI data: graph of raw data, graph of mean data over certain period, spectral analysis, seasonal decomposition, 2 by 2 comparison of countries over certains period of time.
-
-- Creation of availability sequences of clients/ countries based on the location's CI data. 
-
-- Training experiments: Modification of the code of Angelo and Othmane to work with deterministic availability sequences of the clients. Training a ML model on MNIST with the FedAvg, FedVarp, FedStale algorithms, with iid and non-iid data distributions, with one type of availability sequence (type 1 described above). -->
-
 
 <!-- ### Charasterisitics of the problem.
 
