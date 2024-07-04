@@ -19,6 +19,12 @@ cd ../..
 python train.py mnist --n_rounds 4 --participation_probs 1.0 0.5 --unknown_participation_probs --bz 128 --lr 5e-3 --log_freq 1 --device cuda --optimizer sgd --server_optimizer history --swap_labels --swap_proportion 0.0 --logs_dir logs/mnist_CI_based_availability/clients_7/test --seed 12 --verbose 0
 ```
 
+## Using the prepared .sh file
+
+Parameters that can be changed withing the .sh file:
+- iid or non-iid data: giving the argument --by_labels_split to generate_data.py makes the distribution between clients non-iid. One can choose the level of non-iid ness with the argument --alpha, where 0.1 is strongly non-iid and 100000 is similar to iid
+--biased, where 0 is for unbiased aggregation and 1 is for biased aggregation.
+
 ## Displaying the results with tensorboard
 
 Below change the path to the logs folder if needed.
