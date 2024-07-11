@@ -65,7 +65,7 @@ def plot_availability_heatmap(title, similarity_matrix, key_word, folder):
     Green: available, Red: not available.
     """
     
-    plt.figure(figsize=(6, 5))
+    plt.figure(figsize=(7, 2))
     ax = plt.subplot()
 
     cmap=LinearSegmentedColormap.from_list('rg',["r", "w", "g"], N=256) 
