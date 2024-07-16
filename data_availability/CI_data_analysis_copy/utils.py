@@ -59,7 +59,7 @@ def plot_fft(CI_values, pos, max_pos, legend):
     # plt.plot(frequencies, np.abs(transformed_data))
     # plt.show()
 
-def plot_availability_heatmap(title, similarity_matrix, key_word, folder):
+def plot_availability_heatmap(title, similarity_matrix, key_word, folder, objective=None):
     """
     Plot heatmap of availability matrix (countries x datetime list).
     Green: available, Red: not available.
@@ -77,7 +77,10 @@ def plot_availability_heatmap(title, similarity_matrix, key_word, folder):
     xticks = xticks[::2]
     ax.set_xticks(xticks) # set new xticks
 
-    plt.title(key_word)
+    if objective == None:
+        plt.title(key_word)
+    else:
+        plt.title(key_word+'/obj='+str(np.round(objective, 2)))
     
     plt.savefig(folder+'/'+key_word+'.png', bbox_inches='tight')
     plt.show()
