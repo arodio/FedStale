@@ -189,16 +189,36 @@ def run_experiment(arguments_manager_):
         get_activity_estimator(
             participation_matrix=activity_simulator.participation_matrix
         )
-
-    clients_sampler = \
-        get_client_sampler(
-            clients=clients,
-            participation_probs=args_.participation_probs,
-            activity_simulator=activity_simulator,
-            activity_estimator=activity_estimator,
-            unknown_participation_probs=args_.unknown_participation_probs,
-            biased=args_.biased
-        )
+    
+    if args_.biased==0 or args_.biased==1:
+        clients_sampler = \
+            get_client_sampler(
+                clients=clients,
+                participation_probs=args_.participation_probs,
+                activity_simulator=activity_simulator,
+                activity_estimator=activity_estimator,
+                unknown_participation_probs=args_.unknown_participation_probs,
+                biased=args_.biased
+            )
+    else: #args_.biased==2 for mixed unbiased/biased training
+        unbiased_clients_sampler = \
+            get_client_sampler(
+                clients=clients,
+                participation_probs=args_.participation_probs,
+                activity_simulator=activity_simulator,
+                activity_estimator=activity_estimator,
+                unknown_participation_probs=args_.unknown_participation_probs,
+                biased=0
+            )
+        biased_clients_sampler = \
+            get_client_sampler(
+                clients=clients,
+                participation_probs=args_.participation_probs,
+                activity_simulator=activity_simulator,
+                activity_estimator=activity_estimator,
+                unknown_participation_probs=args_.unknown_participation_probs,
+                biased=1
+            )
     
     # --- --- --- --- --- #
 
@@ -226,12 +246,21 @@ def run_experiment(arguments_manager_):
 
     aggregator.write_logs()
 
+    print('---->>>>>> ', len(clients))
+
     if args_.verbose > 0:
         print("Training..")
     for ii in tqdm(range(args_.n_rounds)):
 
-        sampled_clients_ids, sampled_clients_weights = \
-            clients_sampler.sample(c_round=ii)
+        if args_.biased==0 or args_.biased==1:
+            sampled_clients_ids, sampled_clients_weights = \
+                clients_sampler.sample(c_round=ii)
+        elif len(activity_simulator.get_active_clients(ii))==len(clients):
+            sampled_clients_ids, sampled_clients_weights = \
+                biased_clients_sampler.sample(c_round=ii)
+        else:
+            sampled_clients_ids, sampled_clients_weights = \
+                unbiased_clients_sampler.sample(c_round=ii)
 
         aggregator.mix(sampled_clients_ids, sampled_clients_weights)
 

@@ -2,8 +2,8 @@ cd ../..
 
 echo "=> generate data"
 
-alpha="0.1"
-biased="1"
+alpha="100000"
+biased="2"
 # alpha="-1" # use this when true iid
 
 n_tasks="7"
@@ -32,22 +32,21 @@ seeds="12"
 lrs="5e-3"
 device="cuda"
 n_rounds="100"
-availabilities="random_for_carbon-budget-fine-tuning carbon-budget-fine-tuning"
+availabilities="uniform-carbon-budget-fine-tuning"
 
-# random_for_CI-threshold-median CI-threshold-median
-# random_for_CI-threshold-penalized-local-mean CI-threshold-penalized-local-mean
-# random_for_CI-threshold-global-mean CI-threshold-global-mean
-# random_for_CI-threshold-local-mean CI-threshold-local-mean
-# random_for_carbon-budget-fine-tuning carbon-budget-fine-tuning
+# done:
+# uniform-CI-threshold uniform-carbon-budget uniform-carbon-budget-fine-tuning uniform-time-budget
+# nonlinear-optimization-cvxpy_w-no-w_a-1 
+# nonlinear-optimization-cvxpy_w-no-w_a-0.5 
 
-# random_for_carbon-budget carbon-budget
+# nonlinear-optimization-cvxpy_w-no-w_a-0.1
 
 # ------------------------------ #
 # --- Experiments for FedAvg --- #
 # ------------------------------ #
 # known participation probs:
 for availability in $availabilities; do
-availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
+availability_matrix_path="data_availability/av-mat_${availability}.csv"
 for heterogeneity in $heterogeneities; do
 for lr in $lrs; do
 for seed in $seeds; do
@@ -109,7 +108,7 @@ done
 # ------------------------------- #
 # known participation probs:
 for availability in $availabilities; do
-availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
+availability_matrix_path="data_availability/av-mat_${availability}.csv"
 for heterogeneity in $heterogeneities; do
 for lr in $lrs; do
 for seed in $seeds; do
@@ -171,7 +170,7 @@ done
 # ------------------------------- #
 # known participation probs:
 for availability in $availabilities; do
-availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
+availability_matrix_path="data_availability/av-mat_${availability}.csv"
 for heterogeneity in $heterogeneities; do
 for lr in $lrs; do
 for weight in $weights; do
