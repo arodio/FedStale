@@ -2,7 +2,7 @@ cd ../..
 
 echo "=> generate data"
 
-alpha="100000"
+alpha="0.1"
 biased="2"
 # alpha="-1" # use this when true iid
 
@@ -32,12 +32,16 @@ seeds="12"
 lrs="5e-3"
 device="cuda"
 n_rounds="100"
-availabilities="uniform-carbon-budget-fine-tuning"
+availabilities="opt-new-problem-cvxpy_a-1 opt-new-problem-cvxpy_a-10 opt-new-problem-cvxpy_a-21 uniform-CI-threshold uniform-carbon-budget uniform-carbon-budget-fine-tuning uniform-time-budget"
+
+# opt-new-problem-cvxpy_a-1
+# opt-new-problem-cvxpy_a-10
 
 # done:
 # uniform-CI-threshold uniform-carbon-budget uniform-carbon-budget-fine-tuning uniform-time-budget
 # nonlinear-optimization-cvxpy_w-no-w_a-1 
 # nonlinear-optimization-cvxpy_w-no-w_a-0.5 
+# random4_uniform-carbon-budget-fine-tuning
 
 # nonlinear-optimization-cvxpy_w-no-w_a-0.1
 
