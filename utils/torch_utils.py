@@ -41,7 +41,13 @@ def average_learners(
         weights = (1 / n_learners) * torch.ones(n_learners, device=learners[0].device)
 
     else:
+        # weights = weights/sum(weights) # for tests !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         weights = weights.to(learners[0].device)
+
+    print('----->>>>>> TEST:')
+    print('::: ', weights)
+    print('::: ', sum(weights))
+    print('END TEST <<<<------')
 
     param_tensors = []
     grad_tensors = []

@@ -201,10 +201,15 @@ class UnbiasedClientsSampler(ClientsSampler):
             print('x --- x')
         else:
             participation_probs = self.participation_dict
+            print('x --- x')
+            print('---> Participation dict', {key : round(self.participation_dict[key], 2) for key in self.participation_dict})
+            print('x --- x')
 
         for client_id in active_clients:
             sampled_clients_ids.append(client_id)
+            # sampled_clients_weights.append(self.clients_weights_dict[client_id] / participation_probs[client_id]/7) #test
             sampled_clients_weights.append(self.clients_weights_dict[client_id] / participation_probs[client_id])
+            # sampled_clients_weights.append(1 / participation_probs[client_id]) #test
 
         self.step()
 

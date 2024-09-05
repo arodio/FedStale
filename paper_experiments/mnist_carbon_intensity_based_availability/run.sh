@@ -2,8 +2,8 @@ cd ../..
 
 echo "=> generate data"
 
-alpha="0.1"
-biased="2"
+alpha="100000"
+biased="1"
 # alpha="-1" # use this when true iid
 
 n_tasks="7"
@@ -32,7 +32,8 @@ seeds="12"
 lrs="5e-3"
 device="cuda"
 n_rounds="100"
-availabilities="opt-new-problem-cvxpy_a-1 opt-new-problem-cvxpy_a-10 opt-new-problem-cvxpy_a-21 uniform-CI-threshold uniform-carbon-budget uniform-carbon-budget-fine-tuning uniform-time-budget"
+availabilities="opt-pb3-stage2"
+# availabilities="opt-new-problem-cvxpy_a-1 opt-new-problem-cvxpy_a-10 opt-new-problem-cvxpy_a-21 uniform-CI-threshold uniform-carbon-budget uniform-carbon-budget-fine-tuning uniform-time-budget"
 
 # opt-new-problem-cvxpy_a-1
 # opt-new-problem-cvxpy_a-10
@@ -77,71 +78,42 @@ done
 done
 done
 
-# # unknown participation probs:
-# for availability in $availabilities; do
-# availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
-# for heterogeneity in $heterogeneities; do
-# for lr in $lrs; do
-# for seed in $seeds; do
-# echo "Run FedAvg : p ${participation}, h ${heterogeneity}, lr ${lr}, seed ${seed}"
-# (
-# python train.py \
-# mnist \
-# --n_rounds ${n_rounds} \
-# --participation_probs 1.0 ${participation} \
-# --unknown_participation_probs \
-# --bz 128 \
-# --lr ${lr} \
-# --log_freq 1 \
-# --device ${device} \
-# --optimizer sgd \
-# --server_optimizer sgd \
-# --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedavg/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
-# --seed ${seed} \
-# --verbose 0 \
-# --availability_matrix_path ${availability_matrix_path} \
-# --biased ${biased}
-# )
-# done
-# done
-# done
-# done
+# # # unknown participation probs:
+# # for availability in $availabilities; do
+# # availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
+# # for heterogeneity in $heterogeneities; do
+# # for lr in $lrs; do
+# # for seed in $seeds; do
+# # echo "Run FedAvg : p ${participation}, h ${heterogeneity}, lr ${lr}, seed ${seed}"
+# # (
+# # python train.py \
+# # mnist \
+# # --n_rounds ${n_rounds} \
+# # --participation_probs 1.0 ${participation} \
+# # --unknown_participation_probs \
+# # --bz 128 \
+# # --lr ${lr} \
+# # --log_freq 1 \
+# # --device ${device} \
+# # --optimizer sgd \
+# # --server_optimizer sgd \
+# # --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedavg/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+# # --seed ${seed} \
+# # --verbose 0 \
+# # --availability_matrix_path ${availability_matrix_path} \
+# # --biased ${biased}
+# # )
+# # done
+# # done
+# # done
+# # done
 
-# ------------------------------- #
-# --- Experiments for FedVARP --- #
-# ------------------------------- #
-# known participation probs:
-for availability in $availabilities; do
-availability_matrix_path="data_availability/av-mat_${availability}.csv"
-for heterogeneity in $heterogeneities; do
-for lr in $lrs; do
-for seed in $seeds; do
-echo "Run FedVARP : p ${participation}, h ${heterogeneity}, lr ${lr}, seed ${seed}"
-(
-python train.py \
-mnist \
---n_rounds ${n_rounds} \
---participation_probs 1.0 ${participation} \
---bz 128 \
---lr ${lr} \
---log_freq 1 \
---device ${device} \
---optimizer sgd \
---server_optimizer history \
---logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedvarp/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
---seed ${seed} \
---verbose 0 \
---availability_matrix_path ${availability_matrix_path} \
---biased ${biased}
-)
-done
-done
-done
-done
-
-# # unknown participation probs:
+# # ------------------------------- #
+# # --- Experiments for FedVARP --- #
+# # ------------------------------- #
+# # known participation probs:
 # for availability in $availabilities; do
-# availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
+# availability_matrix_path="data_availability/av-mat_${availability}.csv"
 # for heterogeneity in $heterogeneities; do
 # for lr in $lrs; do
 # for seed in $seeds; do
@@ -151,14 +123,13 @@ done
 # mnist \
 # --n_rounds ${n_rounds} \
 # --participation_probs 1.0 ${participation} \
-# --unknown_participation_probs \
 # --bz 128 \
 # --lr ${lr} \
 # --log_freq 1 \
 # --device ${device} \
 # --optimizer sgd \
 # --server_optimizer history \
-# --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedvarp/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+# --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedvarp/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
 # --seed ${seed} \
 # --verbose 0 \
 # --availability_matrix_path ${availability_matrix_path} \
@@ -169,44 +140,42 @@ done
 # done
 # done
 
-# ------------------------------- #
-# --- Experiments for FedStale --- #
-# ------------------------------- #
-# known participation probs:
-for availability in $availabilities; do
-availability_matrix_path="data_availability/av-mat_${availability}.csv"
-for heterogeneity in $heterogeneities; do
-for lr in $lrs; do
-for weight in $weights; do
-for seed in $seeds ; do
-echo "Run FedStale : p ${participation}, h ${heterogeneity}, beta ${weight}, lr ${lr}, seed ${seed}"
-(
-python train.py \
-mnist \
---n_rounds ${n_rounds} \
---participation_probs 1.0 ${participation} \
---bz 128 \
---lr ${lr} \
---log_freq 1 \
---device ${device} \
---optimizer sgd \
---server_optimizer history \
---history_coefficient ${weight} \
---logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedstale/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
---seed ${seed} \
---verbose 0 \
---availability_matrix_path ${availability_matrix_path} \
---biased ${biased}
-)
-done
-done
-done
-done
-done
+# # # unknown participation probs:
+# # for availability in $availabilities; do
+# # availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
+# # for heterogeneity in $heterogeneities; do
+# # for lr in $lrs; do
+# # for seed in $seeds; do
+# # echo "Run FedVARP : p ${participation}, h ${heterogeneity}, lr ${lr}, seed ${seed}"
+# # (
+# # python train.py \
+# # mnist \
+# # --n_rounds ${n_rounds} \
+# # --participation_probs 1.0 ${participation} \
+# # --unknown_participation_probs \
+# # --bz 128 \
+# # --lr ${lr} \
+# # --log_freq 1 \
+# # --device ${device} \
+# # --optimizer sgd \
+# # --server_optimizer history \
+# # --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedvarp/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+# # --seed ${seed} \
+# # --verbose 0 \
+# # --availability_matrix_path ${availability_matrix_path} \
+# # --biased ${biased}
+# # )
+# # done
+# # done
+# # done
+# # done
 
-# # unknown participation probs:
+# # ------------------------------- #
+# # --- Experiments for FedStale --- #
+# # ------------------------------- #
+# # known participation probs:
 # for availability in $availabilities; do
-# availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
+# availability_matrix_path="data_availability/av-mat_${availability}.csv"
 # for heterogeneity in $heterogeneities; do
 # for lr in $lrs; do
 # for weight in $weights; do
@@ -217,7 +186,6 @@ done
 # mnist \
 # --n_rounds ${n_rounds} \
 # --participation_probs 1.0 ${participation} \
-# --unknown_participation_probs \
 # --bz 128 \
 # --lr ${lr} \
 # --log_freq 1 \
@@ -225,7 +193,7 @@ done
 # --optimizer sgd \
 # --server_optimizer history \
 # --history_coefficient ${weight} \
-# --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedstale/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+# --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedstale/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
 # --seed ${seed} \
 # --verbose 0 \
 # --availability_matrix_path ${availability_matrix_path} \
@@ -236,3 +204,36 @@ done
 # done
 # done
 # done
+
+# # # unknown participation probs:
+# # for availability in $availabilities; do
+# # availability_matrix_path="data_availability/availability_matrix_${availability}.csv"
+# # for heterogeneity in $heterogeneities; do
+# # for lr in $lrs; do
+# # for weight in $weights; do
+# # for seed in $seeds ; do
+# # echo "Run FedStale : p ${participation}, h ${heterogeneity}, beta ${weight}, lr ${lr}, seed ${seed}"
+# # (
+# # python train.py \
+# # mnist \
+# # --n_rounds ${n_rounds} \
+# # --participation_probs 1.0 ${participation} \
+# # --unknown_participation_probs \
+# # --bz 128 \
+# # --lr ${lr} \
+# # --log_freq 1 \
+# # --device ${device} \
+# # --optimizer sgd \
+# # --server_optimizer history \
+# # --history_coefficient ${weight} \
+# # --logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedstale/unknown_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+# # --seed ${seed} \
+# # --verbose 0 \
+# # --availability_matrix_path ${availability_matrix_path} \
+# # --biased ${biased}
+# # )
+# # done
+# # done
+# # done
+# # done
+# # done
