@@ -20,7 +20,7 @@ def average_learners(
     target_learner: Learner
 
     weights: 1-D torch.tensor
-        tensor of the same size as learners, having values between 0 and 1, and summing to 1,
+        tensor of the same size as learners, 
         if not provided, uniform weights are used
 
     average_params: bool

@@ -97,7 +97,7 @@ class HistorySGD(Optimizer):
                         d_p = buf
 
                 # add historical term
-                d_p.add_(param_state['history_d_p'], alpha=self.history_coefficient)
+                d_p.add_(param_state['history_d_p'], alpha=self.history_coefficient) #
 
                 p.data.add_(d_p, alpha=-group['lr'])
 

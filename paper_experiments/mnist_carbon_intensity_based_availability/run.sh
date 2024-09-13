@@ -2,9 +2,9 @@ cd ../..
 
 echo "=> generate data"
 
-alpha="100000"
-biased="1"
-# alpha="-1" # use this when true iid
+alpha="0.1"
+biased="2"
+# alpha="0" # use this when true iid
 
 n_tasks="7"
 # cd data/mnist || exit 1
@@ -19,7 +19,7 @@ python generate_data.py \
 --test_tasks_frac 0.0 \
 --seed 12345 \
 --by_labels_split \
---alpha ${alpha}    
+--alpha ${alpha}
 ) # the two last lines are for non-iid
 # --------------------------- #
 
