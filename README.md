@@ -2,30 +2,50 @@
 
 ## Requirements
 
-Install the follwoing in a virtual environment:
+Create and activate a virtual environment. For example, with linux:
 ```bash
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
-pip install numpy scikit-learn tqdm tensorboard tensorflow pandas
+python -m venv <your_venv_name>
+source activate <path_to_your_venv_folder>/bin/activate
 ```
+
+Then, install the following in the virtual environment: 
+```bash
+pip install ipykernel
+ipython kernel install --user --name=<your_venv_name>
+pip install pandas matplotlib gekko cvxpy gurobipy PySCIPOpt                      # for CI data analysis
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121  # for experiments
+pip install numpy scikit-learn tqdm tensorboard tensorflow pandas                 # for experiments
+```
+Then, in VS Code: click on 'Select kernel': choose your virtual environment.
 
 ## Quickstart
 
-Clone the repository and go inside the created folder. Then, the following commands permit to prepare the data and train a deep learning model with this data:
+Clone the repository and go inside the created folder. 
+The file paper_experiments/mnist/run.sh permits to run the experiments.
+First choose the parameters of you expeiments by modifying the following variables in run.sh:
+```python
+alpha="0.1"                     # 0.1:non-iid, 100000:iid, 0: true iid
+availabilities="opt-pb3-stage2" # list of availability matrices names (separeted by a space)
+fl_algo="fedavg"                # list of FL algorithms (separeted by a space)
+biased="0"                      # 0:unbiased, 1:biased, 2:hybrid (=unbiased except when all clients available)
+```
+*Remark:* In run.sh, the argument --by_labels_split is given to generate_data.py, which makes the distributions non-iid accross clients. Then, one chooses the level of non-iid ness with the argument --alpha, where 0.1 is strongly non-iid and 100000 is similar to iid.
+
+Then, run the sh file as follows:
 
 ```bash
-cd data/mnist
-python generate_data.py --n_tasks 24 --s_frac 0.2 --test_tasks_frac 0.0 --seed 12345
-cd ../..
-python train.py mnist --n_rounds 4 --participation_probs 1.0 0.5 --unknown_participation_probs --bz 128 --lr 5e-3 --log_freq 1 --device cuda --optimizer sgd --server_optimizer history --swap_labels --swap_proportion 0.0 --logs_dir logs/mnist_CI_based_availability/clients_7/test --seed 12 --verbose 0
+cd paper_experiments/mnist
+sh run.sh
 ```
 
-## Using the prepared .sh file
 
-Parameters that can be changed withing the .sh file:
-- iid or non-iid data: giving the argument --by_labels_split to generate_data.py makes the distribution between clients non-iid. One can choose the level of non-iid ness with the argument --alpha, where 0.1 is strongly non-iid and 100000 is similar to iid
---biased, where 0 is for unbiased aggregation and 1 is for biased aggregation.
+## Displaying the results
 
-## Displaying the results with tensorboard
+### Displaying the results with by hand
+
+TODO
+
+### Displaying the results with tensorboard
 
 Below change the path to the logs folder if needed.
 ```bash
@@ -34,40 +54,8 @@ tensorboard --logdir tensorboard --logdir logs/mnist_CI_based_availability/clien
 ```
 
 Go to *SCALARS* and use regular expression to filter results. For instance, 
-`.*train\\global$` or 
-`^local_mean\\.*train\\global$`
-.
-Below are regular expression focusing on 5 different availability matrices.
+`.*train\\global$`, `^local_mean\\.*train\\global$`, or `^local_mean\\.*alpha_0\.1.*train\\global$`.
 
-*Local_mean:*  
-- `^local_mean\\.*alpha_0\.1.*train\\global$`  
-Fedavg is not as good as the others.
-- `^local_mean\\.*alpha_100000.*train\\global$`  
-All seem to work similarly.
-
-*Global_mean:*  
-- `^global_mean\\.*alpha_0\.1.*train\\global$`  
-Similar to local_mean.
-- `^global_mean\\.*alpha_100000.*train\\global$`  
-Similar to local_mean.
-
-*Local_mean_green:*  
-- `^local_mean_green\\.*alpha_0\.1.*train\\global$`  
-Fedavg is not as good as the others.
-- `^local_mean_green\\.*alpha_100000.*train\\global$`  
-All seem to work similarly.
-
-*Random:*
-- `^random\\.*alpha_0\.1.*train\\global$`  
-Fedavg is not as good as the others.
-- `^random\\.*alpha_100000.*train\\global$`  
-All seem to work similarly.
-
-*Cyclic:*
-- `^cyclic\\.*alpha_0\.1.*train\\global$`  
-Fedavg is not as good as the others.
-- `^cyclic\\.*alpha_100000.*train\\global$`  
-All seem to work similarly.
 
 ## Organization of this repository
 
@@ -95,21 +83,19 @@ This repository is organized as follows:
 ¦           README.md
 ¦           utils.py
 ¦   
-+---data_availability/           # Contains different availability matrices in csv files
++---availability_matrices/           # Contains different availability matrices in csv files
 ¦           
 +---learners/
 ¦       learner.py               # Class Learner: Responsible for training and evaluating a (deep-)learning model (also LanguageModelingLearner class)
 ¦       __init__.py
 ¦       
 +---paper_experiments/
-¦   +---cifar10/
-¦   ¦       run.sh               # Runs the scripts generate_data.py and train.py with appropriate arguments
 ¦   ¦       
 ¦   +---mnist/
-¦   ¦       run.sh               # Same as for cifar10 above
-¦   ¦       
-¦   +---mnist_CI_based_availability/
-¦           run.sh               # Same as for cifar10 above
+¦           run.sh               # Runs the scripts generate_data.py and train.py with mnist dataset
+¦
++---plots/
+¦           analyze_logs_v1.ipynb # Plot accuracy of experiments
 ¦           
 +---utils/
         args.py                  # Class ArgumentsManager: Defines options used during training and test time, also implements several helper functions such as parsing, printing, and saving the options (also TrainArgumentsManager class)
