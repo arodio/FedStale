@@ -36,11 +36,13 @@ Then, in VS Code: click on 'Select kernel': choose your virtual environment.
 
 ## Quickstart
 
-Clone the repository and go inside the created folder. Checkout to the branch ``CI_based_availability``.
+Clone the repository and go inside the created folder. Checkout to the branch ``feat/CI_based_availability``.
 
 **For building availability matrices:**
 
 All files related to building availability matrices are lcoated in the folder ``build_availability_mat/``. The latest jupyter notebook used to build these matrices is ``build_availability_mat_3.piynb``. 
+
+Availability matrices to be used for experiments should be pasted in the folder ``availability_matrices/``.
 
 */!\ Warning:* the file ``build_availability_mat_2.piynb`` takes a few minutes to run.
 
