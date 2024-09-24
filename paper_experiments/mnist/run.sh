@@ -42,9 +42,9 @@ echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="opt-pb3-stage2" # list of availability matrices
+availabilities="opt-pb3-stage2 uniform-carbon-budget uniform-time-budget" # list of availability matrices
 fl_algo="fedavg" # list of FL algorithms
-biased="0" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
+biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 ############################
 
 participation="1.0"
