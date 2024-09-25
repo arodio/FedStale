@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd ../..
 
 ###########################
@@ -8,7 +10,7 @@ echo "=> generate data"
 
 ### - Parameters to choose for dataset generation - ###
 ### - Only change here - ###
-alpha="0.1" # 0.1:non-iid, 100000:iid, 0: true iid
+alpha="100000" # 0.1:non-iid, 100000:iid, 0: true iid
 ############################
 
 n_tasks="7" # 7 clients, one client per country
@@ -42,9 +44,10 @@ echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="opt-pb3-stage2 uniform-carbon-budget uniform-time-budget" # list of availability matrices
-fl_algo="fedavg" # list of FL algorithms
-biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
+# availabilities="opt-pb3-stage2"
+availabilities="opt-pb3-stage2 uniform-carbon-budget uniform-time-budget uniform-CI-threshold uniform-carbon-budget-fine-tuning nonlinear-optimization-cvxpy_w-no-w_a-0.5 nonlinear-optimization-cvxpy_w-no-w_a-0.1 all-available" # list of availability matrices
+fl_algo="fedavg fedvarp fedstale" # list of FL algorithms
+biased="0" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 ############################
 
 participation="1.0"
@@ -74,7 +77,8 @@ n_rounds="100" # number of fl rounds
 # --- Experiments for FedAvg --- #
 # ------------------------------ #
 # known participation probs:
-if [[ "fedavg" == *"$fl_algo"* ]]; then
+if echo "$fl_algo" | grep -q "fedavg"; then
+# if [[ "fedavg" == *"$fl_algo"* ]]; then
 for availability in $availabilities; do
 availability_matrix_path="availability_matrices/av-mat_${availability}.csv"
 for heterogeneity in $heterogeneities; do
@@ -92,7 +96,7 @@ mnist \
 --device ${device} \
 --optimizer sgd \
 --server_optimizer sgd \
---logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedavg/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+--logs_dir logs/mnist/${availability}/biased_${biased}/fedavg/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
 --verbose 0 \
 --availability_matrix_path ${availability_matrix_path} \
@@ -138,7 +142,7 @@ fi
 # --- Experiments for FedVARP --- #
 # ------------------------------- #
 # known participation probs:
-if [[ "fedvarp" == *"$fl_algo"* ]]; then
+if echo "$fl_algo" | grep -q "fedvarp"; then
 for availability in $availabilities; do
 availability_matrix_path="availability_matrices/av-mat_${availability}.csv"
 for heterogeneity in $heterogeneities; do
@@ -156,7 +160,7 @@ mnist \
 --device ${device} \
 --optimizer sgd \
 --server_optimizer history \
---logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedvarp/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+--logs_dir logs/mnist/${availability}/biased_${biased}/fedvarp/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
 --verbose 0 \
 --availability_matrix_path ${availability_matrix_path} \
@@ -202,7 +206,7 @@ fi
 # --- Experiments for FedStale --- #
 # -------------------------------- #
 # known participation probs:
-if [[ "fedstale" == *"$fl_algo"* ]]; then
+if echo "$fl_algo" | grep -q "fedstale"; then
 for availability in $availabilities; do
 availability_matrix_path="availability_matrices/av-mat_${availability}.csv"
 for heterogeneity in $heterogeneities; do
@@ -222,7 +226,7 @@ mnist \
 --optimizer sgd \
 --server_optimizer history \
 --history_coefficient ${weight} \
---logs_dir logs/mnist_CI_based_availability/clients_${n_tasks}/${availability}/biased_${biased}/fedstale/known_participation_probs/alpha_${alpha}/lr_${lr}/seed_${seed}/rounds_${n_rounds} \
+--logs_dir logs/mnist/${availability}/biased_${biased}/fedstale/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
 --verbose 0 \
 --availability_matrix_path ${availability_matrix_path} \
