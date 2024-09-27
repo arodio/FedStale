@@ -10,7 +10,7 @@ echo "=> generate data"
 
 ### - Parameters to choose for dataset generation - ###
 ### - Only change here - ###
-alpha="100000" # 0.1:non-iid, 100000:iid, 0: true iid
+alpha="0.1" # 0.1:non-iid, 100000:iid, 0: true iid
 ############################
 
 n_tasks="7" # 7 clients, one client per country
@@ -46,8 +46,8 @@ echo "=> training"
 ### - Only change here - ###
 # availabilities="opt-pb3-stage2"
 availabilities="opt-pb3-stage2 uniform-carbon-budget uniform-time-budget uniform-CI-threshold uniform-carbon-budget-fine-tuning nonlinear-optimization-cvxpy_w-no-w_a-0.5 nonlinear-optimization-cvxpy_w-no-w_a-0.1 all-available" # list of availability matrices
-fl_algo="fedavg fedvarp fedstale" # list of FL algorithms
-biased="0" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
+fl_algo="fedavg" # list of FL algorithms
+biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 ############################
 
 participation="1.0"
