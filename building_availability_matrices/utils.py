@@ -18,6 +18,44 @@ UNCORR = "uncorr"
 CORR_FT = "corr_fine_tuning"
 UNCORR_FT = "uncorr_fine_tuning"
 
+from pandas import Series, crosstab
+def emp_trans_mat(seq):
+    """
+    Estimate the transition matrix given a realisation
+    """
+    return crosstab(
+        Series(seq[:-1], name="from"), Series(seq[1:], name="to"), normalize=0
+    ).to_numpy()
+
+def lambda_2(trans_mat):
+    """
+    Estimates the second (largest) eigenvalue of a given transition matrix
+    """
+    return trans_mat[0,0] + trans_mat[1, 1] - 1
+
+def lambda_2(seq):
+    """
+    Estimates the second (largest) eigenvalue of the transition matrix
+    associeted with the sequence of states seq
+    """
+    trans_mat = emp_trans_mat(seq)
+    if len(trans_mat) < 2:
+        trans_mat =  np.array([[1., 0.], [0., 1.]])
+    return trans_mat[0,0] + trans_mat[1, 1] - 1
+
+def av_mat_corr(availability_matrix):
+    """
+    Returns the list of second (largest) eigenvalues of the transition matrix
+    associated with the rows of an availability matrix, and the mean of this list
+    """
+    countries = availability_matrix.index
+    lambda_2_list = np.zeros(len(countries))
+    for i, country in enumerate(countries):
+        seq = availability_matrix.loc[country, :].values
+        lambda_2_list[i] = lambda_2(seq)
+    return lambda_2_list, np.mean(lambda_2_list)
+
+
 def plot_availability_heatmap(title, similarity_matrix, key_word, folder, objective=None):
     """
     Plot heatmap of availability matrix (countries x datetime list).
