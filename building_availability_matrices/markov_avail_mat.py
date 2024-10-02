@@ -1,3 +1,4 @@
+import pandas as pd
 from markov_models.utils import gen_avail_mat
 import matplotlib.pyplot as plt
 
@@ -31,9 +32,13 @@ CLIENTS_CORR = {
     'C6' : (0.94, 0.96)
 }
 
+def save_avail_mat(avail_mat, key_word):
+    pd.DataFrame(data=avail_mat, columns = [f't{i}' for i in range(100)], index=[f'C_{i}' for i in range(7)]).to_csv(f'building_availability_matrices/availability_matrices/av-mat-3/av-mat_markov_spots_{key_word}.csv')
+
 
 avail_mat = gen_avail_mat(CLIENTS_CORR, 100)
+save_avail_mat(avail_mat=avail_mat, key_word='corr')
 
-plt.imshow(avail_mat)
-plt.savefig('tmp_eig_1.png')
+avail_mat = gen_avail_mat(CLIENTS_CORR, 100)
+save_avail_mat(avail_mat=avail_mat, key_word='uncorr')
 
