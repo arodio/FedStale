@@ -6,6 +6,7 @@ chkpts_list_cifar10/
 chkpts_list_cifar100
 notebooks/
 raw_data/
+.ipynb_checkpoints/
 
 *.npy
 *.pth
