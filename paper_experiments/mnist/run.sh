@@ -25,7 +25,7 @@ rm -rf all_data
 (
 python generate_data.py \
 --n_tasks ${n_tasks} \
---s_frac 0.2 \
+--s_frac 0.6 \
 --test_tasks_frac 0.0 \
 --seed 12345 \
 --by_labels_split \
@@ -45,9 +45,9 @@ echo "=> training"
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
 # availabilities="opt-pb3-stage2"
-availabilities="opt-pb3-stage2 uniform-carbon-budget uniform-time-budget uniform-CI-threshold uniform-carbon-budget-fine-tuning nonlinear-optimization-cvxpy_w-no-w_a-0.5 nonlinear-optimization-cvxpy_w-no-w_a-0.1 all-available" # list of availability matrices
-fl_algo="fedavg" # list of FL algorithms
-biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
+availabilities="markov_spots_uncorr" # list of availability matrices
+fl_algo="fedvarp" # list of FL algorithms
+biased="0" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 ############################
 
 participation="1.0"
