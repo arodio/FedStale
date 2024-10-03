@@ -45,7 +45,7 @@ echo "=> training"
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
 # availabilities="opt-pb3-stage2"
-availabilities="markov_spots_corr_fine_tuning" # list of availability matrices
+availabilities="markov_spots_uncorr_fine_tuning" # list of availability matrices
 fl_algo="fedavg" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 ############################
