@@ -17,15 +17,17 @@ EPS = 5e-1
 
 def _get_alpha_beta(t, T, eps=1):
     """
-    Given freq1 denotes first component of the stationary, return alpha, beta
-    From the document, freq1 = b/(a+b)
+    Given freq0 denotes first component of the stationary, return alpha, beta
+    From the document, freq0 = b/(a+b)
+
+    t/T is the target frequency (freq1)
     """
     assert type(t) == int
     assert type(T) == int
     assert t < T
 
-    alpha = 1 - (T - t) * eps / T
-    beta = 1 - t * eps / T
+    alpha = 1 - t * eps / T
+    beta = 1 - (T - t) * eps / T
 
     return (alpha, beta)
 
@@ -55,17 +57,19 @@ def exp1(t, k=10, T=100, _eps=EPS):
         trans_mat = cnstrct_trans_mat(*val[0])
         _res = [
             gen_seq(
-                init_state=np.random.binomial(n=1, p=1 - val[1]),
+                init_state=np.random.binomial(n=1, p=val[1]),
                 trans_mat=trans_mat,
                 seq_len=val[2],
             )
             for _ in range(NO_CLIENTS)
         ]
+
+        # Adding the final tuned array which is of shape (# of clients,k)
         if exp_type in [CORR_FT, UNCORR_FT]:
             _res = np.hstack((_res, np.ones((NO_CLIENTS, k))))
         res[exp_type] = np.array(_res)
 
-    return res[CORR]
+    return res
     # with open("avail_mat.pkl", "wb") as f:
     #     pickle.dump(res, f, protocol=pickle.HIGHEST_PROTOCOL)
 
