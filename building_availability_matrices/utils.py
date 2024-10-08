@@ -12,6 +12,11 @@ sys.path.append(os.path.abspath('..'))
 
 list_colors = ['blue', 'green', 'orange', 'red', 'purple', 'pink', 'yellow']
 
+NO_CLIENTS = 7
+CORR = "corr"
+UNCORR = "uncorr"
+CORR_FT = "corr_fine_tuning"
+UNCORR_FT = "uncorr_fine_tuning"
 
 def plot_availability_heatmap(title, similarity_matrix, key_word, folder, objective=None):
     """

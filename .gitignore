@@ -1,12 +1,12 @@
 # Don't track content of these folders
 .idea/
-logs/
 chkpts/
 chkpts_list_cifar10/
 chkpts_list_cifar100
 notebooks/
 raw_data/
 .ipynb_checkpoints/
+logs/mnist_CI_based_availability/
 
 *.npy
 *.pth

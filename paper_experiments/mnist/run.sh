@@ -18,22 +18,22 @@ n_tasks="7" # 7 clients, one client per country
 
 
 # cd data/mnist || exit 1
-cd data/mnist
+# cd data/mnist
 
-# --- dataset creation --- #
-rm -rf all_data
-(
-python generate_data.py \
---n_tasks ${n_tasks} \
---s_frac 0.2 \
---test_tasks_frac 0.0 \
---seed 12345 \
---by_labels_split \
---alpha ${alpha}
-) # /!\ the two last lines are for non-iid
-# --------------------------- #
+# # --- dataset creation --- #
+# rm -rf all_data
+# (
+# python generate_data.py \
+# --n_tasks ${n_tasks} \
+# --s_frac 0.6 \
+# --test_tasks_frac 0.0 \
+# --seed 12345 \
+# --by_labels_split \
+# --alpha ${alpha}
+# ) # /!\ the two last lines are for non-iid
+# # --------------------------- #
 
-cd ../..
+# cd ../..
 
 
 ################
@@ -45,7 +45,7 @@ echo "=> training"
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
 # availabilities="opt-pb3-stage2"
-availabilities="opt-pb3-stage2 uniform-carbon-budget uniform-time-budget uniform-CI-threshold uniform-carbon-budget-fine-tuning nonlinear-optimization-cvxpy_w-no-w_a-0.5 nonlinear-optimization-cvxpy_w-no-w_a-0.1 all-available" # list of availability matrices
+availabilities="markov_spots_uncorr_fine_tuning" # list of availability matrices
 fl_algo="fedavg" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 ############################
