@@ -28,7 +28,7 @@ Then, install the following in the virtual environment:
 ```bash
 pip install ipykernel
 ipython kernel install --user --name=<your_venv_name>
-pip install pandas matplotlib gekko cvxpy gurobipy PySCIPOpt Mosek seaborn              # for CI data analysis
+pip install pandas matplotlib gekko cvxpy gurobipy Mosek seaborn              # for CI data analysis
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121  # for experiments
 pip install numpy scikit-learn tqdm tensorboard tensorflow pandas                 # for experiments
 ```
