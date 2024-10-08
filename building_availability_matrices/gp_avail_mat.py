@@ -3,7 +3,7 @@ import pickle
 from building_availability_matrices.gaussian_process_models.utils import exp1
 
 
-res = exp1(freq0=0.8)
+res = exp1(freq0=0.6)
 
 with open("gp_avail_mat.pkl", "wb") as f:
     pickle.dump(res, f, protocol=pickle.HIGHEST_PROTOCOL)

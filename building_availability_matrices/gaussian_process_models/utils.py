@@ -58,7 +58,8 @@ def exp1(freq0, seq_len=100, n_clients=NO_CLIENTS):
     #     .numpy()
     # )
 
-    # Mixed kernel function
+    assert 0<=freq0<=1
+    
     def _get_avail_mat(
         periodic_length_scale=1.0,
         period=1.0,
@@ -81,7 +82,7 @@ def exp1(freq0, seq_len=100, n_clients=NO_CLIENTS):
         y = np.random.multivariate_normal(
             mean=np.zeros(seq_len), cov=cov, size=n_clients
         )
-        thresh = np.quantile(y, [0.5], method="higher", axis=1).T
+        thresh = np.quantile(y, [freq0], method="higher", axis=1).T
         y_bin = (y >= thresh).astype(np.int8)
 
         for _ in range(n_clients):
