@@ -8,12 +8,6 @@ Constructing the transition matrix T as
 | 1- \\beta  \\beta      |
 """
 
-CORR = "corr"
-UNCORR = "uncorr"
-CORR_FT = "corr_fine_tuning"
-UNCORR_FT = "uncorr_fine_tuning"
-NO_CLIENTS = 7
-
 
 def cnstrct_trans_mat(alpha, beta):
     """
@@ -59,7 +53,6 @@ def emp_trans_mat(seq):
     return crosstab(
         Series(seq[:-1], name="from"), Series(seq[1:], name="to"), normalize=0
     ).to_numpy()
-
 
 
 # TODO: delete this

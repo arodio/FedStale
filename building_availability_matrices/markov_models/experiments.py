@@ -1,16 +1,16 @@
 import pickle
 import numpy as np
 from building_availability_matrices.markov_models.utils import (
+    gen_seq,
+    cnstrct_trans_mat,
+)
+from building_availability_matrices.utils import (
+    NO_CLIENTS,
     CORR,
     UNCORR,
     CORR_FT,
     UNCORR_FT,
-    NO_CLIENTS,
-    gen_seq,
-    cnstrct_trans_mat,
 )
-from matplotlib import pyplot as plt
-
 
 EPS = 5e-1
 
@@ -45,16 +45,22 @@ def exp1(t, k=10, T=100, _eps=EPS):
         ),
         UNCORR_FT: (
             _get_alpha_beta(t=t - k, T=T - k),
-            float(t-k) / (T - k),
+            float(t - k) / (T - k),
             T - k,
         ),
     }
 
     res = dict()
     for exp_type, val in exp_params.items():
-        trans_mat=cnstrct_trans_mat(*val[0])
-        _res = [gen_seq(init_state=np.random.binomial(n=1, p=1-val[1]), trans_mat=trans_mat, seq_len=val[2])
-                     for _ in range(NO_CLIENTS)]
+        trans_mat = cnstrct_trans_mat(*val[0])
+        _res = [
+            gen_seq(
+                init_state=np.random.binomial(n=1, p=1 - val[1]),
+                trans_mat=trans_mat,
+                seq_len=val[2],
+            )
+            for _ in range(NO_CLIENTS)
+        ]
         if exp_type in [CORR_FT, UNCORR_FT]:
             _res = np.hstack((_res, np.ones((NO_CLIENTS, k))))
         res[exp_type] = np.array(_res)
