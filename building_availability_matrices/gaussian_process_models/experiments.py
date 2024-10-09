@@ -7,7 +7,6 @@ from utils import (
     UNCORR_FT,
 )
 import numpy as np
-from statsmodels import api as sm
 
 
 def _get_avail_mat(
@@ -20,7 +19,7 @@ def _get_avail_mat(
     y = np.random.multivariate_normal(mean=np.zeros(seq_len), cov=cov, size=n_clients)
     thresh = np.quantile(y, [1 - freq1], method="higher", axis=1).T
     y_bin = (y >= thresh).astype(np.int8)
-    
+
     return y_bin
 
 
@@ -29,6 +28,9 @@ def exp1(freq1, k=10, seq_len=100, n_clients=NO_CLIENTS):
     """
     Fetch covariance matrix as numpy array basis the kernel name
     """
+
+    assert 0 <= freq1 <= 1
+
     xlim = (-3, 3)
     x = np.expand_dims(np.linspace(*xlim, seq_len), 1)
     corr_cov = get_cov_mat(
@@ -45,8 +47,6 @@ def exp1(freq1, k=10, seq_len=100, n_clients=NO_CLIENTS):
         amplitude=1.0,
         local_length_scale=0.01,
     )
-
-    assert 0 <= freq1 <= 1
 
     avail_mat = {
         CORR: _get_avail_mat(
@@ -67,7 +67,7 @@ def exp1(freq1, k=10, seq_len=100, n_clients=NO_CLIENTS):
                     cov=corr_cov[:-k, :-k],
                     seq_len=seq_len - k,
                     n_clients=n_clients,
-                    freq1=(freq1 * seq_len - k) / (seq_len-k),
+                    freq1=(freq1 * seq_len - k) / (seq_len - k),
                 ),
                 np.ones((n_clients, k)),
             )
@@ -78,7 +78,7 @@ def exp1(freq1, k=10, seq_len=100, n_clients=NO_CLIENTS):
                     cov=uncorr_cov[:-k, :-k],
                     seq_len=seq_len - k,
                     n_clients=n_clients,
-                    freq1=(freq1 * seq_len - k) / (seq_len-k),
+                    freq1=(freq1 * seq_len - k) / (seq_len - k),
                 ),
                 np.ones((n_clients, k)),
             )
