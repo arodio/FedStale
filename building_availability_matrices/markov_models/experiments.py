@@ -1,10 +1,10 @@
 import pickle
 import numpy as np
-from building_availability_matrices.markov_models.utils import (
+from markov_models.utils import (
     gen_seq,
     cnstrct_trans_mat,
 )
-from building_availability_matrices.utils import (
+from utils import (
     NO_CLIENTS,
     CORR,
     UNCORR,
