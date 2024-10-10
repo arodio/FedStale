@@ -27,11 +27,11 @@ def emp_trans_mat(seq):
         Series(seq[:-1], name="from"), Series(seq[1:], name="to"), normalize=0
     ).to_numpy()
 
-def lambda_2(trans_mat):
-    """
-    Estimates the second (largest) eigenvalue of a given transition matrix
-    """
-    return trans_mat[0,0] + trans_mat[1, 1] - 1
+# def lambda_2(trans_mat):
+#     """
+#     Estimates the second (largest) eigenvalue of a given transition matrix
+#     """
+#     return trans_mat[0,0] + trans_mat[1, 1] - 1
 
 def lambda_2(seq):
     """
