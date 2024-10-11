@@ -148,6 +148,12 @@ def run_experiment(arguments_manager_):
     os.makedirs(logs_path, exist_ok=True)
     global_train_logger = SummaryWriter(logs_path)
 
+    # To be tested:
+    # if len(test_clients) != 0:
+    #     logs_path = os.path.join(logs_dir, "test", "global")
+    #     os.makedirs(logs_path, exist_ok=True)
+    #     global_test_logger = SummaryWriter(logs_path)
+
     logs_path = os.path.join(logs_dir, "test", "global")
     os.makedirs(logs_path, exist_ok=True)
     global_test_logger = SummaryWriter(logs_path)
