@@ -6,6 +6,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from  matplotlib.colors import LinearSegmentedColormap
 import seaborn as sns
 import matplotlib.dates as mdates
+from scipy.spatial.distance import hamming
 
 import sys
 sys.path.append(os.path.abspath('..'))
@@ -19,6 +20,128 @@ CORR_FT = "corr_fine_tuning"
 UNCORR_FT = "uncorr_fine_tuning"
 
 from pandas import Series, crosstab
+from sklearn.metrics import mutual_info_score
+
+
+def hamming_sim(seq1, seq2=[], lag=1):
+    """
+    Computes one minus the normalized hamming similarity between two binary sequences.
+    Hamming is a measure of similarity, not statistical correlation.
+    The output is between 0 and 1.
+    Close to 0 means that the sequences are not similar.
+    Close to 1 means that the sequences are very similar.
+    E.g., Two constant sequences with the same values will have the output 1.
+    """
+    # return 1 - 2*hamming(seq[:-lag], seq[lag:]) # rescaled hammming bwt -1 and 1
+
+    if len(seq2) == 0:
+        return 1 - hamming(seq1[:-lag], seq1[lag:])
+    else:
+        return 1 - hamming(seq1, seq2)
+
+def pearson_corr(seq1, seq2=[], lag=1):
+    """
+    Computes the pearson correlation for two binary sequences.
+    Is not well defined if any of the sequences is constant,
+    it needs to have sequences with variations
+    """
+    if len(seq2) == 0:
+        return np.corrcoef(seq1[:-lag], seq1[lag:])[0, 1]
+    else:
+        return np.corrcoef(seq1, seq2)[0, 1]
+
+def mis_corr(seq1, seq2=[], lag=1):
+    """
+    Computes the Mutual Information Score between two binary.
+    Is well defined even if any of the sequences is constant.
+    However, for the constant and equal sequences, the output will be 0.
+    """
+    if len(seq2) == 0:
+        return mutual_info_score(seq1[:-lag], seq1[lag:])
+    else:
+        return mutual_info_score(seq1, seq2)
+
+# def av_mat_p_corr(availability_matrix):
+#     """
+#     Returns the list of p_corr of the rows of an availability matrix, 
+#     and the mean of this list
+#     """
+#     countries = availability_matrix.index
+#     p_corr_list = np.zeros(len(countries))
+#     for i, country in enumerate(countries):
+#         seq = availability_matrix.loc[country, :].values
+#         p_corr_list[i] = pearson_corr(seq)
+#     return p_corr_list, np.mean(p_corr_list)
+
+def av_mat_p_corr(availability_matrix):
+    """
+    Returns the list of ...
+    """
+    countries = availability_matrix.index
+
+    t_corr_list = np.zeros(len(countries))
+    for i, country in enumerate(countries):
+        seq = availability_matrix.loc[country, :].values
+        t_corr_list[i] = pearson_corr(seq)
+    t_corr_mean = np.mean(t_corr_list)
+
+    sp_corr_dict = {}
+    for idx, country_a in enumerate(countries): 
+        for country_b in countries[idx + 1:]:
+            seq_a = availability_matrix.loc[country_a, :].values
+            seq_b = availability_matrix.loc[country_b, :].values
+            # sp_corr_dict[str(country_a)+'-'+str(country_b)] = 1 - 2*hamming(seq_a, seq_b) # rescaled hamming btw -1 and 1
+            sp_corr_dict[str(country_a)+'-'+str(country_b)] = pearson_corr(seq_a, seq_b)
+    sp_corr_list = np.array(list(sp_corr_dict.values()))
+    sp_corr_mean = np.mean(sp_corr_list)
+    return t_corr_list, t_corr_mean, sp_corr_dict, sp_corr_mean
+
+def hamming_similarity(availability_matrix):
+    """
+    Returns the list of ...
+    """
+    countries = availability_matrix.index
+
+    t_corr_list = np.zeros(len(countries))
+    for i, country in enumerate(countries):
+        seq = availability_matrix.loc[country, :].values
+        t_corr_list[i] = hamming_sim(seq)
+    t_corr_mean = np.mean(t_corr_list)
+
+    sp_corr_dict = {}
+    for idx, country_a in enumerate(countries): 
+        for country_b in countries[idx + 1:]:
+            seq_a = availability_matrix.loc[country_a, :].values
+            seq_b = availability_matrix.loc[country_b, :].values
+            # sp_corr_dict[str(country_a)+'-'+str(country_b)] = 1 - 2*hamming(seq_a, seq_b) # rescaled hamming btw -1 and 1
+            sp_corr_dict[str(country_a)+'-'+str(country_b)] = hamming_sim(seq_a, seq_b)
+    sp_corr_list = np.array(list(sp_corr_dict.values()))
+    sp_corr_mean = np.mean(sp_corr_list)
+    return t_corr_list, t_corr_mean, sp_corr_dict, sp_corr_mean
+
+def mis(availability_matrix):
+    """
+    Returns the list of ...
+    """
+    countries = availability_matrix.index
+
+    t_corr_list = np.zeros(len(countries))
+    for i, country in enumerate(countries):
+        seq = availability_matrix.loc[country, :].values
+        t_corr_list[i] = mis_corr(seq)
+    t_corr_mean = np.mean(t_corr_list)
+
+    sp_corr_dict = {}
+    for idx, country_a in enumerate(countries): 
+        for country_b in countries[idx + 1:]:
+            seq_a = availability_matrix.loc[country_a, :].values
+            seq_b = availability_matrix.loc[country_b, :].values
+            # p_corr_dict[str(country_a)+'-'+str(country_b)] = np.corrcoef(seq_a, seq_b)[0,1]
+            sp_corr_dict[str(country_a)+'-'+str(country_b)] = mis_corr(seq_a, seq_b)
+    sp_corr_list = np.array(list(sp_corr_dict.values()))
+    sp_corr_mean = np.mean(sp_corr_list)
+    return t_corr_list, t_corr_mean, sp_corr_dict, sp_corr_mean
+
 def emp_trans_mat(seq):
     """
     Estimate the transition matrix given a realisation
