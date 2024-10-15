@@ -2,6 +2,11 @@ import matplotlib.pyplot as plt
 from plots_utils.loading import parse_tf_events_file
 
 def plot_availability_comparison(config, res, metric, folder):
+    """
+    Creates one plot for each setting (lr, algo, event, seet, a, n_c, biased, part).
+    Each plot contains one curve per availability matrix.
+    Each setting must have been run with all availability matrix of the list.
+    """
     
     xvalues = [i for i in range(int(config.n_rounds)+1)]
 
@@ -19,43 +24,15 @@ def plot_availability_comparison(config, res, metric, folder):
                                         res_tmp = res[(res.lr == lr) & (res.algorithm == algo) & (res.event == event) &
                                                     (res.seed == seed) & (res.alpha == a) & (res.n_clients == n_c) &
                                                     (res.participation == part)]
-                                        
-                                        # display(res_plot) # this is what we are going to compare
-                                        
-                                        ### for random equivalents:
-                                        # fig = plt.figure(figsize=(6, 4))
-                                        # for av in config.availabilities:
-                                        #     if 'random' in av:
-                                        #         res_plot = res_tmp[res_tmp.availability == av]
-                                        #         event_dir = config.get_event_dir(algo, lr, seed, 
-                                        #                                         event, a, n_c, av, 
-                                        #                                         config.n_rounds, part)  
-                                        #         # display(res_plot)
-                                        #         # print('xxx')
-                                        #         tag = res_plot[metric].values[0]
-                                        #         _, test_accuracy_values = parse_tf_events_file(event_dir, tag=tag)
-                                        #         # print(av)
-                                        #         # yvalues = res_plot[(res_plot.availability == av)][metric]
-                                        #         # print(res_plot[(res_plot.availability == av)][metric])
-                                        #         plt.plot(xvalues, test_accuracy_values, label= av)
-                                        #         title = ('_').join([algo, 'alpha'+a, 'random', metric])
-                                        #         plt.title(title)
-                                        # plt.legend()
-                                        # plt.grid()
-                                        # plt.savefig('figures/accross_availabilities/'+title+'.png', bbox_inches='tight')
-                                        # plt.show()
+                                        # display(res_tmp) # this is what we are going to compare
 
                                         fig = plt.figure(figsize=(6, 4))
                                         for av in config.availabilities:
                                             if 'random' not in av:
-                                                res_plot = res_tmp[res_tmp.availability == av]
-                                                # event_dir = config.get_event_dir(algo, lr, seed, 
-                                                #                                 event, a, n_c, av, 
-                                                #                                 config.n_rounds, part)  
+                                                res_plot = res_tmp[res_tmp.availability == av] 
                                                 event_dir = config.get_event_dir(algo, lr, seed, 
                                                                                 event, a, n_c, av, 
                                                                                 config.n_rounds, part, biased, config.train_test) 
-                                                # display(res_plot)
                                                 # print('xxx')
                                                 tag = res_plot[metric].values[0]
                                                 # print('---------->',tag)

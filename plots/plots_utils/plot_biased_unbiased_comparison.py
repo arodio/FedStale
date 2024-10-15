@@ -2,6 +2,11 @@ import matplotlib.pyplot as plt
 from plots_utils.loading import parse_tf_events_file
 
 def plot_biased_unbiased_comparison(config, res, metric, folder):
+    """
+    Creates one plot for each setting (lr, algo, event, seet, a, n_c, part, av).
+    Each plot contains one curve per value in biased_list.
+    Each setting must have been run with all values in biased_list.
+    """
 
     xvalues = [i for i in range(int(config.n_rounds)+1)]
 

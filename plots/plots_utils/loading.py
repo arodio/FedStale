@@ -5,6 +5,11 @@ import numpy as np
 import os
 
 def parse_tf_events_file(events_path, tag, time_horizon=None):
+    """
+    Returns the data in the file located in the folder events_paths,
+    and corresponding to the tag.
+    The tag can be: 'Train/Loss', 'Train/Metric', 'Test/Loss', 'Test/Metric'.
+    """
     ea = EventAccumulator(events_path).Reload()
     # print(ea.Tags())
     tag_values, steps = [], []
@@ -31,7 +36,7 @@ class ExperimentConfig:
         n_rounds: number of FL rounds
         participations: list with "unknown" and/or "known" (whether we work with the participation probabilities estimator or the true values)
         biased: list of elements of {0, 1} (0=unbiased, 1=biased)
-        train_test: "train" or "test"
+        train_test: "train" or "test" folder
         """
         self.base_path = base_path
         self.experiment = experiment
@@ -124,7 +129,6 @@ def load_experiment_results(config):
                                                 "seed": seed,
                                                 "lr": lr, "event": event, "n_clients": n_c,
                                                 "biased": biased
-                                                # "event_dir": event_dir
                                             })
 
                                             # "b": float(b) if b else np.nan # in case we vary beta
