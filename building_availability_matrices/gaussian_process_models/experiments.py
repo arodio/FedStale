@@ -199,14 +199,14 @@ def exp3(freq1, mean_seq=None, k=10, seq_len=100, n_clients=NO_CLIENTS):
         x=x,
         periodic_length_scale=1.0,
         period=1.0,
-        amplitude=1.0,
+        amplitude=0.15,
         local_length_scale=1.0,
     )
     uncorr_cov = get_cov_mat(
         x=x,
         periodic_length_scale=1.0,
         period=1.0,
-        amplitude=1.0,
+        amplitude=0.15,
         local_length_scale=0.01,
     )
 
