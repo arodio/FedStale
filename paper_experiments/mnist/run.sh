@@ -44,7 +44,7 @@ echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="gaussian-corr-25 gaussian-uncorr-25" # list of availability matrices
+availabilities="gaussian-corr-ft-exp3 gaussian-uncorr-ft-exp3" # list of availability matrices
 fl_algo="fedavg" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 ############################
