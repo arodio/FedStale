@@ -82,7 +82,10 @@ def av_mat_p_corr(availability_matrix):
     t_corr_list = np.zeros(len(countries))
     for i, country in enumerate(countries):
         seq = availability_matrix.loc[country, :].values
-        t_corr_list[i] = pearson_corr(seq)
+        if sum(seq)==0 or sum(seq)==len(seq): # set value 1 for constant sequences
+            t_corr_list[i] = 1
+        else:
+            t_corr_list[i] = pearson_corr(seq)
     t_corr_mean = np.mean(t_corr_list)
 
     sp_corr_dict = {}
@@ -90,7 +93,7 @@ def av_mat_p_corr(availability_matrix):
         for country_b in countries[idx + 1:]:
             seq_a = availability_matrix.loc[country_a, :].values
             seq_b = availability_matrix.loc[country_b, :].values
-            # sp_corr_dict[str(country_a)+'-'+str(country_b)] = 1 - 2*hamming(seq_a, seq_b) # rescaled hamming btw -1 and 1
+            # if sum(seq)==0 or sum(seq)==len(seq):
             sp_corr_dict[str(country_a)+'-'+str(country_b)] = pearson_corr(seq_a, seq_b)
     sp_corr_list = np.array(list(sp_corr_dict.values()))
     sp_corr_mean = np.mean(sp_corr_list)
