@@ -7,6 +7,7 @@ from  matplotlib.colors import LinearSegmentedColormap
 import seaborn as sns
 import matplotlib.dates as mdates
 from scipy.spatial.distance import hamming
+from sklearn.metrics import matthews_corrcoef
 
 import sys
 sys.path.append(os.path.abspath('..'))
@@ -49,6 +50,15 @@ def pearson_corr(seq1, seq2=[], lag=1):
         return np.corrcoef(seq1[:-lag], seq1[lag:])[0, 1]
     else:
         return np.corrcoef(seq1, seq2)[0, 1]
+    
+def phi_corr(seq1, seq2=[], lag=1):
+    """
+    Computes the phi association for two binary sequences.
+    """
+    if len(seq2) == 0:
+        return matthews_corrcoef(seq1[:-lag], seq1[lag:])
+    else:
+        return matthews_corrcoef(seq1, seq2)
 
 def mis_corr(seq1, seq2=[], lag=1):
     """
@@ -82,7 +92,10 @@ def av_mat_p_corr(availability_matrix):
     t_corr_list = np.zeros(len(countries))
     for i, country in enumerate(countries):
         seq = availability_matrix.loc[country, :].values
-        t_corr_list[i] = pearson_corr(seq)
+        if sum(seq)==0 or sum(seq)==len(seq): # set value 1 for constant sequences
+            t_corr_list[i] = 1
+        else:
+            t_corr_list[i] = pearson_corr(seq)
     t_corr_mean = np.mean(t_corr_list)
 
     sp_corr_dict = {}
@@ -90,8 +103,31 @@ def av_mat_p_corr(availability_matrix):
         for country_b in countries[idx + 1:]:
             seq_a = availability_matrix.loc[country_a, :].values
             seq_b = availability_matrix.loc[country_b, :].values
-            # sp_corr_dict[str(country_a)+'-'+str(country_b)] = 1 - 2*hamming(seq_a, seq_b) # rescaled hamming btw -1 and 1
+            # if sum(seq)==0 or sum(seq)==len(seq):
             sp_corr_dict[str(country_a)+'-'+str(country_b)] = pearson_corr(seq_a, seq_b)
+    sp_corr_list = np.array(list(sp_corr_dict.values()))
+    sp_corr_mean = np.mean(sp_corr_list)
+    return t_corr_list, t_corr_mean, sp_corr_dict, sp_corr_mean
+
+def av_mat_phi(availability_matrix):
+    """
+    Returns the list of ...
+    """
+    countries = availability_matrix.index
+
+    t_corr_list = np.zeros(len(countries))
+    for i, country in enumerate(countries):
+        seq = availability_matrix.loc[country, :].values
+        t_corr_list[i] = phi_corr(seq)
+    t_corr_mean = np.mean(t_corr_list)
+
+    sp_corr_dict = {}
+    for idx, country_a in enumerate(countries): 
+        for country_b in countries[idx + 1:]:
+            seq_a = availability_matrix.loc[country_a, :].values
+            seq_b = availability_matrix.loc[country_b, :].values
+            # if sum(seq)==0 or sum(seq)==len(seq):
+            sp_corr_dict[str(country_a)+'-'+str(country_b)] = phi_corr(seq_a, seq_b)
     sp_corr_list = np.array(list(sp_corr_dict.values()))
     sp_corr_mean = np.mean(sp_corr_list)
     return t_corr_list, t_corr_mean, sp_corr_dict, sp_corr_mean
