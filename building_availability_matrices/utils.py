@@ -23,6 +23,76 @@ UNCORR_FT = "uncorr_fine_tuning"
 from pandas import Series, crosstab
 from sklearn.metrics import mutual_info_score
 
+import matplotlib.cm as cm
+import matplotlib.colors as mcolors
+from scipy.stats import rankdata
+def plot_sp_corr(sp_corr_dict, av_mat_name, path, method_name):
+    sp_corr_m = np.zeros((NO_CLIENTS, NO_CLIENTS))
+    for key, value in sp_corr_dict.items():
+        i, j = map(int, key.split('-'))
+        sp_corr_m[j-1][i-1] = value
+        if i != j:
+            sp_corr_m[i-1][j-1] = np.nan 
+    # np.fill_diagonal(sp_corr_m, 1.0)   
+    plt.figure(figsize=(7, 2))
+
+    # Flatten the matrix to 1D and use rankdata, ignoring NaN values
+    ranked_flat = rankdata(sp_corr_m[~np.isnan(sp_corr_m)], method='dense')
+    # Create an output array of the same shape, filled with NaNs
+    ranked_matrix = np.full(sp_corr_m.shape, np.nan)
+    # Place the ranked values back into the correct positions
+    ranked_matrix[~np.isnan(sp_corr_m)] = ranked_flat
+    
+    # Create the heatmap
+    plt.figure(figsize=(7, 2))
+    cmap = cm.get_cmap('coolwarm', (NO_CLIENTS * NO_CLIENTS - 1))
+    # ax = sns.heatmap(ranked_matrix, annot=False, cmap=cmap, cbar=True)
+
+
+
+    # First heatmap (ranked)
+    ax=sns.heatmap(ranked_matrix, annot=False, cmap=cmap, cbar=True)
+
+    # Adding the actual values from sp_corr_m as text on top of the colored heatmap
+    for i in range(sp_corr_m.shape[0]):
+        for j in range(sp_corr_m.shape[1]):
+            if not np.isnan(sp_corr_m[i, j]):  # Only add text where sp_corr_m is not NaN
+                plt.text(j + 0.5, i + 0.5, f"{sp_corr_m[i, j]:.2f}", 
+                        ha='center', va='center', color='black', fontsize=8)
+
+    # Overlay second heatmap (sp_corr_m)
+    # Use alpha to blend the second heatmap
+    # sns.heatmap(sp_corr_m, annot=True, cbar=False, ax=plt.gca(), alpha=0.6, linewidths=0.5)
+
+
+
+    # cmap = cm.get_cmap('coolwarm')
+
+    # Plot the heatmap using the normalized ranks for the colors
+    # plt.figure(figsize=(7, 2))
+    # ax = sns.heatmap(sp_corr_m, annot=True, cmap=cmap, cbar=True)
+    # ax = sns.heatmap(sp_corr_m, annot=True, cbar=False, ax=ax)
+
+
+    # ax = sns.heatmap(sp_corr_m, annot=True, cbar=True)  # Adding a color map and color bar
+    plt.xticks(ticks=np.arange(7) + 0.5, labels=[1, 2, 3, 4, 5, 6, 7], rotation=0)  # Set x-ticks and labels
+    plt.yticks(ticks=np.arange(7) + 0.5, labels=[1, 2, 3, 4, 5, 6, 7], rotation=0)
+    # Manually draw grid lines only for the lower triangle, avoiding overlapping edges
+    for i in range(NO_CLIENTS):
+        for j in range(i + 1):
+            # Draw horizontal line (bottom of the cell)
+            if i == j:
+                ax.plot([j, j + 1], [i, i], color='gray', lw=0.25)
+            # Draw horizontal line (bottom of the cell)
+            if i < NO_CLIENTS - 1:
+                ax.plot([j, j + 1], [i + 1, i + 1], color='gray', lw=0.25)
+            # Draw vertical line (right side of the cell)
+            if j < NO_CLIENTS - 1:
+                ax.plot([j + 1, j + 1], [i, i + 1], color='gray', lw=0.25)
+    plt.title(label=f"{av_mat_name} "+method_name)
+    plt.savefig(path+'/'+av_mat_name+'-'+method_name+'.png', bbox_inches='tight')
+    plt.show()
+
 
 def hamming_sim(seq1, seq2=[], lag=1):
     """
@@ -100,7 +170,7 @@ def av_mat_p_corr(availability_matrix):
 
     sp_corr_dict = {}
     for idx, country_a in enumerate(countries): 
-        for country_b in countries[idx + 1:]:
+        for country_b in countries[idx:]:
             seq_a = availability_matrix.loc[country_a, :].values
             seq_b = availability_matrix.loc[country_b, :].values
             # if sum(seq)==0 or sum(seq)==len(seq):
@@ -123,7 +193,7 @@ def av_mat_phi(availability_matrix):
 
     sp_corr_dict = {}
     for idx, country_a in enumerate(countries): 
-        for country_b in countries[idx + 1:]:
+        for country_b in countries[idx:]:
             seq_a = availability_matrix.loc[country_a, :].values
             seq_b = availability_matrix.loc[country_b, :].values
             # if sum(seq)==0 or sum(seq)==len(seq):
@@ -146,7 +216,7 @@ def hamming_similarity(availability_matrix):
 
     sp_corr_dict = {}
     for idx, country_a in enumerate(countries): 
-        for country_b in countries[idx + 1:]:
+        for country_b in countries[idx:]:
             seq_a = availability_matrix.loc[country_a, :].values
             seq_b = availability_matrix.loc[country_b, :].values
             # sp_corr_dict[str(country_a)+'-'+str(country_b)] = 1 - 2*hamming(seq_a, seq_b) # rescaled hamming btw -1 and 1
@@ -169,7 +239,7 @@ def mis(availability_matrix):
 
     sp_corr_dict = {}
     for idx, country_a in enumerate(countries): 
-        for country_b in countries[idx + 1:]:
+        for country_b in countries[idx:]:
             seq_a = availability_matrix.loc[country_a, :].values
             seq_b = availability_matrix.loc[country_b, :].values
             # p_corr_dict[str(country_a)+'-'+str(country_b)] = np.corrcoef(seq_a, seq_b)[0,1]
