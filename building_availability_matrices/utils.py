@@ -26,7 +26,7 @@ from sklearn.metrics import mutual_info_score
 import matplotlib.cm as cm
 import matplotlib.colors as mcolors
 from scipy.stats import rankdata
-def plot_sp_corr(sp_corr_dict, av_mat_name, path, method_name):
+def plot_sp_corr(sp_corr_dict, av_mat_name, path, method_name, pdf):
     sp_corr_m = np.zeros((NO_CLIENTS, NO_CLIENTS))
     for key, value in sp_corr_dict.items():
         i, j = map(int, key.split('-'))
@@ -90,8 +90,11 @@ def plot_sp_corr(sp_corr_dict, av_mat_name, path, method_name):
             if j < NO_CLIENTS - 1:
                 ax.plot([j + 1, j + 1], [i, i + 1], color='gray', lw=0.25)
     plt.title(label=f"{av_mat_name} "+method_name)
-    plt.savefig(path+'/'+av_mat_name+'-'+method_name+'.png', bbox_inches='tight')
+    file_name = path+'/'+av_mat_name+'-'+method_name+'.png'
+    plt.savefig(file_name, bbox_inches='tight')
     plt.show()
+
+    return file_name
 
 
 def hamming_sim(seq1, seq2=[], lag=1):
