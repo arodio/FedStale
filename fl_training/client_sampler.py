@@ -37,14 +37,14 @@ class ClientsSampler(ABC):
     """
 
     def __init__(
-            self,
-            clients,
-            participation_probs,
-            activity_simulator,
-            activity_estimator,
-            unknown_participation_probs,
-            *args,
-            **kwargs
+        self,
+        clients,
+        participation_probs,
+        activity_simulator,
+        activity_estimator,
+        unknown_participation_probs,
+        *args,
+        **kwargs
     ):
         """
 
@@ -63,7 +63,11 @@ class ClientsSampler(ABC):
         self.clients_weights_dict = self.get_client_weights_dict(clients)
 
         # self.participation_dict = self.get_participation_dict(n_clients, participation_probs)
-        self.participation_dict = self.get_participation_dict(activity_simulator.participation_matrix)
+        self.participation_dict = self.get_participation_dict(
+            activity_simulator.participation_matrix[:, : -kwargs["fine_tuning"]]
+            if "fine_tuning" in kwargs
+            else activity_simulator.participation_matrix
+        )
 
         self.activity_simulator = activity_simulator
 
@@ -192,29 +196,48 @@ class UnbiasedClientsSampler(ClientsSampler):
         sampled_clients_ids, sampled_clients_weights = [], []
 
         active_clients = self.get_active_clients(c_round)
- 
+
         if self.unknown_participation_probs:
             participation_probs = self.estimate_participation_probs(c_round)
-            print('x --- x')
-            print('---> Estimated participation probs', {key : round(participation_probs[key], 2) for key in participation_probs})
-            print('---> Participation dict', {key : round(self.participation_dict[key], 2) for key in self.participation_dict})
-            print('x --- x')
+            print("x --- x")
+            print(
+                "---> Estimated participation probs",
+                {
+                    key: round(participation_probs[key], 2)
+                    for key in participation_probs
+                },
+            )
+            print(
+                "---> Participation dict",
+                {
+                    key: round(self.participation_dict[key], 2)
+                    for key in self.participation_dict
+                },
+            )
+            print("x --- x")
         else:
             participation_probs = self.participation_dict
-            print('x --- x')
-            print('---> Participation dict', {key : round(self.participation_dict[key], 2) for key in self.participation_dict})
-            print('x --- x')
+            print("x --- x")
+            print(
+                "---> Participation dict",
+                {
+                    key: round(self.participation_dict[key], 2)
+                    for key in self.participation_dict
+                },
+            )
+            print("x --- x")
 
         for client_id in active_clients:
             sampled_clients_ids.append(client_id)
             # sampled_clients_weights.append(self.clients_weights_dict[client_id] / participation_probs[client_id]/7) #test
-            sampled_clients_weights.append(self.clients_weights_dict[client_id] / participation_probs[client_id])
+            sampled_clients_weights.append(
+                self.clients_weights_dict[client_id] / participation_probs[client_id]
+            )
             # sampled_clients_weights.append(1 / participation_probs[client_id]) #test
 
         self.step()
 
         return sampled_clients_ids, sampled_clients_weights
-    
 
 
 class BiasedClientsSampler(ClientsSampler):

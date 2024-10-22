@@ -36,19 +36,22 @@ def init_clients(args_, data_dir, logs_dir, chkpts_dir):
 
     if args_.verbose > 0:
         print("===> Building data iterators..")
-    train_iterators, val_iterators, test_iterators = \
-        get_loaders(
-            type_=LOADER_TYPE[args_.experiment],
-            data_dir=data_dir,
-            batch_size=args_.bz,
-            is_validation=args_.validation,
-        )
+    train_iterators, val_iterators, test_iterators = get_loaders(
+        type_=LOADER_TYPE[args_.experiment],
+        data_dir=data_dir,
+        batch_size=args_.bz,
+        is_validation=args_.validation,
+    )
 
     if args_.verbose > 0:
         print("===> Initializing clients..")
     clients_ = []
-    for task_id, (train_iterator, val_iterator, test_iterator) in \
-            enumerate(tqdm(zip(train_iterators, val_iterators, test_iterators), total=len(train_iterators))):
+    for task_id, (train_iterator, val_iterator, test_iterator) in enumerate(
+        tqdm(
+            zip(train_iterators, val_iterators, test_iterators),
+            total=len(train_iterators),
+        )
+    ):
 
         if train_iterator is None or test_iterator is None:
             continue
@@ -60,23 +63,26 @@ def init_clients(args_, data_dir, logs_dir, chkpts_dir):
                 task_target_counts[target.item()] += 1
         print(f"Task {task_id} has targets: {dict(task_target_counts)}")
 
-        learner =\
-            get_learner(
-                name=args_.experiment,
-                model_name=args_.model_name,
-                device=args_.device,
-                optimizer_name=args_.optimizer,
-                scheduler_name=args_.lr_scheduler,
-                initial_lr=args_.lr,
-                n_rounds=args_.n_rounds,
-                seed=args_.seed,
-                input_dimension=args_.input_dimension,
-                hidden_dimension=args_.hidden_dimension,
-                mu=args_.mu
-            )
+        learner = get_learner(
+            name=args_.experiment,
+            model_name=args_.model_name,
+            device=args_.device,
+            optimizer_name=args_.optimizer,
+            scheduler_name=args_.lr_scheduler,
+            initial_lr=args_.lr,
+            n_rounds=args_.n_rounds,
+            seed=args_.seed,
+            input_dimension=args_.input_dimension,
+            hidden_dimension=args_.hidden_dimension,
+            mu=args_.mu,
+        )
 
         logs_path = os.path.join(logs_dir, "task_{}".format(task_id))
-        save_path = os.path.join(chkpts_dir, "task_{}.pt".format(task_id)) if chkpts_dir else None
+        save_path = (
+            os.path.join(chkpts_dir, "task_{}.pt".format(task_id))
+            if chkpts_dir
+            else None
+        )
         os.makedirs(logs_path, exist_ok=True)
         logger = SummaryWriter(logs_path)
 
@@ -88,7 +94,7 @@ def init_clients(args_, data_dir, logs_dir, chkpts_dir):
             logger=logger,
             local_steps=args_.local_steps,
             client_id=task_id,
-            save_path=save_path
+            save_path=save_path,
         )
 
         clients_.append(client)
@@ -126,23 +132,21 @@ def run_experiment(arguments_manager_):
     if args_.verbose > 0:
         print("==> Clients initialization..")
 
-    clients = \
-        init_clients(
-            args_,
-            data_dir=os.path.join(data_dir, "train"),
-            logs_dir=os.path.join(logs_dir, "train"),
-            chkpts_dir=os.path.join(chkpts_dir, "train") if chkpts_dir else None
-        )
+    clients = init_clients(
+        args_,
+        data_dir=os.path.join(data_dir, "train"),
+        logs_dir=os.path.join(logs_dir, "train"),
+        chkpts_dir=os.path.join(chkpts_dir, "train") if chkpts_dir else None,
+    )
 
     if args_.verbose > 0:
         print("==> Test Clients initialization..")
-    test_clients = \
-        init_clients(
-            args_,
-            data_dir=os.path.join(data_dir, "test"),
-            logs_dir=os.path.join(logs_dir, "test"),
-            chkpts_dir=os.path.join(chkpts_dir, "test") if chkpts_dir else None
-        )
+    test_clients = init_clients(
+        args_,
+        data_dir=os.path.join(data_dir, "test"),
+        logs_dir=os.path.join(logs_dir, "test"),
+        chkpts_dir=os.path.join(chkpts_dir, "test") if chkpts_dir else None,
+    )
 
     logs_path = os.path.join(logs_dir, "train", "global")
     os.makedirs(logs_path, exist_ok=True)
@@ -158,22 +162,21 @@ def run_experiment(arguments_manager_):
     os.makedirs(logs_path, exist_ok=True)
     global_test_logger = SummaryWriter(logs_path)
 
-    global_learner = \
-        get_learner(
-            name=args_.experiment,
-            model_name=args_.model_name,
-            device=args_.device,
-            optimizer_name=args_.server_optimizer,
-            scheduler_name=args_.server_lr_scheduler,
-            initial_lr=args_.server_lr,
-            n_rounds=args_.n_rounds,
-            seed=args_.seed,
-            mu=args_.mu,
-            input_dimension=args_.input_dimension,
-            hidden_dimension=args_.hidden_dimension,
-            history_coefficient=args_.history_coefficient
-        )
-    
+    global_learner = get_learner(
+        name=args_.experiment,
+        model_name=args_.model_name,
+        device=args_.device,
+        optimizer_name=args_.server_optimizer,
+        scheduler_name=args_.server_lr_scheduler,
+        initial_lr=args_.server_lr,
+        n_rounds=args_.n_rounds,
+        seed=args_.seed,
+        mu=args_.mu,
+        input_dimension=args_.input_dimension,
+        hidden_dimension=args_.hidden_dimension,
+        history_coefficient=args_.history_coefficient,
+    )
+
     # --- CHANGE HERE --- #
 
     # activity_simulator_rng = np.random.default_rng(args_.seed)
@@ -185,88 +188,87 @@ def run_experiment(arguments_manager_):
     #         rng=activity_simulator_rng,
     #     )
 
-    activity_simulator = \
-        get_activity_simulator(
-            n_rounds=args_.n_rounds,
-            availability_matrix_path=args_.availability_matrix_path
+    activity_simulator = get_activity_simulator(
+        n_rounds=args_.n_rounds, availability_matrix_path=args_.availability_matrix_path
+    )
+
+    activity_estimator = get_activity_estimator(
+        participation_matrix=activity_simulator.participation_matrix
+    )
+
+    if args_.biased == 0 or args_.biased == 1:
+        clients_sampler = get_client_sampler(
+            clients=clients,
+            participation_probs=args_.participation_probs,
+            activity_simulator=activity_simulator,
+            activity_estimator=activity_estimator,
+            unknown_participation_probs=args_.unknown_participation_probs,
+            biased=args_.biased,
         )
-    
-    activity_estimator = \
-        get_activity_estimator(
-            participation_matrix=activity_simulator.participation_matrix
+    else:  # args_.biased==2 for mixed unbiased/biased training
+        unbiased_clients_sampler = get_client_sampler(
+            clients=clients,
+            participation_probs=args_.participation_probs,
+            activity_simulator=activity_simulator,
+            activity_estimator=activity_estimator,
+            unknown_participation_probs=args_.unknown_participation_probs,
+            biased=0,
+            fine_tuning=args_.fine_tuning, # Added this to ensure the participation frequency is not influenced by the fine_tuning phase
         )
-    
-    if args_.biased==0 or args_.biased==1:
-        clients_sampler = \
-            get_client_sampler(
-                clients=clients,
-                participation_probs=args_.participation_probs,
-                activity_simulator=activity_simulator,
-                activity_estimator=activity_estimator,
-                unknown_participation_probs=args_.unknown_participation_probs,
-                biased=args_.biased
-            )
-    else: #args_.biased==2 for mixed unbiased/biased training
-        unbiased_clients_sampler = \
-            get_client_sampler(
-                clients=clients,
-                participation_probs=args_.participation_probs,
-                activity_simulator=activity_simulator,
-                activity_estimator=activity_estimator,
-                unknown_participation_probs=args_.unknown_participation_probs,
-                biased=0
-            )
-        biased_clients_sampler = \
-            get_client_sampler(
-                clients=clients,
-                participation_probs=args_.participation_probs,
-                activity_simulator=activity_simulator,
-                activity_estimator=activity_estimator,
-                unknown_participation_probs=args_.unknown_participation_probs,
-                biased=1
-            )
-    
+        biased_clients_sampler = get_client_sampler(
+            clients=clients,
+            participation_probs=args_.participation_probs,
+            activity_simulator=activity_simulator,
+            activity_estimator=activity_estimator,
+            unknown_participation_probs=args_.unknown_participation_probs,
+            biased=1,
+        )
+
     # --- --- --- --- --- #
 
-    history_tracker = \
-        get_history_tracker(
-            name=args_.experiment,
-            model_name=args_.model_name,
-            clients=clients,
-            device=args_.device
-        )
+    history_tracker = get_history_tracker(
+        name=args_.experiment,
+        model_name=args_.model_name,
+        clients=clients,
+        device=args_.device,
+    )
 
-    aggregator = \
-        get_aggregator(
-            aggregator_type=args_.aggregator_type,
-            clients=clients,
-            global_learner=global_learner,
-            history_tracker=history_tracker,
-            log_freq=args_.log_freq,
-            global_train_logger=global_train_logger,
-            global_test_logger=global_test_logger,
-            test_clients=test_clients,
-            verbose=args_.verbose,
-            seed=args_.seed
-        )
+    aggregator = get_aggregator(
+        aggregator_type=args_.aggregator_type,
+        clients=clients,
+        global_learner=global_learner,
+        history_tracker=history_tracker,
+        log_freq=args_.log_freq,
+        global_train_logger=global_train_logger,
+        global_test_logger=global_test_logger,
+        test_clients=test_clients,
+        verbose=args_.verbose,
+        seed=args_.seed,
+    )
 
     aggregator.write_logs()
 
-    print('---->>>>>> ', len(clients))
+    print("---->>>>>> ", len(clients))
 
     if args_.verbose > 0:
         print("Training..")
     for ii in tqdm(range(args_.n_rounds)):
 
-        if args_.biased==0 or args_.biased==1:
-            sampled_clients_ids, sampled_clients_weights = \
-                clients_sampler.sample(c_round=ii)
-        elif len(activity_simulator.get_active_clients(ii))==len(clients):
-            sampled_clients_ids, sampled_clients_weights = \
+        # Check if mode is biased or unbiased
+        if args_.biased == 0 or args_.biased == 1:
+            sampled_clients_ids, sampled_clients_weights = clients_sampler.sample(
+                c_round=ii
+            )
+
+        # If mode == hybrid -> when all clients are present, use biased sampler, else unbiased sampler
+        elif len(activity_simulator.get_active_clients(ii)) == len(clients):
+            sampled_clients_ids, sampled_clients_weights = (
                 biased_clients_sampler.sample(c_round=ii)
+            )
         else:
-            sampled_clients_ids, sampled_clients_weights = \
+            sampled_clients_ids, sampled_clients_weights = (
                 unbiased_clients_sampler.sample(c_round=ii)
+            )
 
         aggregator.mix(sampled_clients_ids, sampled_clients_weights)
 

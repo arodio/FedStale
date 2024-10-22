@@ -44,9 +44,10 @@ echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="gaussian-corr-ft-exp3 gaussian-uncorr-ft-exp3" # list of availability matrices
-fl_algo="fedavg" # list of FL algorithms
+availabilities="gaussian-corr-ft-exp2-0" # list of availability matrices
+fl_algo="fedvarp" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
+fine_tuning=10 # Change this to # of finetuning step
 ############################
 
 participation="1.0"
@@ -99,7 +100,8 @@ mnist \
 --seed ${seed} \
 --verbose 0 \
 --availability_matrix_path ${availability_matrix_path} \
---biased ${biased}
+--biased ${biased} \
+--fine_tuning ${fine_tuning}
 )
 done
 done
@@ -133,7 +135,8 @@ mnist \
 --seed ${seed} \
 --verbose 0 \
 --availability_matrix_path ${availability_matrix_path} \
---biased ${biased}
+--biased ${biased} \
+--fine_tuning ${fine_tuning}
 )
 done
 done
@@ -169,7 +172,8 @@ mnist \
 --seed ${seed} \
 --verbose 0 \
 --availability_matrix_path ${availability_matrix_path} \
---biased ${biased}
+--biased ${biased} \
+--fine_tuning ${fine_tuning}
 )
 done
 done
