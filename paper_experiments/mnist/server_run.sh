@@ -46,8 +46,8 @@ echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="gaussian-corr-ft-exp2-0" # list of availability matrices
-fl_algo="fedvarp" # list of FL algorithms
+availabilities="gaussian-corr-ft-25 gaussian-uncorr-ft-25 gaussian-corr-ft-35 gaussian-uncorr-ft-35 gaussian-corr-ft-50 gaussian-uncorr-ft-50" # list of availability matrices
+fl_algo="fedavg fedvarp" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 fine_tuning=10 # Change this to # of finetuning step
 verbose=2 # 0,1,2
@@ -57,7 +57,7 @@ participation="1.0"
 heterogeneities="0.0"
 weights="0.5" # is the beta parameter in the FedStale paper
 seeds=$1
-lrs="5e-3" # list of learning rates
+lrs="1e-2 1e-3 1e-4" # list of learning rates
 device="cuda"
 n_rounds="100" # number of fl rounds
 #############################################
