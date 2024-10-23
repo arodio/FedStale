@@ -13,6 +13,7 @@ availabilities="gaussian-corr-ft-exp2-0" # list of availability matrices
 fl_algo="fedvarp" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 fine_tuning=10 # Change this to # of finetuning step
+verbose=2 # 0,1,2
 ############################
 
 participation="1.0"
@@ -24,7 +25,6 @@ device="cuda"
 n_rounds="100" # number of fl rounds
 #############################################
 
-noglob typeset -m VARIABLE*
 
 ### other availability matrices' names ###
 # opt-new-problem-cvxpy_a-1
@@ -51,7 +51,7 @@ availability_matrix_path="../availability_matrices/av-mat_${availability}.csv"
 for heterogeneity in $heterogeneities; do
 for lr in $lrs; do
 for seed in $seeds; do
-echo "Run FedAvg : p ${participation}, h ${heterogeneity}, lr ${lr}, seed ${seed}"
+echo "Availability matrix: ${availability} \n Run FedAvg : p ${participation}, h ${heterogeneity}, lr ${lr}, seed ${seed}"
 (
 python train.py \
 mnist \
@@ -65,7 +65,7 @@ mnist \
 --server_optimizer sgd \
 --logs_dir ../logs/mnist/${availability}/biased_${biased}/fedavg/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
---verbose 0 \
+--verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
 --biased ${biased} \
 --fine_tuning ${fine_tuning}
@@ -100,7 +100,7 @@ mnist \
 --server_optimizer history \
 --logs_dir ../logs/mnist/${availability}/biased_${biased}/fedvarp/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
---verbose 0 \
+--verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
 --biased ${biased} \
 --fine_tuning ${fine_tuning}
@@ -137,7 +137,7 @@ mnist \
 --history_coefficient ${weight} \
 --logs_dir ../logs/mnist/${availability}/biased_${biased}/fedstale/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
---verbose 0 \
+--verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
 --biased ${biased} \
 --fine_tuning ${fine_tuning}
