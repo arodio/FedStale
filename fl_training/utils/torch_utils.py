@@ -44,10 +44,10 @@ def average_learners(
         # weights = weights/sum(weights) # for tests !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         weights = weights.to(learners[0].device)
 
-    print('----->>>>>> TEST:')
-    print('::: ', weights)
-    print('::: ', sum(weights))
-    print('END TEST <<<<------')
+    # print('----->>>>>> TEST:')
+    # print('::: ', weights)
+    # print('::: ', sum(weights))
+    # print('END TEST <<<<------')
 
     param_tensors = []
     grad_tensors = []

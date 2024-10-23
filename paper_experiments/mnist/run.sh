@@ -2,20 +2,20 @@
 
 cd ../..
 
-###########################
-### DATASETS GENERATION ###
-###########################
-
-echo "=> generate data"
-
 ### - Parameters to choose for dataset generation - ###
 ### - Only change here - ###
 alpha="0.1" # 0.1:non-iid, 100000:iid, 0: true iid
+generate_data=false #true/false
 ############################
 
 n_tasks="7" # 7 clients, one client per country
 #######################################################
 
+###########################
+### DATASETS GENERATION ###
+###########################
+if $generate_data; then
+echo "=> generate data"
 
 cd fl_training/data/mnist || exit 1
 # cd data/mnist
@@ -32,21 +32,23 @@ python generate_data.py \
 --alpha ${alpha}
 ) # /!\ the two last lines are for non-iid
 # --------------------------- #
-
-cd ../..
+fi
 
 
 ################
 ### TRAINING ###
 ################
+cd ../../fl_training
 
 echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="gaussian-corr-ft-exp3 gaussian-uncorr-ft-exp3" # list of availability matrices
-fl_algo="fedavg" # list of FL algorithms
+availabilities="gaussian-corr-ft-exp2-0" # list of availability matrices
+fl_algo="fedvarp" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
+fine_tuning=10 # Change this to # of finetuning step
+verbose=2 # 0,1,2
 ############################
 
 participation="1.0"
@@ -57,6 +59,7 @@ lrs="5e-3" # list of learning rates
 device="cuda"
 n_rounds="100" # number of fl rounds
 #############################################
+
 
 ### other availability matrices' names ###
 # opt-new-problem-cvxpy_a-1
@@ -83,7 +86,7 @@ availability_matrix_path="../availability_matrices/av-mat_${availability}.csv"
 for heterogeneity in $heterogeneities; do
 for lr in $lrs; do
 for seed in $seeds; do
-echo "Run FedAvg : p ${participation}, h ${heterogeneity}, lr ${lr}, seed ${seed}"
+echo "Availability matrix: ${availability} \n Run FedAvg : p ${participation}, h ${heterogeneity}, lr ${lr}, seed ${seed}"
 (
 python train.py \
 mnist \
@@ -97,9 +100,10 @@ mnist \
 --server_optimizer sgd \
 --logs_dir ../logs/mnist/${availability}/biased_${biased}/fedavg/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
---verbose 0 \
+--verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
---biased ${biased}
+--biased ${biased} \
+--fine_tuning ${fine_tuning}
 )
 done
 done
@@ -131,9 +135,10 @@ mnist \
 --server_optimizer history \
 --logs_dir ../logs/mnist/${availability}/biased_${biased}/fedvarp/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
---verbose 0 \
+--verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
---biased ${biased}
+--biased ${biased} \
+--fine_tuning ${fine_tuning}
 )
 done
 done
@@ -167,9 +172,10 @@ mnist \
 --history_coefficient ${weight} \
 --logs_dir ../logs/mnist/${availability}/biased_${biased}/fedstale/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
---verbose 0 \
+--verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
---biased ${biased}
+--biased ${biased} \
+--fine_tuning ${fine_tuning}
 )
 done
 done

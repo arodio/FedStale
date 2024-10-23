@@ -542,7 +542,8 @@ def get_client_sampler(
         activity_simulator,
         activity_estimator,
         unknown_participation_probs,
-        biased
+        biased,
+        **kwargs
 ):
     """
 
@@ -563,7 +564,8 @@ def get_client_sampler(
             participation_probs,
             activity_simulator,
             activity_estimator,
-            unknown_participation_probs
+            unknown_participation_probs,
+            **kwargs
         )
     elif biased == 1:
         return BiasedClientsSampler(
@@ -571,7 +573,8 @@ def get_client_sampler(
             participation_probs,
             activity_simulator,
             activity_estimator,
-            unknown_participation_probs
+            unknown_participation_probs,
+            **kwargs
         )
 
 
