@@ -65,7 +65,7 @@ class ClientsSampler(ABC):
         # self.participation_dict = self.get_participation_dict(n_clients, participation_probs)
         self.participation_dict = self.get_participation_dict(
             activity_simulator.participation_matrix[:, : -kwargs["fine_tuning"]]
-            if "fine_tuning" in kwargs
+            if "fine_tuning" in kwargs and kwargs["fine_tuning"]>0
             else activity_simulator.participation_matrix
         )
 
