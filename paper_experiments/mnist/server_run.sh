@@ -2,8 +2,6 @@
 module load conda/2020.11-python3.8
 source activate green_fl
 
-cd ../..
-
 ### - Parameters to choose for dataset generation - ###
 ### - Only change here - ###
 alpha="0.1" # 0.1:non-iid, 100000:iid, 0: true iid
@@ -18,7 +16,7 @@ n_tasks="7" # 7 clients, one client per country
 ###########################
 if $generate_data; then
 echo "=> generate data"
-
+cd ../..
 cd fl_training/data/mnist || exit 1
 # cd data/mnist
 
