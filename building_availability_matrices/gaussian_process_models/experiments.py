@@ -186,7 +186,7 @@ def exp2(freq_seq, mean_seq=None, k=10, seq_len=100, n_clients=NO_CLIENTS):
     return avail_mat
 
 
-def exp3(freq1, mean_seq=None, k=10, seq_len=100, n_clients=NO_CLIENTS):
+def exp3(freq1, mean_seq=None, periodic_length_scale=1.0, period=1.0, amplitude=0.15, k=10, seq_len=100, n_clients=NO_CLIENTS):
     """
     Fetch covariance matrix as numpy array basis the kernel name
     """
@@ -197,16 +197,16 @@ def exp3(freq1, mean_seq=None, k=10, seq_len=100, n_clients=NO_CLIENTS):
     x = np.expand_dims(np.linspace(*xlim, seq_len), 1)
     corr_cov = get_cov_mat(
         x=x,
-        periodic_length_scale=1.0,
-        period=1.0,
-        amplitude=0.15,
+        periodic_length_scale=periodic_length_scale,
+        period=period,
+        amplitude=amplitude,
         local_length_scale=1.0,
     )
     uncorr_cov = get_cov_mat(
         x=x,
-        periodic_length_scale=1.0,
-        period=1.0,
-        amplitude=0.15,
+        periodic_length_scale=periodic_length_scale,
+        period=period,
+        amplitude=amplitude,
         local_length_scale=0.01,
     )
 
