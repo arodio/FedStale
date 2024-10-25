@@ -8,6 +8,7 @@ raw_data/
 .ipynb_checkpoints/
 logs/mnist_CI_based_availability/
 .DS_Store
+building_availability_matrices/availability_matrices/av-mat-5_av-mat-analysis/202*
 
 *.npy
 *.pth
