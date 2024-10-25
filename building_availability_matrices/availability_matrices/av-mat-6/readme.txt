@@ -1,0 +1,1 @@
+This folder is used to store outputs of the notebook GP-av-mat-generation.

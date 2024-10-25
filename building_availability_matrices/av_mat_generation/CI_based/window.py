@@ -179,6 +179,7 @@ class Window:
         xticks = ax.get_xticks()
         xticks = xticks[::2]
         ax.set_xticks(xticks) # set new xticks
+        plt.title(key_word)
         plt.savefig(self.out_folder+'/'+key_word+'.png', bbox_inches='tight')
         plt.show()
 
