@@ -303,10 +303,17 @@ class Window:
         return availability_df
 
     def get_av_mat(self, key_word=None, fine_tuning=False, ft=10, carbon_budget=7, CO2saving=None):
+        if CO2saving is not None:
+            # print(self.GHG_matrix.to_numpy())
+            total_GHG = sum(sum(self.GHG_matrix.to_numpy()))
+            print(total_GHG)
+            carbon_budget = (1-CO2saving)*total_GHG
         if not key_word:
             key_word_NO_FT='alphaF'
             key_word_FT='alphaF-FT'
         av_mat_df = self._av_mat_alphaF(carbon_budget, CO2saving, key_word=key_word_NO_FT)
+        print("target: ", carbon_budget)
+        print('result: ', np.sum(np.multiply(self.GHG_matrix.to_numpy(), av_mat_df.to_numpy())))
         if fine_tuning==False:
             return av_mat_df
         else:
