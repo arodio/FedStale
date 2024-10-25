@@ -306,7 +306,7 @@ class Window:
         if CO2saving is not None:
             # print(self.GHG_matrix.to_numpy())
             total_GHG = sum(sum(self.GHG_matrix.to_numpy()))
-            print(total_GHG)
+            print("Initial GHG: ", total_GHG)
             carbon_budget = (1-CO2saving)*total_GHG
         if not key_word:
             key_word_NO_FT='alphaF'
