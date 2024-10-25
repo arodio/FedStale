@@ -4,13 +4,18 @@ import pandas as pd
 import numpy as np
 from  matplotlib.colors import LinearSegmentedColormap
 
-def plot_av_mat(av_mat_name, folder):
+def plot_av_mat(av_mat_name, folder, av_mat_folder=""):
     """
     Plot heatmap of availability matrix (countries x datetime list).
     Green: available, Red: not available.
     """
 
-    df = pd.DataFrame(pd.read_csv("../availability_matrices/av-mat_"+av_mat_name+".csv", index_col=[0]))
+    if len(av_mat_folder)>0:
+        _path = "../availability_matrices/"+av_mat_folder+"/av-mat_"+av_mat_name+".csv"
+    else:
+        _path = "../availability_matrices/av-mat_"+av_mat_name+".csv"
+
+    df = pd.DataFrame(pd.read_csv(_path, index_col=[0]))
     
     plt.figure(figsize=(7, 2))
     ax = plt.subplot()
