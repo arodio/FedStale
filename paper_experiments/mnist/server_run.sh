@@ -44,7 +44,7 @@ echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="gaussian-corr-ft-25 gaussian-uncorr-ft-25 gaussian-corr-ft-35 gaussian-uncorr-ft-35 gaussian-corr-ft-50 gaussian-uncorr-ft-50" # list of availability matrices
+availabilities="gp-25-tcsc-10ft-1 gp-25-tcsc-10ft-2 gp-25-tusc-10ft-1 gp-25-tusc-10ft-2 gp-35-tcsc-10ft-1 gp-35-tcsc-10ft-2 gp-35-tusc-10ft-1 gp-35-tusc-10ft-2 gp-50-tcsc-10ft-1 gp-50-tcsc-10ft-2 gp-50-tusc-10ft-1 gp-50-tusc-10ft-2 gp-20304050607080-tcsu-10ft gp-20304050607080-tusu-10ft gp-25255050507575-tcsu-10ft gp-25255050507575-tusu-10ft gp-40404040606060-tcsu-10ft gp-40404040606060-tusu-10ft" # list of availability matrices
 fl_algo="fedavg fedvarp" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 fine_tuning=10 # Change this to # of finetuning step
