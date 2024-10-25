@@ -43,6 +43,7 @@ def load_data():
     return df_dict
 
 class Window:
+
     def __init__(self, start_time=datetime(2022, 1, 1, 0, 0), random_start=False, n_rounds=100, countries=COUNTRIES, out_folder=MAIN_FOLDER):
         self.n_rounds=n_rounds # number of FL training rounds
         self.countries=countries
@@ -184,6 +185,9 @@ class Window:
         plt.show()
 
     def save_availability_matrix(self, key_word, availability_matrix):
+        """
+        Save the availability matrix (dataframe) given as input.
+        """
         dict_cols = dict(zip([i for i in range(self.n_rounds)], self.window_list_hours)) # get the datetime values
         availability_matrix_to_save = availability_matrix.rename(columns=dict_cols)
         availability_matrix_to_save.to_csv(self.out_folder+'/av-mat_'+key_word+'.csv', columns=self.window_list_hours)
@@ -192,9 +196,7 @@ class Window:
         """
         Solve optimization problem with fairness parameter alpha=0.1
         """
-
         w = np.ones(self.n_rounds)
-
         GHG_mat = self.GHG_matrix.to_numpy()
         one_m_GHG_w = (np.max(GHG_mat) - GHG_mat)@np.diag(w)
 
@@ -225,6 +227,13 @@ class Window:
         return largest_index
     
     def apply_FT(self, availability_df, ft=10, carbon_budget=7, key_word='alphaF-FT'):
+        """
+        Add a fine-tuning phase to the availablity matrix given as input.
+        Firstly, the end of the training is determined as the last time at which a
+        client is available. Secondly, the fine-tuning phase is allocated as 
+        available. Thirdly, some slots previously allocated as available are set as
+        unavailable to ensure respect of the carbon budget. 
+        """
 
         availability_matrix=availability_df.to_numpy()
 
