@@ -80,7 +80,8 @@ class Window:
         Create folders and subfolders where the images and csv files will be saved
         """
         newpath_base = self.out_folder
-        newpath_list = [newpath_base, newpath_base+'/ft', newpath_base+'/no-ft']
+        # newpath_list = [newpath_base, newpath_base+'/ft', newpath_base+'/no-ft']
+        newpath_list = [newpath_base]
         for newpath in newpath_list:
             if not os.path.exists(newpath):
                 os.makedirs(newpath)
