@@ -10,6 +10,7 @@ logs/mnist_CI_based_availability/
 .DS_Store
 building_availability_matrices/availability_matrices/av-mat-5_av-mat-analysis/202*
 building_availability_matrices/availability_matrices/av-mat-6/gp-*
+building_availability_matrices/availability_matrices/av-mat-6/av-mat*
 
 *.npy
 *.pth

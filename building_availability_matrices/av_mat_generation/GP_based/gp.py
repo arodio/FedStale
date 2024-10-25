@@ -29,8 +29,10 @@ class GP():
 
         self.formatted_array = list(range(self.n_rounds))
 
-        # self.res = exp1(freq1=self.freq, k=self.k, seq_len=self.n_rounds, n_clients=self.n_clients)
-        self.res = exp2(freq_seq=self.freq, k=self.k, seq_len=self.n_rounds, n_clients=self.n_clients)
+        if type(self.freq)==float:
+            self.res = exp1(freq1=self.freq, k=self.k, seq_len=self.n_rounds, n_clients=self.n_clients)
+        else:
+            self.res = exp2(freq_seq=self.freq, k=self.k, seq_len=self.n_rounds, n_clients=self.n_clients)
 
         self.trad_C2c = dict(zip([CORR, UNCORR, CORR_FT, UNCORR_FT], ['tcsu', 'tusu', 'tcsu-ft', 'tusu-ft']))
         self.trad_c2C = dict(zip(['tcsu', 'tusu', 'tcsu-ft', 'tusu-ft'], [CORR, UNCORR, CORR_FT, UNCORR_FT]))
@@ -40,8 +42,11 @@ class GP():
         av_mat=self.res[self.trad_c2C[corr_ft_type]]
         av_df = pd.DataFrame(av_mat, index = self.countries, columns = self.formatted_array)
 
-        freq_str_list = [str(int(f*100)) for f in self.freq]
-        freq_str = ''.join(freq_str_list)
+        if type(self.freq)==float:
+            freq_str = str(int(self.freq*100))
+        else:
+            freq_str_list = [str(int(f*100)) for f in self.freq]
+            freq_str = ''.join(freq_str_list)
         key_word = 'gp-'+freq_str+'-'+corr_ft_type.split('-')[0]
         if len(corr_ft_type.split('-'))>1:
             key_word+='-'+str(self.k)+'ft'
