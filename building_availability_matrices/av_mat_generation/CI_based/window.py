@@ -5,8 +5,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import cvxpy as cp
 import numpy as np
-from  matplotlib.colors import LinearSegmentedColormap
+from  matplotlib.colors import ListedColormap
 import seaborn as sns
+from av_mat_generation.CI_based.greedy import GreedyProblem
+from math import ceil
 
 LIST_COLORS = ['blue', 'green', 'orange', 'red', 'purple', 'pink', 'yellow']
 COUNTRIES = ['Ireland', 'Germany', 'Great Britain', 'France', 'Sweden', 'Finland', 'Belgium']
@@ -174,8 +176,13 @@ class Window:
         """
         plt.figure(figsize=(7, 2))
         ax = plt.subplot()
-        cmap=LinearSegmentedColormap.from_list('rg',["r", "w", "g"], N=256) 
-        sns.heatmap(similarity_matrix.astype(int), annot=False, fmt='d', cbar=False, cmap=cmap, linewidths=0.5, linecolor='white', ax=ax) # create heatmap
+        # cmap=LinearSegmentedColormap.from_list('rg',["r", "w", "g"], N=256) 
+        # sns.heatmap(similarity_matrix.astype(int), annot=False, fmt='d', cbar=False, cmap=cmap, linewidths=0.5, linecolor='white', ax=ax) # create heatmap
+        cmap = ListedColormap(['red', 'green'])
+        sns.heatmap(similarity_matrix, annot=False, fmt='d', cbar=False,
+                    cmap=cmap, linewidths=0.5, linecolor='white', 
+                    vmin=0, vmax=1,  # Set limits to ensure correct color mapping
+                    ax=ax)
         if not isinstance(similarity_matrix.columns[0], np.int64):
             plt.xticks(rotation=45, ha='right')  # rotate x-axis labels to diagonal
         xticks = ax.get_xticks()
@@ -193,9 +200,20 @@ class Window:
         availability_matrix_to_save = availability_matrix.rename(columns=dict_cols)
         availability_matrix_to_save.to_csv(self.out_folder+'/av-mat_'+key_word+'.csv', columns=self.window_list_hours)
 
-    def _av_mat_alphaF(self, carbon_budget, CO2saving, key_word='alphaF', alpha_f=0.1):
+
+    def _av_mat_alphaF(self, method, carbon_budget, key_word):
         """
         Solve optimization problem with fairness parameter alpha=0.1
+        """
+        if method == 'cvxpy':
+            return self._av_mat_alphaF_cvxpy(carbon_budget, key_word)
+        elif method == 'greedy':
+            return self._av_mat_alphaF_greedy(carbon_budget, key_word)
+
+
+    def _av_mat_alphaF_cvxpy(self, carbon_budget, key_word='alphaF', alpha_f=0.1):
+        """
+        Solve optimization problem with fairness parameter alpha=0.1 through cvxpy package
         """
         w = np.ones(self.n_rounds)
         GHG_mat = self.GHG_matrix.to_numpy()
@@ -214,7 +232,22 @@ class Window:
         self.plot_availability_heatmap(availability_df, key_word)
         self.save_availability_matrix(key_word, availability_df)
 
-        return availability_df
+        return availability_df, key_word
+
+    def _av_mat_alphaF_greedy(self, carbon_budget, key_word='alphaF', alpha_f=0.1):
+        """
+        Solve optimization problem with fairness parameter alpha=0.1 through greedy method
+        """
+        w = np.ones(self.n_rounds)
+        pb = GreedyProblem(self.GHG_matrix, alpha_f, w)
+        pb.greedy_optimization(carbon_budget)
+
+        availability_matrix = np.array(pb.A, dtype=np.int8)
+        availability_df = pd.DataFrame(availability_matrix, index = self.countries, columns = [i for i in range(self.n_rounds)])
+        
+        self.plot_availability_heatmap(availability_df, key_word)
+        self.save_availability_matrix(key_word, availability_df)
+        return availability_df, key_word
 
     def _find_largest_true_index(self, availability_matrix):
         """
@@ -302,18 +335,30 @@ class Window:
 
         return availability_df
 
-    def get_av_mat(self, key_word=None, fine_tuning=False, ft=10, carbon_budget=7, CO2saving=None):
+    def get_av_mat(self, method='cvxpy', key_word=None, fine_tuning=False, ft=10, carbon_budget=7, CO2saving=None):
         if CO2saving is not None:
             # print(self.GHG_matrix.to_numpy())
             total_GHG = sum(sum(self.GHG_matrix.to_numpy()))
             print("Initial GHG: ", total_GHG)
-            carbon_budget = (1-CO2saving)*total_GHG
-        if not key_word:
-            key_word_NO_FT='alphaF'
-            key_word_FT='alphaF-FT'
-        av_mat_df = self._av_mat_alphaF(carbon_budget, CO2saving, key_word=key_word_NO_FT)
+            if CO2saving == 0.0:
+                carbon_budget = ceil(total_GHG)
+            else:
+                carbon_budget = (1-CO2saving)*total_GHG
+
+        if method == 'cvxpy':
+            if not key_word:
+                key_word_NO_FT='alphaF_cvxpy'
+                key_word_FT='alphaF_FT_cvxpy'
+        elif method == 'greedy':
+            if not key_word:
+                key_word_NO_FT='alphaF_greedy'
+                key_word_FT='alphaF_FT_greedy'
+
+        av_mat_df, key_word = self._av_mat_alphaF(method, carbon_budget, key_word=key_word_NO_FT)
+        
         print("target: ", carbon_budget)
         print('result: ', np.sum(np.multiply(self.GHG_matrix.to_numpy(), av_mat_df.to_numpy())))
+        
         if fine_tuning==False:
             return av_mat_df
         else:
