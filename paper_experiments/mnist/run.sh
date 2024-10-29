@@ -1,11 +1,10 @@
 #!/bin/bash
 
-cd ../..
 
 ### - Parameters to choose for dataset generation - ###
 ### - Only change here - ###
 alpha="0.1" # 0.1:non-iid, 100000:iid, 0: true iid
-generate_data=false #true/false
+generate_data=true #true/false
 ############################
 
 n_tasks="7" # 7 clients, one client per country
@@ -16,7 +15,7 @@ n_tasks="7" # 7 clients, one client per country
 ###########################
 if $generate_data; then
 echo "=> generate data"
-
+cd ../..
 cd fl_training/data/mnist || exit 1
 # cd data/mnist
 
@@ -25,7 +24,7 @@ rm -rf all_data
 (
 python generate_data.py \
 --n_tasks ${n_tasks} \
---s_frac 0.6 \
+--s_frac 1.0 \
 --test_tasks_frac 0.0 \
 --seed 12345 \
 --by_labels_split \
@@ -38,14 +37,14 @@ fi
 ################
 ### TRAINING ###
 ################
-cd ../../fl_training
+cd ../..
 
 echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="gaussian-corr-ft-exp2-0" # list of availability matrices
-fl_algo="fedvarp" # list of FL algorithms
+availabilities="gaussian-corr-ft-35 gaussian-corr-ft-50 gaussian-uncorr-ft-35 gaussian-uncorr-ft-50 gp-35-tcsc-10ft-2 gp-35-tusc-10ft-2 gp-50-tcsc-10ft-2 gp-50-tusc-10ft-2 gp-20304050607080-tcsu-10ft gp-20304050607080-tusu-10ft gp-25255050507575-tcsu-10ft gp-25255050507575-tusu-10ft" # list of availability matrices
+fl_algo="fedavg fedvarp" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 fine_tuning=10 # Change this to # of finetuning step
 verbose=2 # 0,1,2
@@ -54,8 +53,8 @@ verbose=2 # 0,1,2
 participation="1.0"
 heterogeneities="0.0"
 weights="0.5" # is the beta parameter in the FedStale paper
-seeds="12"
-lrs="5e-3" # list of learning rates
+seeds="84"
+lrs="1e-1 5e-2" # list of learning rates
 device="cuda"
 n_rounds="100" # number of fl rounds
 #############################################
@@ -183,3 +182,4 @@ done
 done
 done
 fi
+
