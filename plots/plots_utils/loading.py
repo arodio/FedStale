@@ -122,6 +122,7 @@ def load_experiment_results(config):
                                                 "algorithm": algorithm, "availability": av,
                                                 "alpha": a, "participation": part,
                                                 "max_test_accuracy": float(max_accuracy),
+                                                "final_test_accuracy":test_accuracy_values[-1]*100,
                                                 "test_accuracy": "Test/Metric",
                                                 "test_loss": "Test/Loss",
                                                 "train_accuracy": "Train/Metric",
