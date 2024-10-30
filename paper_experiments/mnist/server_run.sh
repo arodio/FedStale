@@ -1,6 +1,6 @@
 #!/bin/bash
-module load conda/2020.11-python3.8
-source activate green_fl
+# module load conda/2020.11-python3.8
+# source activate green_fl
 
 ### - Parameters to choose for dataset generation - ###
 ### - Only change here - ###
