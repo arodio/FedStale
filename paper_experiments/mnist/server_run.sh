@@ -44,7 +44,7 @@ echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="gp-25-tcsc-10ft-1 gp-25-tcsc-10ft-2 gp-25-tusc-10ft-1 gp-25-tusc-10ft-2 gp-35-tcsc-10ft-1 gp-35-tcsc-10ft-2 gp-35-tusc-10ft-1 gp-35-tusc-10ft-2 gp-50-tcsc-10ft-1 gp-50-tcsc-10ft-2 gp-50-tusc-10ft-1 gp-50-tusc-10ft-2 gp-20304050607080-tcsu-10ft gp-20304050607080-tusu-10ft gp-25255050507575-tcsu-10ft gp-25255050507575-tusu-10ft gp-40404040606060-tcsu-10ft gp-40404040606060-tusu-10ft" # list of availability matrices
+availabilities="gaussian-corr-ft-35 gaussian-uncorr-ft-35 gaussian-corr-ft-50 gaussian-uncorr-ft-50 gp-35-tcsc-10ft-2 gp-35-tusc-10ft-2 gp-50-tcsc-10ft-2 gp-50-tusc-10ft-2 gp-20304050607080-tcsu-10ft gp-20304050607080-tusu-10ft gp-25255050507575-tcsu-10ft gp-25255050507575-tusu-10ft gp-40404040606060-tcsu-10ft gp-40404040606060-tusu-10ft" # list of availability matrices
 fl_algo="fedavg fedvarp" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 fine_tuning=10 # Change this to # of finetuning step
@@ -55,7 +55,8 @@ participation="1.0"
 heterogeneities="0.0"
 weights="0.5" # is the beta parameter in the FedStale paper
 seeds=$1
-lrs="1e-2 1e-3 1e-4" # list of learning rates
+batch_size=$2
+lrs=$3 # list of learning rates
 device="cuda"
 n_rounds="100" # number of fl rounds
 #############################################
@@ -74,6 +75,7 @@ n_rounds="100" # number of fl rounds
 # random4_uniform-carbon-budget-fine-tuning
 # nonlinear-optimization-cvxpy_w-no-w_a-0.1
 
+echo "Batch size: ${batch_size}"
 
 # ------------------------------ #
 # --- Experiments for FedAvg --- #
@@ -92,7 +94,7 @@ python train.py \
 mnist \
 --n_rounds ${n_rounds} \
 --participation_probs 1.0 ${participation} \
---bz 128 \
+--bz ${batch_size} \
 --lr ${lr} \
 --log_freq 1 \
 --device ${device} \
