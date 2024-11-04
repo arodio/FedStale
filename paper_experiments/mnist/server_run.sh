@@ -47,7 +47,6 @@ echo "=> training"
 availabilities="gp-35-tcsu gp-35-tusu gp-50-tcsu gp-50-tusu gp-35-tcsc-2 gp-35-tusc-2 gp-50-tcsc-2 gp-50-tusc-2 gp-20304050607080-tcsu gp-20304050607080-tusu gp-25255050507575-tcsu gp-25255050507575-tusu" # list of availability matrices
 fl_algo="fedavg fedvarp" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
-fine_tuning=10 # Change this to # of finetuning step
 verbose=2 # 0,1,2
 ############################
 
@@ -104,8 +103,7 @@ mnist \
 --seed ${seed} \
 --verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
---biased ${biased} \
---fine_tuning ${fine_tuning}
+--biased ${biased}
 )
 done
 done
@@ -135,12 +133,11 @@ mnist \
 --device ${device} \
 --optimizer sgd \
 --server_optimizer history \
---logs_dir ../logs/mnist/${availability}/biased_${biased}/fedvarp/alpha_${alpha}/lr_${lr}/seed_${seed} \
+--logs_dir ../logs/mnist/${batch_size}/${availability}/biased_${biased}/fedvarp/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
 --verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
---biased ${biased} \
---fine_tuning ${fine_tuning}
+--biased ${biased}
 )
 done
 done
@@ -172,12 +169,11 @@ mnist \
 --optimizer sgd \
 --server_optimizer history \
 --history_coefficient ${weight} \
---logs_dir ../logs/mnist/${availability}/biased_${biased}/fedstale/alpha_${alpha}/lr_${lr}/seed_${seed} \
+--logs_dir ../logs/mnist/${batch_size}/${availability}/biased_${biased}/fedstale/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
 --verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
---biased ${biased} \
---fine_tuning ${fine_tuning}
+--biased ${biased}
 )
 done
 done
