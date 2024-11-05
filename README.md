@@ -32,8 +32,11 @@ pip install pandas matplotlib gekko cvxpy gurobipy Mosek seaborn                
 pip install tensorflow-probability dataframe-image fpdf scikit-learn                     # for CI data analysis
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121  # for experiments
 pip install numpy scikit-learn tqdm tensorboard tensorflow pandas                 # for experiments
+pip install fpdf ipywidgets
 ```
 Then, in VS Code: click on 'Select kernel': choose your virtual environment.
+
+**Remark:** Installing several solver for cvxpy might pose a problem. The notebook ``10_av_mat_analysis``without error with cvxpy and the solver Mosek installed. 
 
 ## Quickstart
 
