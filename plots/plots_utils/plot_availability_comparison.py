@@ -9,7 +9,7 @@ def plot_availability_comparison(config, res, metric, folder):
     """
     
     xvalues = [i for i in range(int(config.n_rounds)+1)]
-
+    fig = plt.figure(figsize=(6, 4))
     for lr in config.lr_list:
         for algo in config.algorithms:
             for event in config.events:
@@ -26,7 +26,6 @@ def plot_availability_comparison(config, res, metric, folder):
                                                     (res.participation == part)]
                                         # display(res_tmp) # this is what we are going to compare
 
-                                        fig = plt.figure(figsize=(6, 4))
                                         for av in config.availabilities:
                                             if 'random' not in av:
                                                 res_plot = res_tmp[res_tmp.availability == av] 
@@ -41,21 +40,21 @@ def plot_availability_comparison(config, res, metric, folder):
                                                 # print(av)
                                                 # yvalues = res_plot[(res_plot.availability == av)][metric]
                                                 # print(res_plot[(res_plot.availability == av)][metric])
-                                                plt.plot(xvalues, test_accuracy_values, label= av)
-                                                ax = plt.gca()
-                                                ax.set_ylim([0, 1])
-                                                title = ('_').join([algo, a.replace("100000", "iid").replace("0.1", "non-iid"), "biased-"+biased])
-                                                plt.title(title)
+                                                plt.plot(xvalues, test_accuracy_values, label= "_".join([av, seed, lr]))
+    ax = plt.gca()
+    ax.set_ylim([0, 1])
+                                        
 
-                                        plt.legend(loc='lower left') 
-                                        ax = plt.gca()
-                                        ax.set_facecolor('#EBEBEB')
-                                        ax.grid(which='major', color='white', linewidth=1.2)
-                                        ax.grid(which='minor', color='white', linewidth=0.6)
-                                        # Show the minor ticks and grid.
-                                        ax.minorticks_on()
-                                        # Now hide the minor ticks (but leave the gridlines).
-                                        ax.tick_params(which='minor', bottom=False, left=False)
-                                
-                                        plt.savefig('figures/'+folder+'/'+title+'.png', bbox_inches='tight')
-                                        plt.show()
+    plt.legend(loc='lower left') 
+    ax = plt.gca()
+    ax.set_facecolor('#EBEBEB')
+    ax.grid(which='major', color='white', linewidth=1.2)
+    ax.grid(which='minor', color='white', linewidth=0.6)
+    # Show the minor ticks and grid.
+    ax.minorticks_on()
+    # Now hide the minor ticks (but leave the gridlines).
+    ax.tick_params(which='minor', bottom=False, left=False)
+    title = ('_').join([algo, a.replace("100000", "iid").replace("0.1", "non-iid"), "biased-"+biased])
+    plt.title(title)    
+    plt.savefig('figures/'+folder+'/'+title+'.png', bbox_inches='tight')
+    plt.show()
