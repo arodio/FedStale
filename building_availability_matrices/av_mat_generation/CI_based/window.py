@@ -205,26 +205,31 @@ class Window:
         """
         Solve optimization problem with fairness parameter alpha=0.1
         """
-        if method == 'cvxpy':
-            return self._av_mat_alphaF_cvxpy(carbon_budget, key_word)
+        if method.split('_')[0] == 'cvxpy':
+            return self._av_mat_alphaF_cvxpy(method.split('_')[1], carbon_budget, key_word)
         elif method == 'greedy':
             return self._av_mat_alphaF_greedy(carbon_budget, key_word)
 
 
-    def _av_mat_alphaF_cvxpy(self, carbon_budget, key_word='alphaF', alpha_f=0.1):
+    def _av_mat_alphaF_cvxpy(self, solver, carbon_budget, key_word='alphaF', alpha_f=0.1):
         """
         Solve optimization problem with fairness parameter alpha=0.1 through cvxpy package
         """
         w = np.ones(self.n_rounds)
         GHG_mat = self.GHG_matrix.to_numpy()
+        coef = np.linalg.norm(GHG_mat)
         one_m_GHG_w = (np.max(GHG_mat) - GHG_mat)@np.diag(w)
 
         x = cp.Variable(GHG_mat.shape, integer=True)
-        objective = cp.Minimize(-cp.sum(cp.power(cp.sum(cp.multiply(one_m_GHG_w, x), axis=1), alpha_f)))
+        objective = cp.Maximize(cp.sum(cp.power(cp.sum(cp.multiply(one_m_GHG_w, x), axis=1), alpha_f)))
         constraints = [0 <= x, x <= 1, cp.sum(cp.multiply(GHG_mat, x))<=carbon_budget]
         prob = cp.Problem(objective, constraints)
 
-        result = prob.solve(solver=cp.MOSEK, verbose=False)
+        if solver == 'mosek':
+            result = prob.solve(solver=cp.MOSEK, verbose=True)
+        elif solver == 'scip':
+            result = prob.solve(solver=cp.SCIP, verbose=True, 
+                                scip_params={"limits/totalnodes":1000})
         availability_matrix = np.array(x.value, dtype=np.int8)
 
         availability_df = pd.DataFrame(availability_matrix, index = self.countries, columns = [i for i in range(self.n_rounds)])
@@ -335,7 +340,7 @@ class Window:
 
         return availability_df
 
-    def get_av_mat(self, method='cvxpy', key_word=None, fine_tuning=False, ft=10, carbon_budget=7, CO2saving=None):
+    def get_av_mat(self, method='cvxpy_mosek', key_word=None, fine_tuning=False, ft=10, carbon_budget=7, CO2saving=None):
         if CO2saving is not None:
             # print(self.GHG_matrix.to_numpy())
             total_GHG = sum(sum(self.GHG_matrix.to_numpy()))
@@ -345,12 +350,15 @@ class Window:
             else:
                 carbon_budget = (1-CO2saving)*total_GHG
 
-        if method == 'cvxpy':
-            if not key_word:
-                key_word_NO_FT='alphaF_cvxpy'
-                key_word_FT='alphaF_FT_cvxpy'
-        elif method == 'greedy':
-            if not key_word:
+        if not key_word:
+            if method.split('_')[0] == 'cvxpy':
+                if method.split('_')[1] == 'mosek':
+                    key_word_NO_FT='alphaF_cvxpy_mosek'
+                    key_word_FT='alphaF_FT_cvxpy_mosek'
+                elif method.split('_')[1] == 'scip':
+                    key_word_NO_FT='alphaF_cvxpy_scip'
+                    key_word_FT='alphaF_FT_cvxpy_scip'
+            elif method == 'greedy':
                 key_word_NO_FT='alphaF_greedy'
                 key_word_FT='alphaF_FT_greedy'
 
