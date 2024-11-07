@@ -9,8 +9,8 @@ def refine_results(raw_res):
     refined_res['mean_test_acc'] = refined_res['test_accuracy'].apply(lambda x : x.mean(axis=0))
     refined_res['var_test_acc'] = refined_res['test_accuracy'].apply(lambda x : x.var(axis=0))
     refined_res['mean_var_test_acc'] = refined_res['var_test_acc'].apply(lambda x : x.mean())
-    refined_res['min_test_acc'] = refined_res['test_accuracy'].apply(lambda x: x.min(axis=0))
-    refined_res['max_test_acc'] = refined_res['test_accuracy'].apply(lambda x: x.max(axis=0))
+    refined_res['min_test_acc'] = refined_res['test_accuracy'].apply(lambda x: x.min(axis=0)) #minimum across sseds
+    refined_res['max_test_acc'] = refined_res['test_accuracy'].apply(lambda x: x.max(axis=0)) #maximum across sseds
 
     refined_res['final_mean_acc'] = refined_res['mean_test_acc'].apply(lambda x : x[-1])
     refined_res['final_min_acc'] = refined_res['min_test_acc'].apply(lambda x : x[-1])
@@ -43,6 +43,7 @@ def plot_final_best_test_acc(res_, folder, keyword):
     plt.legend()
     plt.title('Final best test accuracy (mean over seeds) - '+keyword)
     plt.grid()
+    ax.set_ylim([0.8, 1])
     plt.savefig(folder+'/final_best_test_acc.png', bbox_inches='tight')
 
 
@@ -57,6 +58,8 @@ def plot_final_best_worst_test_acc(res_, folder, keyword):
     plt.legend()
     plt.title('Final worst and best test accuracy (mean over seeds) - '+keyword)
     plt.grid()
+    ax=plt.gca()
+    ax.set_ylim([0, 1])
     plt.savefig(folder+'/final_best_worst_test_acc.png', bbox_inches='tight')
 
 
@@ -75,4 +78,6 @@ def plot_mean_seeds_var_over_training(refined_res, lr_list, folder, keyword):
         plt.legend()
         plt.title(algo+' mean variance (among seeds) over the training - '+keyword)
         plt.grid()
+        ax=plt.gca()
+        ax.set_ylim([-0.005, 0.14])
         plt.savefig(folder+'/'+algo+'-mean_seeds_var_over_training.png', bbox_inches='tight')
