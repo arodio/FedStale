@@ -59,7 +59,7 @@ def load_data(countries=None):
         "Spain": os.path.join(folder, "ES_2022_hourly.csv"),
         "Hungary": os.path.join(folder, "HU_2022_hourly.csv"),
         "Singapore": os.path.join(folder, "SG_2022_hourly.csv"),
-        "Italy": os.path.join(folder, "IT_2022_hourly.csv"),
+        "Hong Kong": os.path.join(folder, "HK_2022_hourly.csv"),
         "Japan": os.path.join(folder, "JP_2022_hourly.csv"),
         "South Africa": os.path.join(folder, "ZA_2022_hourly.csv"),
         "Peru": os.path.join(folder, "PE_2022_hourly.csv"),
