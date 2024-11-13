@@ -46,6 +46,7 @@ def load_data(countries=None):
     folder = "historical_data"
     _paths = {
         "Germany": os.path.join(folder, "DE_2022_hourly.csv"),
+        "Austria": os.path.join(folder, "AT_2022_hourly.csv"),
         "Ireland": os.path.join(folder, "IE_2022_hourly.csv"),
         "Great Britain": os.path.join(folder, "GB_2022_hourly.csv"),
         "France": os.path.join(folder, "FR_2022_hourly.csv"),
@@ -61,7 +62,7 @@ def load_data(countries=None):
         "Italy": os.path.join(folder, "IT_2022_hourly.csv"),
         "Japan": os.path.join(folder, "JP_2022_hourly.csv"),
         "South Africa": os.path.join(folder, "ZA_2022_hourly.csv"),
-        "Uruguay": os.path.join(folder, "UY_2022_hourly.csv"),
+        "Peru": os.path.join(folder, "PE_2022_hourly.csv"),
         "Croatia": os.path.join(folder, "HR_2022_hourly.csv"),
     }
     # loading the data in a pandas dataframe

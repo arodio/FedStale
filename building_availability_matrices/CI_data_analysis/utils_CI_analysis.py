@@ -139,59 +139,6 @@ def plot_heatmap(ax, similarity_matrix):
     # plt.savefig('heatmap.pdf', bbox_inches='tight')
 
 
-def load_data():
-    """
-    Loads the CI data in df_dict a dictionary where key=country, value=dataframe of CI data.
-    Returns: df_dict
-    The columns of each dataframe are datetime, CI_direct, CI_LA.
-    The unit of the CI data is: gCO2eq/kWh.
-    """
-
-    # prepare links to the data csv files
-    folder = "../historical_data"
-    _paths = {
-        "Germany": os.path.join(folder, "DE_2022_hourly.csv"),
-        "Ireland": os.path.join(folder, "IE_2022_hourly.csv"),
-        "Great Britain": os.path.join(folder, "GB_2022_hourly.csv"),
-        "France": os.path.join(folder, "FR_2022_hourly.csv"),
-        "Sweden": os.path.join(folder, "SE-SE3_2022_hourly.csv"),
-        "Finland": os.path.join(folder, "FI_2022_hourly.csv"),
-        "Belgium": os.path.join(folder, "BE_2022_hourly.csv"),
-        "Brazil": os.path.join(folder, "BR_2022_hourly.csv"),
-        "Denmark": os.path.join(folder, "DK_2022_hourly.csv"),
-        "Estonia": os.path.join(folder, "EE_2022_hourly.csv"),
-        "Spain": os.path.join(folder, "ES_2022_hourly.csv"),
-        "Hungary": os.path.join(folder, "HU_2022_hourly.csv"),
-        "Singapore": os.path.join(folder, "SG_2022_hourly.csv"),
-        "Italy": os.path.join(folder, "IT_2022_hourly.csv"),
-        "Japan": os.path.join(folder, "JP_2022_hourly.csv"),
-        "South Africa": os.path.join(folder, "ZA_2022_hourly.csv"),
-        "Uruguay": os.path.join(folder, "UY_2022_hourly.csv"),
-        "Croatia": os.path.join(folder, "HR_2022_hourly.csv"),
-        
-    }
-    # loading the data in a pandas dataframe
-    df_dict = {}
-    usecols = [
-        "Datetime (UTC)",
-        "Carbon Intensity gCO₂eq/kWh (direct)",
-        "Carbon Intensity gCO₂eq/kWh (LCA)",
-    ]
-    for key in _paths.keys():
-        df_dict[key] = pd.DataFrame(
-            pd.read_csv(_paths[key], usecols=usecols, parse_dates=["Datetime (UTC)"])
-        )
-        df_dict[key] = df_dict[key].rename(columns={"Datetime (UTC)": "datetime"})
-        df_dict[key] = df_dict[key].rename(
-            columns={"Carbon Intensity gCO₂eq/kWh (direct)": "CI_direct"}
-        )
-        df_dict[key] = df_dict[key].rename(
-            columns={"Carbon Intensity gCO₂eq/kWh (LCA)": "CI_LCA"}
-        )
-
-    return df_dict
-
-
 def display_CI(start_date, end_date, countries, df_dict):
     """Function for plotting the hourly CI between start_date and end_date, for each country.
     Inputs:

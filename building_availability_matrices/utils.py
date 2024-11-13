@@ -26,6 +26,7 @@ from sklearn.metrics import mutual_info_score
 import matplotlib.cm as cm
 import matplotlib.colors as mcolors
 from scipy.stats import rankdata
+
 def plot_sp_corr(sp_corr_dict, av_mat_name, path, method_name, pdf):
     sp_corr_m = np.zeros((NO_CLIENTS, NO_CLIENTS))
     for key, value in sp_corr_dict.items():
@@ -331,33 +332,3 @@ def get_datetime_values(_dfs, country, start_date, end_date):
     """
     df_to_plot = _dfs[country][_dfs[country]['datetime'].between(start_date,end_date)]
     return df_to_plot['datetime'].values
-
-def load_data():
-    """
-    Loads the CI data in df_dict a dictionary where key=country, value=dataframe of CI data.
-    Returns: df_dict
-    The columns of each dataframe are datetime, CI_direct, CI_LA.
-    The unit of the CI data is: gCO2eq/kWh.
-    """
-
-    # prepare links to the data csv files
-    folder = 'historical_data'
-    _paths = {}
-    _paths['Germany'] = os.path.join(folder,'DE_2022_hourly.csv')
-    _paths['Ireland'] = os.path.join(folder,'IE_2022_hourly.csv')
-    _paths['Great Britain'] = os.path.join(folder,'GB_2022_hourly.csv')
-    _paths['France'] = os.path.join(folder,'FR_2022_hourly.csv')
-    _paths['Sweden'] = os.path.join(folder,'SE-SE3_2022_hourly.csv')
-    _paths['Finland'] = os.path.join(folder,'FI_2022_hourly.csv')
-    _paths['Belgium'] = os.path.join(folder,'BE_2022_hourly.csv')
-
-    # loading the data in a pandas dataframe
-    df_dict = {}
-    usecols=['Datetime (UTC)','Carbon Intensity gCO₂eq/kWh (direct)','Carbon Intensity gCO₂eq/kWh (LCA)']
-    for key in _paths.keys():
-        df_dict[key] = pd.DataFrame(pd.read_csv(_paths[key], usecols=usecols, parse_dates=['Datetime (UTC)']))
-        df_dict[key] = df_dict[key].rename(columns={'Datetime (UTC)': 'datetime'})
-        df_dict[key] = df_dict[key].rename(columns={'Carbon Intensity gCO₂eq/kWh (direct)': 'CI_direct'})
-        df_dict[key] = df_dict[key].rename(columns={'Carbon Intensity gCO₂eq/kWh (LCA)': 'CI_LCA'})
-
-    return df_dict
