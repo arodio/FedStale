@@ -4,7 +4,8 @@
 
 ### - Parameters to choose for dataset generation - ###
 ### - Only change here - ###
-alpha="0.1" # 0.1:non-iid, 100000:iid, 0: true iid
+# alpha="0.1" # 0.1:non-iid, 100000:iid, 0: true iid
+alpha=$4
 generate_data=false #true/false
 ############################
 
@@ -74,7 +75,7 @@ n_rounds="100" # number of fl rounds
 # random4_uniform-carbon-budget-fine-tuning
 # nonlinear-optimization-cvxpy_w-no-w_a-0.1
 
-echo "Batch size: ${batch_size}"
+echo "Alpha: ${alpha}"
 
 # ------------------------------ #
 # --- Experiments for FedAvg --- #

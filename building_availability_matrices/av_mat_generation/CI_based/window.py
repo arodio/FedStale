@@ -493,6 +493,9 @@ class Window:
             elif method == "greedy":
                 key_word_NO_FT = "alphaF_greedy"
                 key_word_FT = "alphaF_FT_greedy"
+        else:
+            key_word_NO_FT = key_word
+            key_word_FT = key_word + f"-{ft}ft"
 
         av_mat_df, key_word = self._av_mat_alphaF(
             method, carbon_budget, key_word=key_word_NO_FT

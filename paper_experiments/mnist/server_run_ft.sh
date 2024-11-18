@@ -4,7 +4,8 @@ source activate green_fl
 
 ### - Parameters to choose for dataset generation - ###
 ### - Only change here - ###
-alpha="0.1" # 0.1:non-iid, 100000:iid, 0: true iid
+# alpha="0.1" # 0.1:non-iid, 100000:iid, 0: true iid
+alpha=$4
 generate_data=false #true/false
 ############################
 
@@ -44,7 +45,7 @@ echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="gp-35-tcsu-10ft gp-35-tusu-10ft gp-50-tcsu-10ft gp-50-tusu-10ft gp-35-tcsc-10ft-2 gp-35-tusc-10ft-2 gp-50-tcsc-10ft-2 gp-50-tusc-10ft-2 gp-20304050607080-tcsu-10ft gp-20304050607080-tusu-10ft gp-25255050507575-tcsu-10ft gp-25255050507575-tusu-10ft" # list of availability matrices
+availabilities="alphaF-0.0cb-10ft alphaF-0.1cb-10ft alphaF-0.2cb-10ft alphaF-0.3cb-10ft alphaF-0.4cb-10ft alphaF-0.5cb-10ft alphaF-0.6cb-10ft alphaF-0.7cb-10ft alphaF-0.8cb-10ft" # list of availability matrices
 fl_algo="fedavg fedvarp" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 fine_tuning=10 # Change this to # of finetuning step
@@ -75,7 +76,7 @@ n_rounds="100" # number of fl rounds
 # random4_uniform-carbon-budget-fine-tuning
 # nonlinear-optimization-cvxpy_w-no-w_a-0.1
 
-echo "Batch size: ${batch_size}"
+echo "Alpha: ${alpha}"
 
 # ------------------------------ #
 # --- Experiments for FedAvg --- #
