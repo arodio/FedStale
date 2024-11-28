@@ -33,6 +33,7 @@ python generate_data.py \
 --alpha ${alpha}
 ) # /!\ the two last lines are for non-iid
 # --------------------------- #
+cd ..
 fi
 
 
