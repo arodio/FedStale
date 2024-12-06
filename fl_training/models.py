@@ -127,6 +127,25 @@ class NextCharacterLSTM(nn.Module):
         return output, (hidden, cell)
 
 
+def replace_batchnorm_with_groupnorm(model, max_groups=32):
+    """
+    Replace BatchNorm2d layers in a model with GroupNorm.
+    Ensures num_channels is divisible by num_groups.
+    """
+    for name, module in model.named_children():
+        if isinstance(module, nn.BatchNorm2d):
+            num_channels = module.num_features
+            # Choose num_groups such that it divides num_channels
+            num_groups = min(max_groups, num_channels)  # Limit groups to max_groups or num_channels
+            while num_channels % num_groups != 0:
+                num_groups -= 1  # Decrease groups until divisible
+
+            # Replace with GroupNorm
+            setattr(model, name, nn.GroupNorm(num_groups, num_channels))
+        elif len(list(module.children())) > 0:  # Recursively check children
+            replace_batchnorm_with_groupnorm(module, max_groups)
+            
+
 def get_mobilenet(num_classes):
     """
     creates MobileNet model with `num_classes` outputs
@@ -139,5 +158,6 @@ def get_mobilenet(num_classes):
     """
     model = models.mobilenet_v3_large(weights="IMAGENET1K_V2")
     model.classifier[3] = nn.Linear(model.classifier[3].in_features, num_classes)
+    replace_batchnorm_with_groupnorm(model, max_groups=32)
 
     return model
