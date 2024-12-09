@@ -46,7 +46,7 @@ echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="gp-35-tcsu gp-35-tusu gp-50-tcsu gp-50-tusu gp-35-tcsc-2 gp-35-tusc-2 gp-50-tcsc-2 gp-50-tusc-2 gp-20304050607080-tcsu gp-20304050607080-tusu gp-25255050507575-tcsu gp-25255050507575-tusu" # list of availability matrices
+availabilities=$5 # list of availability matrices
 fl_algo="fedavg fedvarp" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 verbose=2 # 0,1,2
@@ -106,6 +106,7 @@ cifar10 \
 --verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
 --biased ${biased}
+--model_name resnet
 )
 done
 done
@@ -140,6 +141,7 @@ cifar10 \
 --verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
 --biased ${biased}
+--model_name resnet
 )
 done
 done
@@ -176,6 +178,7 @@ cifar10 \
 --verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
 --biased ${biased}
+--model_name resnet
 )
 done
 done

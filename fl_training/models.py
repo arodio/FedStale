@@ -161,3 +161,34 @@ def get_mobilenet(num_classes):
     replace_batchnorm_with_groupnorm(model, max_groups=32)
 
     return model
+
+def replace_bn_with_gn(model):
+    for name, module in model.named_children():
+        if isinstance(module, nn.BatchNorm2d):
+            num_features = module.num_features
+            gn = nn.GroupNorm(num_groups=32, num_channels=num_features)  # Adjust num_groups as needed
+            setattr(model, name, gn)
+        else:
+            replace_bn_with_gn(module)
+
+
+def get_resnet18(num_classes):
+    """
+    creates ResNet18 model with num_classes outputs
+
+    :param num_classes:
+
+    :return:
+        model (nn.Module)
+
+    """
+    print("Using ResNet-18 model")
+    model = models.resnet18(pretrained=True)
+
+    # Replace BatchNorm with GroupNorm
+    replace_bn_with_gn(model)
+
+    num_features = model.fc.in_features
+    model.fc = nn.Linear(num_features, num_classes)
+
+    return model

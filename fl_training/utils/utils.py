@@ -192,6 +192,8 @@ def get_model(name, model_name, device, input_dimension=None, hidden_dimension=N
     elif name == "cifar10":
         if model_name == "mobilenet":
             model = get_mobilenet(num_classes=10)
+        elif model_name == "resnet":
+            model = get_resnet18(num_classes=10)
         else:
             error_message = f"{model_name} is not a possible model, available are:"
             for model_name_ in ALL_MODELS:
