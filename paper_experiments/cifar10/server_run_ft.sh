@@ -46,7 +46,7 @@ echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="alphaF-0.0cb-10ft alphaF-0.1cb-10ft alphaF-0.2cb-10ft alphaF-0.3cb-10ft alphaF-0.4cb-10ft alphaF-0.5cb-10ft alphaF-0.6cb-10ft alphaF-0.7cb-10ft alphaF-0.8cb-10ft" # list of availability matrices
+availabilities=$5 # list of availability matrices
 fl_algo="fedavg fedvarp" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 fine_tuning=10 # Change this to # of finetuning step
@@ -108,6 +108,7 @@ cifar10 \
 --availability_matrix_path ${availability_matrix_path} \
 --biased ${biased} \
 --fine_tuning ${fine_tuning}
+--model_name resnet
 )
 done
 done
@@ -143,6 +144,7 @@ cifar10 \
 --availability_matrix_path ${availability_matrix_path} \
 --biased ${biased} \
 --fine_tuning ${fine_tuning}
+--model_name resnet
 )
 done
 done
@@ -180,6 +182,7 @@ cifar10 \
 --availability_matrix_path ${availability_matrix_path} \
 --biased ${biased} \
 --fine_tuning ${fine_tuning}
+--model_name resnet
 )
 done
 done
