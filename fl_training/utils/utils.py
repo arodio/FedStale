@@ -118,7 +118,11 @@ def get_loaders(type_, data_dir, batch_size, is_validation):
 
     train_iterators, val_iterators, test_iterators = [], [], []
 
-    for task_id, task_dir in enumerate(tqdm(os.listdir(data_dir))):
+    dir_list = os.listdir(data_dir)
+    dir_list.sort()
+    
+    for task_id, task_dir in enumerate(tqdm(dir_list)):
+        print(task_dir)
         task_data_path = os.path.join(data_dir, task_dir)
 
         train_iterator = \
