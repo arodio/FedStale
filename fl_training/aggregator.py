@@ -177,15 +177,17 @@ class Aggregator(ABC):
 
             global_train_loss = 0.
             global_train_acc = 0.
+            global_train_grad_norm = 0.
             global_test_loss = 0.
             global_test_acc = 0.
+            global_test_grad_norm = 0.
 
             total_n_samples = 0
             total_n_test_samples = 0
 
             for client_id, client in enumerate(clients):
 
-                train_loss, train_acc, test_loss, test_acc = client.write_logs(counter=self.c_round)
+                train_loss, train_acc, train_grad_norm, test_loss, test_acc, test_grad_norm = client.write_logs(counter=self.c_round)
 
                 if self.verbose > 1:
                     print("*" * 30)
@@ -195,14 +197,18 @@ class Aggregator(ABC):
 
                 global_train_loss += train_loss * client.n_train_samples
                 global_train_acc += train_acc * client.n_train_samples
+                global_train_grad_norm += train_grad_norm *client.n_train_samples
                 global_test_loss += test_loss * client.n_test_samples
                 global_test_acc += test_acc * client.n_test_samples
+                global_test_grad_norm += test_grad_norm *client.n_train_samples
 
                 total_n_samples += client.n_train_samples
                 total_n_test_samples += client.n_test_samples
 
             global_train_loss /= total_n_samples
             global_test_loss /= total_n_test_samples
+            global_train_grad_norm /= total_n_samples
+            global_test_grad_norm /= total_n_test_samples
             global_train_acc /= total_n_samples
             global_test_acc /= total_n_test_samples
 
@@ -215,8 +221,10 @@ class Aggregator(ABC):
 
             global_logger.add_scalar("Train/Loss", global_train_loss, self.c_round)
             global_logger.add_scalar("Train/Metric", global_train_acc, self.c_round)
+            global_logger.add_scalar("Train/GradNorm", global_train_grad_norm, self.c_round)
             global_logger.add_scalar("Test/Loss", global_test_loss, self.c_round)
             global_logger.add_scalar("Test/Metric", global_test_acc, self.c_round)
+            global_logger.add_scalar("Test/GradNorm", global_test_grad_norm, self.c_round)
 
         if self.verbose > 0:
             print("#" * 80)

@@ -283,14 +283,13 @@ class Learner:
 
     def evaluate_iterator(self, iterator):
         """
-        evaluate learner on `iterator`
+        Evaluate the learner on `iterator` and compute the gradient norm.
 
         :param iterator:
         :type iterator: torch.utils.data.DataLoader
 
-        :return
-            global_loss and  global_metric accumulated over the iterator
-
+        :return:
+            global_loss, global_metric, and average_gradient_norm accumulated over the iterator.
         """
         self.model.eval()
 
@@ -298,22 +297,45 @@ class Learner:
         global_metric = 0.
         n_samples = 0
 
-        with torch.no_grad():
-            for x, y, _ in iterator:
-                x = x.to(self.device).type(torch.float32)
-                y = y.to(self.device)
+        # List to store gradient norms for each batch
+        gradient_norms = []
 
-                if self.is_binary_classification:
-                    y = y.type(torch.float32).unsqueeze(1)
+        for x, y, _ in iterator:
+            x = x.to(self.device).type(torch.float32)
+            y = y.to(self.device)
 
-                y_pred = self.model(x)
+            if self.is_binary_classification:
+                y = y.type(torch.float32).unsqueeze(1)
 
-                global_loss += self.criterion(y_pred, y).sum().item()
-                global_metric += self.metric(y_pred, y).item()
+            # Forward pass
+            y_pred = self.model(x)
 
-                n_samples += y.size(0)
+            # Compute loss
+            loss = self.criterion(y_pred, y)
+            global_loss += loss.sum().item()
 
-        return global_loss / n_samples, global_metric / n_samples
+            # Zero out gradients before backward pass
+            self.model.zero_grad()
+
+            # Backward pass to compute gradients
+            loss.mean().backward()
+
+            # Compute the gradient norm
+            total_norm = 0.0
+            for param in self.model.parameters():
+                if param.grad is not None:
+                    total_norm += param.grad.norm(2).item() ** 2
+            total_norm = total_norm ** 0.5  # Final gradient norm (L2 norm)
+            gradient_norms.append(total_norm)
+
+            # Compute metric
+            global_metric += self.metric(y_pred, y).item()
+            n_samples += y.size(0)
+
+        # Calculate the average gradient norm
+        average_gradient_norm = sum(gradient_norms) / len(gradient_norms)
+
+        return global_loss / n_samples, global_metric / n_samples, average_gradient_norm
 
     def fit_batches(self, iterator, n_steps, weights=None, frozen_modules=None):
         """

@@ -95,15 +95,17 @@ class Client(object):
         if counter is None:
             counter = self.counter
 
-        train_loss, train_acc = self.learner.evaluate_iterator(self.val_iterator)
-        test_loss, test_acc = self.learner.evaluate_iterator(self.test_iterator)
+        train_loss, train_acc, train_grad_norm = self.learner.evaluate_iterator(self.val_iterator)
+        test_loss, test_acc, test_grad_norm = self.learner.evaluate_iterator(self.test_iterator)
 
         self.logger.add_scalar("Train/Loss", train_loss, counter)
         self.logger.add_scalar("Train/Metric", train_acc, counter)
+        self.logger.add_scalar("Train/GradNorm", train_grad_norm, counter)
         self.logger.add_scalar("Test/Loss", test_loss, counter)
         self.logger.add_scalar("Test/Metric", test_acc, counter)
+        self.logger.add_scalar("Test/GradNorm", test_grad_norm, counter)
 
-        return train_loss, train_acc, test_loss, test_acc
+        return train_loss, train_acc, train_grad_norm, test_loss, test_acc, test_grad_norm
 
     def save_state(self, path=None):
         """
