@@ -193,7 +193,7 @@ class Learner:
 
         return loss.item(), metric.item()
 
-    def fit_epoch(self, iterator, weights=None, frozen_modules=None):
+    def fit_epoch(self, iterator, weights=None, frozen_modules=None, grad_clip_threshold=None):
         """
         perform several optimizer steps on all batches drawn from `iterator`
 
@@ -238,6 +238,9 @@ class Learner:
                 loss = loss_vec.mean()
 
             loss.backward()
+            
+            if grad_clip_threshold is not None:
+                torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=grad_clip_threshold)
 
             for frozen_module in frozen_modules:
                 frozen_module.zero_grad()
@@ -363,7 +366,7 @@ class Learner:
 
         return global_loss / n_steps, global_acc / n_steps
 
-    def fit_epochs(self, iterator, n_epochs, weights=None, frozen_modules=None):
+    def fit_epochs(self, iterator, n_epochs, weights=None, frozen_modules=None, grad_clip_threshold=None):
         """
         perform multiple training epochs
 
@@ -380,7 +383,7 @@ class Learner:
 
         """
         for step in range(n_epochs):
-            self.fit_epoch(iterator, weights, frozen_modules=frozen_modules)
+            self.fit_epoch(iterator, weights, frozen_modules=frozen_modules, grad_clip_threshold=grad_clip_threshold)
 
             if self.lr_scheduler is not None:
                 self.lr_scheduler.step()

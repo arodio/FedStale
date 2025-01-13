@@ -89,6 +89,7 @@ class Client(object):
         self.learner.fit_epochs(
             iterator=self.train_iterator,
             n_epochs=self.local_steps,
+            **kwargs
         )
 
     def write_logs(self, counter=None):

@@ -125,7 +125,7 @@ class Aggregator(ABC):
         self.c_round = 0
 
     @abstractmethod
-    def mix(self, sampled_clients_ids, sampled_clients_weights):
+    def mix(self, sampled_clients_ids, sampled_clients_weights, grad_clip_threshold=None):
         """mix sampled clients according to weights
 
                 Parameters
@@ -318,7 +318,7 @@ class CentralizedAggregator(Aggregator):
      All clients get fully synchronized with the average client.
 
     """
-    def mix(self, sampled_clients_ids, sampled_clients_weights):
+    def mix(self, sampled_clients_ids, sampled_clients_weights, grad_clip_threshold=None):
         self.toggle_sampled_clients(sampled_clients_ids)
 
         if len(sampled_clients_weights) == 0:
@@ -335,7 +335,7 @@ class CentralizedAggregator(Aggregator):
                 # this is done to optimize the run time
                 pass
             else:
-                self.clients[idx].step()
+                self.clients[idx].step(grad_clip_threshold)
 
         learners_deltas = [self.clients[idx].learner - self.global_learner for idx in sampled_clients_ids]
 

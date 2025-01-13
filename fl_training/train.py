@@ -270,7 +270,7 @@ def run_experiment(arguments_manager_):
                 unbiased_clients_sampler.sample(c_round=ii)
             )
 
-        aggregator.mix(sampled_clients_ids, sampled_clients_weights)
+        aggregator.mix(sampled_clients_ids, sampled_clients_weights, grad_clip_threshold=args_.grad_clip_threshold)
 
         if (ii % args_.log_freq) == (args_.log_freq - 1):
             if chkpts_dir is not None:

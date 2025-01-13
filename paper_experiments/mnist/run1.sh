@@ -1,10 +1,11 @@
 #!/bin/bash
-
+#module load conda/2020.11-python3.8
+#source activate green_fl
 
 ### - Parameters to choose for dataset generation - ###
 ### - Only change here - ###
 alpha="0.1" # 0.1:non-iid, 100000:iid, 0: true iid
-generate_data=true #true/false
+generate_data=false #true/false
 ############################
 
 n_tasks="7" # 7 clients, one client per country
@@ -37,24 +38,25 @@ fi
 ################
 ### TRAINING ###
 ################
-cd ../..
+cd ../../fl_training
 
 echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="gaussian-corr-ft-35 gaussian-corr-ft-50 gaussian-uncorr-ft-35 gaussian-uncorr-ft-50 gp-35-tcsc-10ft-2 gp-35-tusc-10ft-2 gp-50-tcsc-10ft-2 gp-50-tusc-10ft-2 gp-20304050607080-tcsu-10ft gp-20304050607080-tusu-10ft gp-25255050507575-tcsu-10ft gp-25255050507575-tusu-10ft" # list of availability matrices
-fl_algo="fedavg fedvarp" # list of FL algorithms
+availabilities="alphaF-0.7cb-10ft" # list of availability matrices
+fl_algo="fedavg" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 fine_tuning=10 # Change this to # of finetuning step
+grad_clip_threshold=10.0
 verbose=2 # 0,1,2
 ############################
 
 participation="1.0"
 heterogeneities="0.0"
 weights="0.5" # is the beta parameter in the FedStale paper
-seeds="84"
-lrs="1e-1 5e-2" # list of learning rates
+seeds="42 78 84"
+lrs="5e-2" # list of learning rates
 device="cuda"
 n_rounds="100" # number of fl rounds
 #############################################
@@ -97,12 +99,13 @@ mnist \
 --device ${device} \
 --optimizer sgd \
 --server_optimizer sgd \
---logs_dir ../logs/mnist/${availability}/biased_${biased}/fedavg/alpha_${alpha}/lr_${lr}/seed_${seed} \
+--logs_dir ../logs/mnist_sp/${availability}/biased_${biased}/fedavg/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
 --verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
 --biased ${biased} \
---fine_tuning ${fine_tuning}
+--fine_tuning ${fine_tuning} \
+--grad_clip_threshold ${grad_clip_threshold}
 )
 done
 done
@@ -132,12 +135,13 @@ mnist \
 --device ${device} \
 --optimizer sgd \
 --server_optimizer history \
---logs_dir ../logs/mnist/${availability}/biased_${biased}/fedvarp/alpha_${alpha}/lr_${lr}/seed_${seed} \
+--logs_dir ../logs/mnist_sp/${availability}/biased_${biased}/fedvarp/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
 --verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
 --biased ${biased} \
---fine_tuning ${fine_tuning}
+--fine_tuning ${fine_tuning} \
+--grad_clip_threshold ${grad_clip_threshold}
 )
 done
 done
@@ -169,12 +173,13 @@ mnist \
 --optimizer sgd \
 --server_optimizer history \
 --history_coefficient ${weight} \
---logs_dir ../logs/mnist/${availability}/biased_${biased}/fedstale/alpha_${alpha}/lr_${lr}/seed_${seed} \
+--logs_dir ../logs/mnist_sp/${availability}/biased_${biased}/fedstale/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
 --verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
 --biased ${biased} \
---fine_tuning ${fine_tuning}
+--fine_tuning ${fine_tuning} \
+--grad_clip_threshold ${grad_clip_threshold}
 )
 done
 done
@@ -182,4 +187,5 @@ done
 done
 done
 fi
+
 

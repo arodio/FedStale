@@ -211,6 +211,13 @@ class TrainArgumentsManager(ArgumentsManager):
             type=int,
             default=0,
         )
+        
+        self.parser.add_argument(
+            "--grad_clip_threshold",
+            help="Threshold for gradient norm",
+            type=float,
+            default=None
+        )
 
     def args_to_string(self):
         """
