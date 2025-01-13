@@ -1,11 +1,11 @@
 #!/bin/bash
-#module load conda/2020.11-python3.8
-#source activate green_fl
+module load conda/2021.11-python3.9
+source ../../venv/bin/activate
 
 ### - Parameters to choose for dataset generation - ###
 ### - Only change here - ###
 alpha="0.1" # 0.1:non-iid, 100000:iid, 0: true iid
-generate_data=false #true/false
+generate_data=true #true/false
 ############################
 
 n_tasks="7" # 7 clients, one client per country
@@ -32,6 +32,7 @@ python generate_data.py \
 --alpha ${alpha}
 ) # /!\ the two last lines are for non-iid
 # --------------------------- #
+cd ..
 fi
 
 
@@ -45,10 +46,10 @@ echo "=> training"
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
 availabilities="alphaF-0.7cb-10ft" # list of availability matrices
-fl_algo="fedavg" # list of FL algorithms
+fl_algo="fedavg fedvarp" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 fine_tuning=10 # Change this to # of finetuning step
-grad_clip_threshold=10.0
+grad_clip_threshold="10.0" # Change this to None if you don't want to clip
 verbose=2 # 0,1,2
 ############################
 
@@ -187,5 +188,3 @@ done
 done
 done
 fi
-
-
