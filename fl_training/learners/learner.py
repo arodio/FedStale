@@ -389,6 +389,7 @@ class Learner:
             None
 
         """
+        print(grad_clip_threshold)
         for step in range(n_epochs):
             self.fit_epoch(iterator, weights, frozen_modules=frozen_modules, grad_clip_threshold=grad_clip_threshold)
 
