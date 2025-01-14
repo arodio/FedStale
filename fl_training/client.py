@@ -89,7 +89,7 @@ class Client(object):
         self.learner.fit_epochs(
             iterator=self.train_iterator,
             n_epochs=self.local_steps,
-            **kwargs
+            grad_clip_threshold = kwargs['grad_clip_threshold'] if 'grad_clip_threshold' in kwargs.keys() else None
         )
 
     def write_logs(self, counter=None):
