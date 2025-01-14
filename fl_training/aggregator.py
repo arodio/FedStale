@@ -335,7 +335,7 @@ class CentralizedAggregator(Aggregator):
                 # this is done to optimize the run time
                 pass
             else:
-                self.clients[idx].step(grad_clip_threshold)
+                self.clients[idx].step(grad_clip_threshold=grad_clip_threshold)
 
         learners_deltas = [self.clients[idx].learner - self.global_learner for idx in sampled_clients_ids]
 

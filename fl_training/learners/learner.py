@@ -241,12 +241,10 @@ class Learner:
             
             # Custom gradient scaling
             if grad_clip_threshold is not None:
-                print("Gradient norm check invoked")
                 for param in self.model.parameters():
                     if param.grad is not None:
                         grad_norm = param.grad.norm()
                         if grad_norm > grad_clip_threshold:
-                            print("ALERT ALERT ALERT !!!")
                             param.grad.data *= (grad_clip_threshold / grad_norm)
 
             for frozen_module in frozen_modules:
@@ -389,7 +387,6 @@ class Learner:
             None
 
         """
-        print(grad_clip_threshold)
         for step in range(n_epochs):
             self.fit_epoch(iterator, weights, frozen_modules=frozen_modules, grad_clip_threshold=grad_clip_threshold)
 
