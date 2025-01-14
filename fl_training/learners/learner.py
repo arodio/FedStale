@@ -239,8 +239,15 @@ class Learner:
 
             loss.backward()
             
+            # Custom gradient scaling
             if grad_clip_threshold is not None:
-                torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=grad_clip_threshold)
+                print("Gradient norm check invoked")
+                for param in self.model.parameters():
+                    if param.grad is not None:
+                        grad_norm = param.grad.norm()
+                        if grad_norm > grad_clip_threshold:
+                            print("ALERT ALERT ALERT !!!")
+                            param.grad.data *= (grad_clip_threshold / grad_norm)
 
             for frozen_module in frozen_modules:
                 frozen_module.zero_grad()
