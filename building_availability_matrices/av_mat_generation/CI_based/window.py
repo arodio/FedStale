@@ -315,7 +315,7 @@ class Window:
             return self._av_mat_alphaF_greedy(carbon_budget, key_word)
 
     def _av_mat_alphaF_cvxpy(
-        self, solver, carbon_budget, key_word="alphaF", alpha_f=0.1
+        self, solver, carbon_budget, key_word="alphaF", client_weights = np.array([0.17,0.03,0.25,0.14,0.14,0.26,0.01]),alpha_f=0.1
     ):
         """
         Solve optimization problem with fairness parameter alpha=0.1 through cvxpy package
@@ -439,11 +439,14 @@ class Window:
         idx_sort_flattened = (-flattened).argsort()
 
         # apply the sorting to the flattened array
-        sorted_flattened = np.ma.array([flattened[idx] for idx in idx_sort_flattened])
+        sorted_flattened = flattened[idx_sort_flattened]
 
         # compute the cumulative sum
         sorted_flattened_cumsum = sorted_flattened.cumsum()
-
+        
+        if sorted_flattened_cumsum[-1] < carbon_to_remove:
+            raise ValueError("carbon_to_remove exceeds total carbon available.")
+    
         # we are then able to see up to which index we should remove availability
         threshold_idx = np.where(sorted_flattened_cumsum > carbon_to_remove)[0][0]
 
