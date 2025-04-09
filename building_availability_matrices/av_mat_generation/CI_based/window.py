@@ -3,6 +3,8 @@ import random
 from datetime import timedelta, datetime
 import pandas as pd
 import matplotlib.pyplot as plt
+# import matplotlib
+# matplotlib.use('pgf') # use the pgf backend
 import cvxpy as cp
 import numpy as np
 from matplotlib.colors import ListedColormap
@@ -207,6 +209,9 @@ class Window:
         Plot the raw CI data of all countries over the current time window.
         """
         fig = plt.figure(figsize=(8, 4))
+        
+        colorblind_palette = sns.color_palette("colorblind")
+
         for country_idx, country in enumerate(self.countries):
 
             df_country = self._dfs[country]
@@ -215,18 +220,27 @@ class Window:
             ]
 
             # plot:
+            # plt.plot(
+            #     df_to_plot["datetime"].values,
+            #     df_to_plot["CI_direct"].values,
+            #     label=country,
+            #     color=LIST_COLORS[country_idx],
+            # )            
             plt.plot(
-                df_to_plot["datetime"].values,
+                [i for i in range(len(df_to_plot["datetime"].values))],
                 df_to_plot["CI_direct"].values,
                 label=country,
-                color=LIST_COLORS[country_idx],
+                # color=LIST_COLORS[country_idx],
+                color=colorblind_palette[country_idx % len(colorblind_palette)],
             )
-            plt.title("Carbon Intensity time evolution")
-            plt.legend()
-            _ = plt.xticks(rotation=90)
+            # plt.title("Carbon Intensity time evolution", fontsize=14)
+            plt.legend(fontsize=12)
             plt.grid()
-            plt.xticks(rotation=45, ha="right")  # rotate x-axis labels to diagonal
-            plt.ylabel("CI (gCO2eq/kWh)")
+            # plt.xticks(rotation=45, ha="right", fontsize=14)  # rotate x-axis labels to diagonal
+            plt.xticks(rotation=0, fontsize=14)  # rotate x-axis labels to diagonal
+            plt.yticks(rotation=0, fontsize=14)  # rotate x-axis labels to diagonal
+            plt.ylabel("CI (gCO2e/kWh)", fontsize=14)
+            plt.xlabel("hours", fontsize=14)
 
         plt.savefig(
             os.path.join(self.out_folder, "raw_CI_data.png"), bbox_inches="tight"
