@@ -11,6 +11,9 @@ logs/mnist_CI_based_availability/
 building_availability_matrices/availability_matrices/av-mat-5_av-mat-analysis/202*
 building_availability_matrices/availability_matrices/av-mat-6/gp-*
 building_availability_matrices/availability_matrices/av-mat-6/av-mat*
+building_availability_matrices/availability_matrices/av-mat-6/av-mat*
+building_availability_matrices/availability_matrices/av-mat-7/av-mat*
+building_availability_matrices/availability_matrices/av-mat-7/av-mat*
 
 *.npy
 *.pth

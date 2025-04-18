@@ -14,7 +14,7 @@ from building_availability_matrices.utils import (
 
 COUNTRIES = [i+1 for i in range(NO_CLIENTS)]
 MAIN_FOLDER = 'availability_matrices/av-mat-new'
-N_ROUNDS=100
+N_ROUNDS=50
 
 class GP():
 
@@ -52,7 +52,7 @@ class GP():
         else:
             freq_str_list = [str(int(f*100)) for f in self.freq]
             freq_str = ''.join(freq_str_list)
-        key_word = 'gp-'+freq_str+'-'+corr_ft_type.split('-')[0]
+        key_word = 'gp'+str(N_ROUNDS)+'-'+freq_str+'-'+corr_ft_type.split('-')[0]
         if len(corr_ft_type.split('-'))>1:
             key_word+='-'+str(self.k)+'ft'
         self.plot_availability_heatmap(av_df, key_word)

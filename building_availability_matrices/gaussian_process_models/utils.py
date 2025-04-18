@@ -30,6 +30,7 @@ cov = (
 
 import numpy as np
 import tensorflow_probability as tfp
+import tensorflow as tf
 
 from utils import (
     CORR,
@@ -46,11 +47,12 @@ def get_local_periodic_kernel(
     """
     Composite kernel functions which is product of ExpSinSquared and Exponential Quadratic
     """
-    periodic = tfp.math.psd_kernels.ExpSinSquared(
-        amplitude=amplitude, length_scale=periodic_length_scale, period=period
-    )
-    local = tfp.math.psd_kernels.ExponentiatedQuadratic(length_scale=local_length_scale)
-    return periodic * local
+    with tf.device('/CPU:0'): # USE IF PROBLEM WITH CUDA and TF
+        periodic = tfp.math.psd_kernels.ExpSinSquared(
+            amplitude=amplitude, length_scale=periodic_length_scale, period=period
+        )
+        local = tfp.math.psd_kernels.ExponentiatedQuadratic(length_scale=local_length_scale)
+        return periodic * local
 
 
 def get_cov_mat(
