@@ -20,7 +20,7 @@ def parse_tf_events_file(events_path, tag, time_horizon=None):
     return steps, tag_values
 
 class ExperimentConfig:
-    def __init__(self, base_path, experiment, batch_sizes, seeds, algorithms, events, lr_list,
+    def __init__(self, base_path, experiment, seeds, algorithms, events, lr_list,
                  alphas, n_clients_list, availabilities, n_rounds, participations, biased_list, train_test):
         """
         base_path: path to the folder logs/
@@ -40,7 +40,7 @@ class ExperimentConfig:
         """
         self.base_path = base_path
         self.experiment = experiment
-        self.batch_sizes = batch_sizes
+        # self.batch_sizes = batch_sizes
         self.seeds = seeds
         self.algorithms = algorithms
         self.events = events
@@ -54,7 +54,7 @@ class ExperimentConfig:
         self.biased_list = biased_list
         self.train_test = train_test
 
-    def get_event_dir(self, batch_size, algo, lr, seed, event, alpha, n_clients, availability, n_rounds, participation, biased, train_test):
+    def get_event_dir(self, algo, lr, seed, event, alpha, n_clients, availability, n_rounds, participation, biased, train_test):
         """
         Returns the path to the saved data corresponding to the parameters given as inputs to this function.
         Intputs:
@@ -71,7 +71,7 @@ class ExperimentConfig:
         biased: 0 or 1 (str)
         train_test: "train" or "test"
         """
-        path = os.path.join(self.base_path, self.experiment, batch_size, availability,
+        path = os.path.join(self.base_path, self.experiment, availability,
                             "biased_"+biased, algo, "alpha_"+alpha,
                             "lr_"+lr, "seed_"+seed, train_test, event)
 
