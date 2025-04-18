@@ -45,7 +45,8 @@ echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="gp50-50-tusu-3ft gp50-35-tusu-3ft" # list of availability matrices
+availabilities="gp50-50-tcsc-3ft gp50-50-tcsu-3ft gp50-50-tusc-3ft gp50-50-tusu gp50-50-tcsc gp50-50-tcsu gp50-50-tusc gp50-35-tcsc-3ft gp50-35-tcsu-3ft gp50-35-tusc-3ft gp50-35-tusu gp50-35-tcsc gp50-35-tcsu gp50-35-tusc gp50-25255050507575-tcsu-3ft gp50-25255050507575-tusu-3ft gp50-25255050507575-tcsu gp50-25255050507575-tusu gp50-20304050607080-tcsu-3ft gp50-20304050607080-tusu-3ft gp50-20304050607080-tcsu gp50-20304050607080-tusu" # list of availability matrices
+# gp50-50-tusu-3ft gp50-35-tusu-3ft DONE
 fl_algo="fedavg" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
 fine_tuning=3 # Change this to # of finetuning step
@@ -124,7 +125,7 @@ done
 done
 fi
 
-rsync -avu ../../logs/mnist_sp/alphaF50* ../../logs/mnist_server/128/
+# rsync -avu ../../logs/mnist_sp/alphaF50* ../../logs/mnist_server/128/
 # ------------------------------- #
 # --- Experiments for FedVARP --- #
 # ------------------------------- #
