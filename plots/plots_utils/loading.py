@@ -21,7 +21,8 @@ def parse_tf_events_file(events_path, tag, time_horizon=None):
 
 class ExperimentConfig:
     def __init__(self, base_path, experiment, seeds, algorithms, events, lr_list,
-                 alphas, n_clients_list, availabilities, n_rounds, participations, biased_list, train_test):
+                 alphas, n_clients_list, availabilities, n_rounds, participations, 
+                 biased_list, train_test, batch_sizes):
         """
         base_path: path to the folder logs/
         experiment: name of exp (str: mnist_CI_based_availability)
@@ -53,8 +54,9 @@ class ExperimentConfig:
         self.participations = participations
         self.biased_list = biased_list
         self.train_test = train_test
+        self.batch_sizes = batch_sizes
 
-    def get_event_dir(self, algo, lr, seed, event, alpha, n_clients, availability, n_rounds, participation, biased, train_test):
+    def get_event_dir(self, algo, lr, seed, event, alpha, n_clients, availability, n_rounds, participation, biased, train_test, batch_size):
         """
         Returns the path to the saved data corresponding to the parameters given as inputs to this function.
         Intputs:
@@ -96,37 +98,38 @@ def load_experiment_results(config):
                             for av in config.availabilities:
                                 for part in config.participations:
                                     for biased in config.biased_list:
+                                        for batch_size in config.batch_sizes:
 
-                                        event_dir = config.get_event_dir(algorithm, lr, seed, 
-                                                                            event, a, n_c, av, 
-                                                                            config.n_rounds, part, biased, config.train_test) 
+                                            event_dir = config.get_event_dir(algorithm, lr, seed, event, a, n_c, av, 
+                                                                            config.n_rounds, part, biased, config.train_test,
+                                                                            batch_size) 
 
-                                        # print(event_dir)                                   
-                                        files = os.listdir(event_dir)
-                                        # print(files)
+                                            # print(event_dir)                                   
+                                            files = os.listdir(event_dir)
+                                            # print(files)
 
-                                        if os.path.exists(event_dir):
-                                            # print('x')
-                                            # _, values = parse_tf_events_file(event_dir, tag="Test/Metric", time_horizon=time_horizon)
-                                            _, test_accuracy_values = parse_tf_events_file(event_dir, tag="Test/Metric")
-                                            _, test_loss_values = parse_tf_events_file(event_dir, tag="Test/Loss")
-                                            _, train_accuracy_values = parse_tf_events_file(event_dir, tag="Train/Metric")
-                                            _, train_loss_values = parse_tf_events_file(event_dir, tag="Train/Loss")
-                                            ### tag can be: 'Train/Loss', 'Train/Metric', 'Test/Loss', 'Test/Metric'
-                                            max_accuracy = np.array(test_accuracy_values).max() * 100
-                                            results.append({
-                                                "algorithm": algorithm, "availability": av,
-                                                "alpha": a, "participation": part,
-                                                "max_test_accuracy": float(max_accuracy),
-                                                "final_test_accuracy":test_accuracy_values[-1]*100,
-                                                "test_accuracy": "Test/Metric",
-                                                "test_loss": "Test/Loss",
-                                                "train_accuracy": "Train/Metric",
-                                                "train_loss": "Train/Loss",
-                                                "seed": seed,
-                                                "lr": lr, "event": event, "n_clients": n_c,
-                                                "biased": biased
-                                            })
+                                            if os.path.exists(event_dir):
+                                                # print('x')
+                                                # _, values = parse_tf_events_file(event_dir, tag="Test/Metric", time_horizon=time_horizon)
+                                                _, test_accuracy_values = parse_tf_events_file(event_dir, tag="Test/Metric")
+                                                _, test_loss_values = parse_tf_events_file(event_dir, tag="Test/Loss")
+                                                _, train_accuracy_values = parse_tf_events_file(event_dir, tag="Train/Metric")
+                                                _, train_loss_values = parse_tf_events_file(event_dir, tag="Train/Loss")
+                                                ### tag can be: 'Train/Loss', 'Train/Metric', 'Test/Loss', 'Test/Metric'
+                                                max_accuracy = np.array(test_accuracy_values).max() * 100
+                                                results.append({
+                                                    "algorithm": algorithm, 
+                                                    "availability": av,
+                                                    "alpha": a, 
+                                                    "participation": part,
+                                                    "test_accuracy": np.array(test_accuracy_values),
+                                                    "seed": seed,
+                                                    "lr": lr, 
+                                                    "event": event, 
+                                                    "n_clients": n_c,
+                                                    "biased": biased, 
+                                                    "batch_size": batch_size
+                                                })
 
-                                            # "b": float(b) if b else np.nan # in case we vary beta
+                                                # "b": float(b) if b else np.nan # in case we vary beta
     return pd.DataFrame(results)
