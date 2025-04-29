@@ -47,11 +47,11 @@ echo "=> training"
 ### - Only change here - ###
 # availabilities="gp50-50-tusu-3ft gp50 gp50-50-tcsc-3ft gp50-50-tcsu-3ft gp50-50-tusc-3ft gp50-35-tusu-3ft gp50-35-tcsc-3ft gp50-35-tcsu-3ft gp50-35-tusc-3ft gp50-25255050507575-tcsu-3ft gp50-25255050507575-tusu-3ft gp50-20304050607080-tcsu-3ft gp50-20304050607080-tusu-3ft" # list of availability matrices
 # availabilities="gp50-50-tusu gp50-50-tcsc gp50-50-tcsu gp50-50-tusc gp50-35-tusu gp50-35-tcsc gp50-35-tcsu gp50-35-tusc gp50-25255050507575-tcsu gp50-25255050507575-tusu gp50-20304050607080-tcsu gp50-20304050607080-tusu" # list of availability matrices
-# availabilities="gp100-50-tusu-10ft gp100 gp100-50-tcsc-10ft gp100-50-tcsu-10ft gp100-50-tusc-10ft gp100-35-tusu-10ft gp100-35-tcsc-10ft gp100-35-tcsu-10ft gp100-35-tusc-10ft gp100-25255050507575-tcsu-10ft gp100-25255050507575-tusu-10ft gp100-20304050607080-tcsu-10ft gp100-20304050607080-tusu-10ft" # list of availability matrices
-availabilities="gp100-50-tusu gp100-50-tcsc gp100-50-tcsu gp100-50-tusc gp100-35-tusu gp100-35-tcsc gp100-35-tcsu gp100-35-tusc gp100-25255050507575-tcsu gp100-25255050507575-tusu gp100-20304050607080-tcsu gp100-20304050607080-tusu" # list of availability matrices
+availabilities="gp100-50-tusu-10ft gp100 gp100-50-tcsc-10ft gp100-50-tcsu-10ft gp100-50-tusc-10ft gp100-35-tusu-10ft gp100-35-tcsc-10ft gp100-35-tcsu-10ft gp100-35-tusc-10ft gp100-25255050507575-tcsu-10ft gp100-25255050507575-tusu-10ft gp100-20304050607080-tcsu-10ft gp100-20304050607080-tusu-10ft" # list of availability matrices
+# availabilities="gp100-50-tusu gp100-50-tcsc gp100-50-tcsu gp100-50-tusc gp100-35-tusu gp100-35-tcsc gp100-35-tcsu gp100-35-tusc gp100-25255050507575-tcsu gp100-25255050507575-tusu gp100-20304050607080-tcsu gp100-20304050607080-tusu" # list of availability matrices
 fl_algo="fedavg" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
-fine_tuning=0 # Change this to # of finetuning step
+fine_tuning=10 # Change this to # of finetuning step
 grad_clip_threshold="1.0" # Change this to None if you don't want to clip
 verbose=0 # 0,1,2
 ############################
@@ -67,7 +67,7 @@ device="cuda"
 if echo "$availability" | grep -qE '[0-9]+sl'; then
     n_rounds=$(echo "$availability" | sed -n 's/.*-\([0-9]\+\)sl.*/\1/p')
 else
-    n_rounds=50
+    n_rounds=100
 fi
 
 ### other availability matrices' names ###
@@ -96,7 +96,7 @@ availability_matrix_path="../availability_matrices/av-mat_${availability}.csv"
 if echo "$availability" | grep -qE '[0-9]+sl'; then
     n_rounds=$(echo "$availability" | sed -n 's/.*-\([0-9]\+\)sl.*/\1/p')
 else
-    n_rounds=50
+    n_rounds=100
 fi
 for heterogeneity in $heterogeneities; do
 for lr in $lrs; do
