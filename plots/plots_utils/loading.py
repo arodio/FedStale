@@ -11,7 +11,7 @@ def parse_tf_events_file(events_path, tag, time_horizon=None):
     The tag can be: 'Train/Loss', 'Train/Metric', 'Test/Loss', 'Test/Metric'.
     """
     ea = EventAccumulator(events_path).Reload()
-    print(list(ea.Scalars(tag)))
+    # print(list(ea.Scalars(tag)))
     tag_values, steps = [], []
     for event in ea.Scalars(tag):
         if time_horizon is None or event.step <= time_horizon:
