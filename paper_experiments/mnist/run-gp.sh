@@ -47,11 +47,19 @@ echo "=> training"
 ### - Only change here - ###
 # availabilities="gp50-50-tusu-3ft gp50 gp50-50-tcsc-3ft gp50-50-tcsu-3ft gp50-50-tusc-3ft gp50-35-tusu-3ft gp50-35-tcsc-3ft gp50-35-tcsu-3ft gp50-35-tusc-3ft gp50-25255050507575-tcsu-3ft gp50-25255050507575-tusu-3ft gp50-20304050607080-tcsu-3ft gp50-20304050607080-tusu-3ft" # list of availability matrices
 # availabilities="gp50-50-tusu gp50-50-tcsc gp50-50-tcsu gp50-50-tusc gp50-35-tusu gp50-35-tcsc gp50-35-tcsu gp50-35-tusc gp50-25255050507575-tcsu gp50-25255050507575-tusu gp50-20304050607080-tcsu gp50-20304050607080-tusu" # list of availability matrices
-availabilities="gp100-50-tusu-10ft gp100 gp100-50-tcsc-10ft gp100-50-tcsu-10ft gp100-50-tusc-10ft gp100-35-tusu-10ft gp100-35-tcsc-10ft gp100-35-tcsu-10ft gp100-35-tusc-10ft gp100-25255050507575-tcsu-10ft gp100-25255050507575-tusu-10ft gp100-20304050607080-tcsu-10ft gp100-20304050607080-tusu-10ft" # list of availability matrices
+# availabilities="gp100-50-tusu-10ft gp100 gp100-50-tcsc-10ft gp100-50-tcsu-10ft gp100-50-tusc-10ft gp100-35-tusu-10ft gp100-35-tcsc-10ft gp100-35-tcsu-10ft gp100-35-tusc-10ft gp100-25255050507575-tcsu-10ft gp100-25255050507575-tusu-10ft gp100-20304050607080-tcsu-10ft gp100-20304050607080-tusu-10ft" # list of availability matrices
 # availabilities="gp100-50-tusu gp100-50-tcsc gp100-50-tcsu gp100-50-tusc gp100-35-tusu gp100-35-tcsc gp100-35-tcsu gp100-35-tusc gp100-25255050507575-tcsu gp100-25255050507575-tusu gp100-20304050607080-tcsu gp100-20304050607080-tusu" # list of availability matrices
+# availabilities="gp100-50-tusu gp100-50-tcsc gp100-50-tcsu gp100-35-tusu gp100-35-tcsc gp100-35-tcsu gp100-25255050507575-tcsu gp100-25255050507575-tusu gp100-20304050607080-tcsu gp100-20304050607080-tusu gp100-12202835425057-tcsu gp100-12202835425057-tusu gp100-18183535355252-tcsu gp100-18183535355252-tusu" # list of availability matrices
+
+availabilities="gp100-12202835425057-tcsu gp100-12202835425057-tusu gp100-18183535355252-tcsu gp100-18183535355252-tusu"
+# availabilities="gp100-12202835425057-tcsu-10ft gp100-12202835425057-tusu-10ft gp100-18183535355252-tcsu-10ft gp100-18183535355252-tusu-10ft"       # FINE TUNING
+
 fl_algo="fedavg" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
-fine_tuning=10 # Change this to # of finetuning step
+
+fine_tuning=0 # Change this to # of finetuning step
+# fine_tuning=10 # Change this to # of finetuning step      # FINE TUNING
+
 grad_clip_threshold="1.0" # Change this to None if you don't want to clip
 verbose=0 # 0,1,2
 ############################
@@ -59,8 +67,8 @@ verbose=0 # 0,1,2
 participation="1.0"
 heterogeneities="0.0"
 weights="0.5" # is the beta parameter in the FedStale paper
-seeds="78"
-lrs="5e-2" # list of learning rates
+seeds="42"
+lrs="1e-1" # list of learning rates
 device="cuda"
 #n_rounds="100" # number of fl rounds
 #############################################
@@ -69,20 +77,6 @@ if echo "$availability" | grep -qE '[0-9]+sl'; then
 else
     n_rounds=100
 fi
-
-### other availability matrices' names ###
-# opt-new-problem-cvxpy_a-1
-# opt-new-problem-cvxpy_a-10
-# opt-new-problem-cvxpy_a-21
-# uniform-CI-threshold 
-# uniform-carbon-budget 
-# uniform-carbon-budget-fine-tuning 
-# uniform-time-budget
-# nonlinear-optimization-cvxpy_w-no-w_a-1 
-# nonlinear-optimization-cvxpy_w-no-w_a-0.5 
-# random4_uniform-carbon-budget-fine-tuning
-# nonlinear-optimization-cvxpy_w-no-w_a-0.1
-
 
 # ------------------------------ #
 # --- Experiments for FedAvg --- #
@@ -113,19 +107,20 @@ mnist \
 --device ${device} \
 --optimizer sgd \
 --server_optimizer sgd \
---logs_dir ../logs/mnist_rounds100alpha0.1/${availability}/biased_${biased}/fedavg/alpha_${alpha}/lr_${lr}/seed_${seed} \
+--logs_dir ../logs/mnist_fig5/${availability}/biased_${biased}/fedavg/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
 --verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
 --biased ${biased} \
---fine_tuning ${fine_tuning} \
---grad_clip_threshold ${grad_clip_threshold}
+--fine_tuning ${fine_tuning}
 )
 done
 done
 done
 done
 fi
+# --grad_clip_threshold ${grad_clip_threshold}
+
 
 # rsync -avu ../../logs/mnist_sp/alphaF50* ../../logs/mnist_server/128/
 # ------------------------------- #
