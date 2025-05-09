@@ -317,16 +317,16 @@ class Window:
             columns=self.window_list_hours,
         )
 
-    def _av_mat_alphaF(self, method, carbon_budget, key_word):
+    def _av_mat_alphaF(self, method, carbon_budget, key_word, alpha_f):
         """
         Solve optimization problem with fairness parameter alpha=0.1
         """
         if method.split("_")[0] == "cvxpy":
             return self._av_mat_alphaF_cvxpy(
-                method.split("_")[1], carbon_budget, key_word
+                method.split("_")[1], carbon_budget, key_word, alpha_f=alpha_f
             )
         elif method == "greedy":
-            return self._av_mat_alphaF_greedy(carbon_budget, key_word)
+            return self._av_mat_alphaF_greedy(carbon_budget, key_word, alpha_f=alpha_f)
 
     def _av_mat_alphaF_cvxpy(
         self, solver, carbon_budget, key_word="alphaF", client_weights = np.array([0.17,0.03,0.25,0.14,0.14,0.26,0.01]),alpha_f=0.1
@@ -489,6 +489,7 @@ class Window:
         ft=10,
         carbon_budget=7,
         CO2saving=None, # percentage of saved carbon-footprint
+        alpha_f=0.1
     ):
         if CO2saving is not None:
             # print(self.GHG_matrix.to_numpy())
@@ -515,7 +516,7 @@ class Window:
             key_word_FT = key_word + f"-{ft}ft"
 
         av_mat_df, key_word = self._av_mat_alphaF(
-            method, carbon_budget, key_word=key_word_NO_FT
+            method, carbon_budget, key_word=key_word_NO_FT, alpha_f=alpha_f
         )
 
         print("target: ", carbon_budget)
