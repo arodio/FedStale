@@ -1,10 +1,10 @@
 #!/bin/bash
 #module load conda/2021.11-python3.9
-source ../../venv/bin/activate
+# source ../../venv/bin/activate
 
 ### - Parameters to choose for dataset generation - ###
 ### - Only change here - ###
-alpha="0.5" # 0.1:non-iid, 100000:iid, 0: true iid
+alpha="0.1" # 0.1:non-iid, 100000:iid, 0: true iid
 generate_data=true #true/false
 ############################
 
@@ -27,7 +27,7 @@ python generate_data.py \
 --n_tasks ${n_tasks} \
 --s_frac 1.0 \
 --test_tasks_frac 0.0 \
---seed 12345 \
+--seed 12346 \
 --by_labels_split \
 --alpha ${alpha}
 ) # /!\ the two last lines are for non-iid
@@ -45,7 +45,8 @@ echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="alphaF50-alpha0.001-8cb alphaF50-alpha0.01-8cb alphaF50-alpha0.1-8cb alphaF50-alpha0.5-8cb alphaF50-alpha0.75-8cb alphaF50-alpha0.9-8cb alphaF50-alpha1.0-8cb" #list of availability matrices
+# availabilities="alphaF50-alpha0.001-8cb alphaF50-alpha0.01-8cb alphaF50-alpha0.1-8cb alphaF50-alpha0.5-8cb alphaF50-alpha0.75-8cb alphaF50-alpha0.9-8cb alphaF50-alpha1.0-8cb" #list of availability matrices
+availabilities="alphaF50-alpha0.001-7cb alphaF50-alpha0.01-7cb alphaF50-alpha0.1-7cb alphaF50-alpha0.5-7cb alphaF50-alpha0.75-7cb alphaF50-alpha0.9-7cb alphaF50-alpha1.0-7cb" #list of availability matrices
 #alphaF50-alpha0.01-6cb-3ft alphaF50-alpha1-6cb-3ft alphaF50-alpha0.01-8cb-3ft alphaF50-alpha1-8cb-3ft alphaF50-alpha0.01-10cb-3ft alphaF50-alpha1-10cb-3ft
 fl_algo="fedavg" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
@@ -111,7 +112,7 @@ mnist \
 --device ${device} \
 --optimizer sgd \
 --server_optimizer sgd \
---logs_dir ../logs/mnist_sp/${availability}/biased_${biased}/fedavg/alpha_${alpha}/lr_${lr}/seed_${seed} \
+--logs_dir ../logs/mnist_alphaF_var/dataseed_12346/${availability}/biased_${biased}/fedavg/alpha_${alpha}/lr_${lr}/seed_${seed} \
 --seed ${seed} \
 --verbose ${verbose} \
 --availability_matrix_path ${availability_matrix_path} \
@@ -124,7 +125,7 @@ done
 done
 fi
 
-rsync -avu ../../logs/mnist_sp/alphaF50* ../../logs/mnist_server/128/
+# rsync -avu ../../logs/mnist_sp/alphaF50* ../../logs/mnist_server/128/
 # ------------------------------- #
 # --- Experiments for FedVARP --- #
 # ------------------------------- #
