@@ -57,7 +57,7 @@ participation="1.0"
 heterogeneities="0.0"
 weights="0.5" # is the beta parameter in the FedStale paper
 seeds="42 78 84"
-lrs="1e-2" # list of learning rates
+lrs="5e-2" # list of learning rates
 device="cuda"
 #n_rounds="100" # number of fl rounds
 #############################################
