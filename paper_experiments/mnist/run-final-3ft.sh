@@ -5,7 +5,7 @@ source ../../venv/bin/activate
 ### - Parameters to choose for dataset generation - ###
 ### - Only change here - ###
 alpha="0.5" # 0.1:non-iid, 100000:iid, 0: true iid
-generate_data=false #true/false
+generate_data=true #true/false
 ############################
 
 n_tasks="7" # 7 clients, one client per country
@@ -45,7 +45,8 @@ echo "=> training"
 
 ### - Parameters to choose for training - ###
 ### - Only change here - ###
-availabilities="alphaF50-41sl-2cb-3ft alphaF50-42sl-2cb-3ft alphaF50-43sl-2cb-3ft alphaF50-44sl-2cb-3ft alphaF50-45sl-2cb-3ft alphaF50-46sl-2cb-3ft alphaF50-47sl-2cb-3ft alphaF50-48sl-2cb-3ft alphaF50-49sl-2cb-3ft alphaF50-31sl-4cb-3ft alphaF50-32sl-4cb-3ft alphaF50-33sl-4cb-3ft alphaF50-34sl-4cb-3ft alphaF50-35sl-4cb-3ft alphaF50-36sl-4cb-3ft alphaF50-37sl-4cb-3ft alphaF50-38sl-4cb-3ft alphaF50-39sl-4cb-3ft alphaF50-40sl-4cb-3ft alphaF50-21sl-6cb-3ft alphaF50-22sl-6cb-3ft alphaF50-23sl-6cb-3ft alphaF50-24sl-6cb-3ft alphaF50-25sl-6cb-3ft alphaF50-26sl-6cb-3ft alphaF50-27sl-6cb-3ft alphaF50-28sl-6cb-3ft alphaF50-29sl-6cb-3ft alphaF50-30sl-6cb-3ft alphaF50-40sl-6cb-3ft alphaF50-11sl-8cb-3ft alphaF50-12sl-8cb-3ft alphaF50-13sl-8cb-3ft alphaF50-14sl-8cb-3ft alphaF50-15sl-8cb-3ft alphaF50-16sl-8cb-3ft alphaF50-17sl-8cb-3ft alphaF50-18sl-8cb-3ft alphaF50-19sl-8cb-3ft alphaF50-20sl-8cb-3ft alphaF50-30sl-8cb-3ft alphaF50-40sl-8cb-3ft alphaF50-10sl-9cb-3ft alphaF50-11sl-9cb-3ft alphaF50-12sl-9cb-3ft alphaF50-13sl-9cb-3ft alphaF50-14sl-9cb-3ft alphaF50-15sl-9cb-3ft alphaF50-16sl-9cb-3ft alphaF50-17sl-9cb-3ft alphaF50-18sl-9cb-3ft alphaF50-19sl-9cb-3ft alphaF50-29sl-9cb-3ft alphaF50-39sl-9cb-3ft alphaF50-6sl-10cb-3ft alphaF50-7sl-10cb-3ft alphaF50-8sl-10cb-3ft alphaF50-9sl-10cb-3ft alphaF50-10sl-10cb-3ft alphaF50-11sl-10cb-3ft alphaF50-12sl-10cb-3ft alphaF50-13sl-10cb-3ft alphaF50-14sl-10cb-3ft alphaF50-15sl-10cb-3ft alphaF50-25sl-10cb-3ft alphaF50-35sl-10cb-3ft alphaF50-45sl-10cb-3ft alphaF50-5sl-11cb-3ft alphaF50-6sl-11cb-3ft alphaF50-7sl-11cb-3ft alphaF50-8sl-11cb-3ft alphaF50-9sl-11cb-3ft alphaF50-10sl-11cb-3ft alphaF50-11sl-11cb-3ft alphaF50-12sl-11cb-3ft alphaF50-13sl-11cb-3ft alphaF50-14sl-11cb-3ft alphaF50-24sl-11cb-3ft alphaF50-34sl-11cb-3ft alphaF50-44sl-11cb-3ft" # list of availability matrices
+availabilities="alphaF50-23sl-6cb-1ft alphaF50-24sl-6cb-1ft alphaF50-30sl-8cb-1ft alphaF50-36sl-4cb-1ft" # list of availability matrices
+# availabilities="alphaF50-41sl-2cb-3ft alphaF50-42sl-2cb-3ft alphaF50-43sl-2cb-3ft alphaF50-44sl-2cb-3ft alphaF50-45sl-2cb-3ft alphaF50-46sl-2cb-3ft alphaF50-47sl-2cb-3ft alphaF50-48sl-2cb-3ft alphaF50-49sl-2cb-3ft alphaF50-31sl-4cb-3ft alphaF50-32sl-4cb-3ft alphaF50-33sl-4cb-3ft alphaF50-34sl-4cb-3ft alphaF50-35sl-4cb-3ft alphaF50-36sl-4cb-3ft alphaF50-37sl-4cb-3ft alphaF50-38sl-4cb-3ft alphaF50-39sl-4cb-3ft alphaF50-40sl-4cb-3ft alphaF50-21sl-6cb-3ft alphaF50-22sl-6cb-3ft alphaF50-23sl-6cb-3ft alphaF50-24sl-6cb-3ft alphaF50-25sl-6cb-3ft alphaF50-26sl-6cb-3ft alphaF50-27sl-6cb-3ft alphaF50-28sl-6cb-3ft alphaF50-29sl-6cb-3ft alphaF50-30sl-6cb-3ft alphaF50-40sl-6cb-3ft alphaF50-11sl-8cb-3ft alphaF50-12sl-8cb-3ft alphaF50-13sl-8cb-3ft alphaF50-14sl-8cb-3ft alphaF50-15sl-8cb-3ft alphaF50-16sl-8cb-3ft alphaF50-17sl-8cb-3ft alphaF50-18sl-8cb-3ft alphaF50-19sl-8cb-3ft alphaF50-20sl-8cb-3ft alphaF50-30sl-8cb-3ft alphaF50-40sl-8cb-3ft alphaF50-10sl-9cb-3ft alphaF50-11sl-9cb-3ft alphaF50-12sl-9cb-3ft alphaF50-13sl-9cb-3ft alphaF50-14sl-9cb-3ft alphaF50-15sl-9cb-3ft alphaF50-16sl-9cb-3ft alphaF50-17sl-9cb-3ft alphaF50-18sl-9cb-3ft alphaF50-19sl-9cb-3ft alphaF50-29sl-9cb-3ft alphaF50-39sl-9cb-3ft alphaF50-6sl-10cb-3ft alphaF50-7sl-10cb-3ft alphaF50-8sl-10cb-3ft alphaF50-9sl-10cb-3ft alphaF50-10sl-10cb-3ft alphaF50-11sl-10cb-3ft alphaF50-12sl-10cb-3ft alphaF50-13sl-10cb-3ft alphaF50-14sl-10cb-3ft alphaF50-15sl-10cb-3ft alphaF50-25sl-10cb-3ft alphaF50-35sl-10cb-3ft alphaF50-45sl-10cb-3ft alphaF50-5sl-11cb-3ft alphaF50-6sl-11cb-3ft alphaF50-7sl-11cb-3ft alphaF50-8sl-11cb-3ft alphaF50-9sl-11cb-3ft alphaF50-10sl-11cb-3ft alphaF50-11sl-11cb-3ft alphaF50-12sl-11cb-3ft alphaF50-13sl-11cb-3ft alphaF50-14sl-11cb-3ft alphaF50-24sl-11cb-3ft alphaF50-34sl-11cb-3ft alphaF50-44sl-11cb-3ft" # list of availability matrices
 #alphaF50-199sl-1cb-3ft alphaF50-199sl-2cb-3ft alphaF50-197sl-3cb-3ft alphaF50-197sl-4cb-3ft alphaF50-197sl-5cb-3ft alphaF50-197sl-6cb-3ft alphaF50-196sl-7cb-3ft alphaF50-197sl-8cb-3ft alphaF50-197sl-9cb-3ft alphaF50-197sl-10cb-3ft alphaF50-196sl-11cb-3ft
 fl_algo="fedavg" # list of FL algorithms
 biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
@@ -57,7 +58,7 @@ verbose=0 # 0,1,2
 participation="1.0"
 heterogeneities="0.0"
 weights="0.5" # is the beta parameter in the FedStale paper
-seeds="42 78 84"
+seeds="78"
 lrs="5e-2" # list of learning rates
 device="cuda"
 #n_rounds="100" # number of fl rounds
