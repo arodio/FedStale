@@ -161,7 +161,7 @@ def run_experiment(arguments_manager_):
     logs_path = os.path.join(logs_dir, "test", "global")
     os.makedirs(logs_path, exist_ok=True)
     global_test_logger = SummaryWriter(logs_path)
-
+    
     global_learner = get_learner(
         name=args_.experiment,
         model_name=args_.model_name,
@@ -248,8 +248,7 @@ def run_experiment(arguments_manager_):
 
     aggregator.write_logs()
 
-    print("---->>>>>> ", len(clients))
-
+    
     if args_.verbose > 0:
         print("Training..")
     for ii in tqdm(range(args_.n_rounds)):
@@ -276,6 +275,9 @@ def run_experiment(arguments_manager_):
             if chkpts_dir is not None:
                 aggregator.save_state(chkpts_dir)
             aggregator.write_logs()
+
+        global_test_logger.flush()
+        global_train_logger.flush()
 
     if chkpts_dir is not None:
         aggregator.save_state(chkpts_dir)
