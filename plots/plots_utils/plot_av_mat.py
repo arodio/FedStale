@@ -17,7 +17,9 @@ def plot_av_mat(av_mat_name, folder, av_mat_folder=""):
 
     df = pd.DataFrame(pd.read_csv(_path, index_col=[0]))
     
-    plt.figure(figsize=(7, 2))
+    df.columns=[i for i in range(df.shape[1])]
+
+    plt.figure(figsize=(5, 2))
     ax = plt.subplot()
 
     cmap=LinearSegmentedColormap.from_list('rg',["r", "w", "g"], N=256) 
