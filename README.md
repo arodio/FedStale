@@ -1,20 +1,13 @@
-# Readme
+# Green Federated Learning via Carbon-Aware Client Selection and Time Slot Scheduling
 
 ## Introduction
 
-Our aim is to do **energy-mix aware** cross-silo Federated Learning (FL): 
-- each client is in a different location, with its own energy-mix
-- the availability of the clients depends on the energy-mix of their location, and its evolution through time.
+Training large-scale machine learning models incurs substantial carbon missions. Federated Learning (FL), by distributing computation across geographically dispersed clients, offers a natural framework to leverage regional and temporal variations in Carbon Intensity (CI). We investigate how to reduce emissions in FL through carbon-aware client selection and training scheduling.
 
-The FL training is a succession of training rounds during which a certain group of clients (possibly all of them) is available to train collaboratively a global model based on their data.
-An availability matrix specifying the availability of all clients for each training round is determined a priori, depending on the energy-mix data of the clients. Then, a specific FL algorithm is used to do the training constrained by this availablity matrix.
-
-Various FL training algorithm exist. They have been built to answer to different settings in terms of clients availability, data heterogeneity, participation heterogeneity, etc. Each algorithm has specific advantages and drawbacks in terms of bias and convergence of the algorithm.
-
-**Our approach:** On the one hand, we will design appropriate availability sequences for all clients, based on the estimated future Carbon Intensity (CI) data of the clients' locations. 
-Each availability sequence is a sequences of 0 and 1, where each number refers to one round of the FL training, and 0 means that the client is not available for this round while 1 means that the client is available.
-On the other hand, we will choose an appropriate FL algortihm to train the ML model based on these availability sequences.
-The FL training plan (choice of clients at specific times) will need to make a balance between environmental cost, bias, catastrophic forgetting, etc.
+We quantify the emission savings of a carbon-aware scheduling policy that leverages slack time---permitting a modest extension of the training duration so that clients can defer local training rounds to lower-carbon periods.
+We examine the performance trade-offs of such scheduling which stem from  statistical heterogeneity among clients, selection bias in participation, and temporal correlation in model updates.
+To leverage these trade-offs, we construct a carbon-aware scheduler that integrates slack time, $\alpha$-fair carbon allocation, and a global fine-tuning phase. 
+We evaluate our approach through extensive simulations using real-world CI traces from Electricity Maps.
 
 ## Requirements
 
@@ -24,24 +17,24 @@ python -m venv <your_venv_name>
 source activate <path_to_your_venv_folder>/bin/activate
 ```
 
-Then, install the following in the virtual environment: 
+Then, install the following in the virtual environment. 
 ```bash
-pip install ipykernel
-ipython kernel install --user --name=<your_venv_name>
+pip install ipykernel                                                             # for notebooks
+ipython kernel install --user --name=<your_venv_name>                             # for notebooks
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121  # for training experiments
+pip install numpy scikit-learn tqdm tensorboard tensorflow pandas                 # for training experiments
 pip install pandas matplotlib gekko cvxpy gurobipy Mosek seaborn                  # for CI data analysis
-pip install tensorflow-probability dataframe-image fpdf scikit-learn                     # for CI data analysis
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121  # for experiments
-pip install numpy scikit-learn tqdm tensorboard tensorflow pandas                 # for experiments
-pip install fpdf ipywidgets
-pip install tf-keras                                                              # for av mat creation
+pip install tf-keras tensorflow-probability                                       # for gp synthetic av mat creation
+pip install pandas matplotlib seaborn scipy scikit-learn                          # for plots, results analaysis
+pip install dataframe-image fpdf scikit-learn ipywidgets                          # other
 ```
 Then, in VS Code: click on 'Select kernel': choose your virtual environment.
 
-**Remark:** Installing several solver for cvxpy might pose a problem. The notebook ``10_av_mat_analysis``without error with cvxpy and the solver Mosek installed. 
+**Remark:** Installing several solver for cvxpy might pose a problem. The notebook ``10_av_mat_analysis`` runs without error with cvxpy and the solver Mosek installed. 
 
 ## Quickstart
 
-Clone the repository and go inside the created folder. Checkout to the branch ``feat/CI_based_availability``.
+Clone the repository and go inside the created folder. Checkout to the branch ``feat/model_quality``.
 
 **For building availability matrices:**
 
@@ -56,10 +49,11 @@ Availability matrices to be used for experiments should be pasted in the folder 
 The file paper_experiments/mnist/run.sh permits to run the experiments.
 First choose the parameters of you experiments by modifying the following variables in run.sh:
 ```python
-alpha="0.1"                     # 0.1:non-iid, 100000:iid, 0: true iid
-availabilities="opt-pb3-stage2" # list of availability matrices names (separeted by a space)
-fl_algo="fedavg"                # list of FL algorithms (separeted by a space)
-biased="0"                      # 0:unbiased, 1:biased, 2:hybrid (=unbiased except when all clients available)
+alpha="0.1"          # 0.1:non-iid, 100000:iid, 0: true iid
+availabilities="..." # list of availability matrices names (separeted by a space)
+fine_tuning=1        # number of finetuning step
+fl_algo="fedavg"     # list of FL algorithms (separeted by a space)
+biased="0"           # 0:unbiased, 1:biased, 2:hybrid (=unbiased except when all clients available)
 ```
 *Remark:* In run.sh, the argument --by_labels_split is given to generate_data.py, which makes the distributions non-iid accross clients. Then, one chooses the level of non-iid ness with the argument --alpha, where 0.1 is strongly non-iid and 100000 is similar to iid.
 
@@ -67,7 +61,7 @@ Then, run the sh file as follows:
 
 ```bash
 cd paper_experiments/mnist
-sh run.sh
+./run.sh
 ```
 
 
@@ -103,9 +97,20 @@ Description of the data:
 
 ### Organization of this repository
 
-This repository is organized as follows:
+This repository is divided into 6 main folders:
+
+- `availability_matrices` contains FL training schedules, also called 'availability matrices` here, that are to be used for training.
+- `building_availability_matrices` contrains various jupyter noetooks to create availability matrices either based on Carbon Intensity data from Electricity maps, or artificially using Markov Chains or Gaussian processes. 
+- `fl_training` contains the scripts for the federated learning training simulation. They will run the scripts generate_data.py and train.py with the mnist or cifar10 datasets.
+- `logs` contains training experiments logs.
+- `paper_experiments` constains sh script for running series of FL training experiments.
+- `plots` contains various jupyter notebooks to analyse training experiments results in terms of accuracy.
+
+
+#### Organization of the training folder
+The folder `fl_training` is organized as follows:
 ```bash
-./
+fl_training/
 ¦   activity_estimator.py  # Class ActivityEstimator: Computes aggregation weights based on the previous participation history
 ¦   activity_simulator.py  # Class ActivitySimulator: The activity of each client follows a Bernoulli random variable
 ¦   aggregator.py          # Class Aggregator: Aggregator dictates communications between clients (also NoCommunicationAggregator and CentralizedAggregator classes)
@@ -126,21 +131,10 @@ This repository is organized as follows:
 ¦           generate_data.py  # Same as for cifar10 above
 ¦           README.md
 ¦           utils.py
-¦   
-+---availability_matrices/    # Contains different availability matrices in csv files
 ¦           
 +---learners/
 ¦       learner.py            # Class Learner: Responsible for training and evaluating a (deep-)learning model (also LanguageModelingLearner class)
 ¦       __init__.py
-¦       
-+---paper_experiments/
-¦   ¦       
-¦   +---mnist/
-¦           run.sh               # Runs the scripts generate_data.py and train.py with mnist dataset
-¦
-+---plots/
-¦       analyze_logs_v0.ipynb # Plot accuracy of experiments
-¦       analyze_logs_v1.ipynb # Plot accuracy of experiments
 ¦           
 +---utils/
         args.py                  # Class ArgumentsManager: Defines options used during training and test time, also implements several helper functions such as parsing, printing, and saving the options (also TrainArgumentsManager class)
