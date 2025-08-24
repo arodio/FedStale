@@ -210,7 +210,7 @@ class Window:
         """
         fig = plt.figure(figsize=(8, 4))
         
-        colorblind_palette = sns.color_palette("colorblind")
+        colorblind_palette = sns.color_palette("bright")
 
         for country_idx, country in enumerate(self.countries):
 
@@ -228,22 +228,22 @@ class Window:
             # )            
             plt.plot(
                 [i for i in range(len(df_to_plot["datetime"].values))],
-                df_to_plot["CI_direct"].values,
+                df_to_plot["CI_direct"].values/1000,
                 label=country,
                 # color=LIST_COLORS[country_idx],
                 color=colorblind_palette[country_idx % len(colorblind_palette)],
             )
             # plt.title("Carbon Intensity time evolution", fontsize=14)
-            plt.legend(fontsize=12)
+            plt.legend(bbox_to_anchor=(0.5, 1.25), ncol=4, loc='upper center', frameon=False,fontsize=12)
             plt.grid()
             # plt.xticks(rotation=45, ha="right", fontsize=14)  # rotate x-axis labels to diagonal
             plt.xticks(rotation=0, fontsize=14)  # rotate x-axis labels to diagonal
             plt.yticks(rotation=0, fontsize=14)  # rotate x-axis labels to diagonal
-            plt.ylabel("CI (gCO2e/kWh)", fontsize=14)
+            plt.ylabel("CI (kgCO2e/kWh)", fontsize=14)
             plt.xlabel("hours", fontsize=14)
 
         plt.savefig(
-            os.path.join(self.out_folder, "raw_CI_data.png"), bbox_inches="tight"
+            os.path.join(self.out_folder, "raw_CI_data.png"), bbox_inches="tight", dpi=300
         )
         plt.show()
 
