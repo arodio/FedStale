@@ -1,1 +1,0 @@
-This folder is used to store outputs of the notebook av_mat_analysis.
