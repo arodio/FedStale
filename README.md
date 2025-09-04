@@ -1,75 +1,129 @@
-# Green Federated Learning via Carbon-Aware Client Selection and Time Slot Scheduling
+# Green Federated Learning via Carbon-Aware Client and Time Slot Scheduling
 
-## Introduction
 
-Training large-scale machine learning models incurs substantial carbon missions. Federated Learning (FL), by distributing computation across geographically dispersed clients, offers a natural framework to leverage regional and temporal variations in Carbon Intensity (CI). We investigate how to reduce emissions in FL through carbon-aware client selection and training scheduling.
+This repository supports research on **carbon-aware federated learning (FL)**, where client participation and scheduling are optimized based on carbon intensity (CI) data. It includes tools for generating availability matrices, running FL experiments, and analyzing results.
 
-We quantify the emission savings of a carbon-aware scheduling policy that leverages slack time---permitting a modest extension of the training duration so that clients can defer local training rounds to lower-carbon periods.
-We examine the performance trade-offs of such scheduling which stem from  statistical heterogeneity among clients, selection bias in participation, and temporal correlation in model updates.
-To leverage these trade-offs, we construct a carbon-aware scheduler that integrates slack time, $\alpha$-fair carbon allocation, and a global fine-tuning phase. 
-We evaluate our approach through extensive simulations using real-world CI traces from Electricity Maps.
+**Table of Contents:**
 
-## Requirements
+1. Requirements
+2. Quickstart
+3. Running Experiments
+4. Displaying Results
+5. Appendix: Carbon Intensity Data, Repository Structure
 
-Create and activate a virtual environment. For example, with linux:
+
+## 1. Introduction
+
+Training large-scale machine learning models incurs substantial carbon emissions. Federated Learning (FL), by distributing computation across geographically dispersed clients, offers a natural framework to leverage regional and temporal variations in Carbon Intensity (CI). This paper investigates how to reduce emissions in FL through carbon-aware client selection and training scheduling. 
+
+We first quantify the emission savings of a carbon-aware scheduling policy that leverages slack time---permitting a modest extension of the training duration so that clients can defer local training rounds to lower-carbon periods.
+We then examine the performance trade-offs of such scheduling which stem from  statistical heterogeneity among clients, selection bias in participation, and temporal correlation in model updates.
+To leverage these trade-offs, we construct a carbon-aware scheduler that integrates slack time, $\alpha$-fair carbon allocation, and a global fine-tuning phase. Experiments on real-world CI data show that our scheduler outperforms slack-agnostic baselines, achieving higher model accuracy across a wide range of carbon budgets, with especially strong gains under tight carbon constraints.
+
+## 2. Requirements
+
+Create and activate a virtual environment. Example for linux:
 ```bash
 python -m venv <your_venv_name>
 source activate <path_to_your_venv_folder>/bin/activate
 ```
 
-Then, install the following in the virtual environment. 
+Install the required packages in the virtual environment: 
 ```bash
-pip install ipykernel                                                             # for notebooks
-ipython kernel install --user --name=<your_venv_name>                             # for notebooks
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121  # for training experiments
-pip install numpy scikit-learn tqdm tensorboard tensorflow pandas                 # for training experiments
-pip install pandas matplotlib gekko cvxpy gurobipy Mosek seaborn                  # for CI data analysis
-pip install tf-keras tensorflow-probability                                       # for gp synthetic av mat creation
-pip install pandas matplotlib seaborn scipy scikit-learn                          # for plots, results analaysis
-pip install dataframe-image fpdf scikit-learn ipywidgets                          # other
+# For jupyter notebooks
+pip install ipykernel 
+ipython kernel install --user --name=<your_venv_name> 
+
+# For training experiments
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121 
+pip install numpy scikit-learn tqdm tensorboard tensorflow pandas
+
+# For CI data based availability matrices
+pip install gekko cvxpy gurobipy Mosek
+
+# For gaussian processes-based synthetic availability matrices creation
+pip install tf-keras tensorflow-probability
+
+# for plots and results analaysis
+pip install pandas matplotlib seaborn scipy scikit-learn
+
+# Miscellaneous
+pip install dataframe-image fpdf scikit-learn ipywidgets
 ```
-Then, in VS Code: click on 'Select kernel': choose your virtual environment.
+In **VS Code**, click on 'Select kernel' and choose your virtual environment.
 
-**Remark:** Installing several solver for cvxpy might pose a problem. The notebook ``10_av_mat_analysis`` runs without error with cvxpy and the solver Mosek installed. 
+_Notes:_
+- To install pytorch please refer to the official pytorch webpage
+- Solver conflicts may occur with cvxpy. The notebooks `10_av_mat_analysis` run successfully with `cvxpy` and `Mosek`.
 
-## Quickstart
 
-Clone the repository and go inside the created folder. Checkout to the branch ``feat/model_quality``.
+## 3. Quickstart
 
-**For building availability matrices:**
+**3.1. Repository and requirements**
 
-All files related to building availability matrices are lcoated in the folder ``build_availability_mat/``. The latest jupyter notebook used to build these matrices is ``build_availability_mat_3.piynb``. 
+Clone the repository and go inside the created folder. Checkout to the branch ``feat/model_quality``. Create and activate your virtual environment as specified in the previous section.
 
-Availability matrices to be used for experiments should be pasted in the folder ``availability_matrices/``.
+**3.2. Building availability matrices**
 
-*/!\ Warning:* the file ``build_availability_mat_2.piynb`` takes a few minutes to run.
+All files related to building availability matrices are located in the folder ``building_availability_matrices/``. Availability matrices to be used for experiments should be **pasted** in the folder ``availability_matrices/``.
 
-**For experiments:**
+**3.3. Experiments**
 
-The file paper_experiments/mnist/run.sh permits to run the experiments.
-First choose the parameters of you experiments by modifying the following variables in run.sh:
+The file `paper_experiments/mnist/run.sh` permits to run the experiments.
+First select values for experiments' parameters by modifying variables in run.sh.
+
+In the section "Parameters to choose for dataset generation" please choose the following variables' values:
 ```python
-alpha="0.1"          # 0.1:non-iid, 100000:iid, 0: true iid
-availabilities="..." # list of availability matrices names (separeted by a space)
-fine_tuning=1        # number of finetuning step
-fl_algo="fedavg"     # list of FL algorithms (separeted by a space)
-biased="0"           # 0:unbiased, 1:biased, 2:hybrid (=unbiased except when all clients available)
+alpha="0.1" # distribution of data among clients: 0.1:non-iid, 100000:iid, 0: true iid
+generate_data=true #true/false true will regenerate the clients' datasets
 ```
-*Remark:* In run.sh, the argument --by_labels_split is given to generate_data.py, which makes the distributions non-iid accross clients. Then, one chooses the level of non-iid ness with the argument --alpha, where 0.1 is strongly non-iid and 100000 is similar to iid.
 
-Then, run the sh file as follows:
+In the section "Parameters to choose for training" please choose the following variables' values:
+- for the availability matrix:
+```python
+# Which availability matrix/matrices are you using?
+availabilities="alphaF-0.7cb-10ft" # space separated names of availability matrices
+
+# Does the av. mat. include a fine-tuning phase?
+fine_tuning=10 # number of finetuning step
+
+# How many training round does it include?
+n_rounds="100" # number of training rounds
+```
+- for the federated learning algorithm choice:
+```python
+# Which FL algorithm are you using?
+fl_algo="fedavg" # space separated names of FL algorithms
+
+# Is the algorithm unbiased?
+biased="2" # 0:unbiased, 1:biased, 2:hybrid (unbiased except when all clients available)
+```
+- for the training algorithm:
+```python
+grad_clip_threshold="1.0" # Change this to None if you don't want to clip
+verbose=2 # 0,1,2
+seeds="42 78 84"
+lrs="5e-2" # list of learning rates
+```
+
+Then, run the sh script as follows:
 
 ```bash
 cd paper_experiments/mnist
 ./run.sh
 ```
 
+_Notes:_ 
 
-## Displaying the results of experiments
+- the argument --by_labels_split is given to generate_data.py, and makes the distributions non-iid accross clients
+- one chooses the level of non-iid ness with the argument --alpha, where 0.1 is strongly non-iid and 100000 is similar to iid
+- hybrid means that we used an unbiased algorithm except for training rounds with all clients available
 
-**Displaying the results with by hand:**
+**3.4. Displaying experiements results**
 
-Run the jupyter notebook ``analyze_logs_v1.ipynb`` in the folder ``plots/``, figures will be saved in ``plots/figures/``.
+**Displaying the results with the jupyter notebooks:**
+
+Several jupyter notebooks within the folder ``plots/`` permit to display results. Grapha are saved in the folder ``plots/figures/``.
 
 **Displaying the results with tensorboard:**
 
@@ -83,9 +137,9 @@ Go to *SCALARS* and use regular expression to filter results. For instance,
 `.*train\\global$`, `^local_mean\\.*train\\global$`, or `^local_mean\\.*alpha_0\.1.*train\\global$`.
 
 
-## Appendix
+## 5. Appendix
 
-### CI data
+### 5.1. CI data
 
 The 2022 Cabon Intensity (CI) data comes from *Electricity Maps*: csv files for different countries can be freely downloaded (https://www.electricitymaps.com/data-portal).
 Electricity maps also proposes a paid plan providing access, through an API, to historical, real-time and **forecasted (over the next 24 hours)** data.
@@ -95,7 +149,7 @@ Description of the data:
 - The CI is expressed in gram of CO2 equivalents per Watt-hour, or gCO2eq/kWh.
 
 
-### Organization of this repository
+### 5.2. Organization of this repository
 
 This repository is divided into 6 main folders:
 
@@ -107,8 +161,7 @@ This repository is divided into 6 main folders:
 - `plots` contains various jupyter notebooks to analyse training experiments results in terms of accuracy.
 
 
-#### Organization of the training folder
-The folder `fl_training` is organized as follows:
+**Organization of the `fl_training` folder:**
 ```bash
 fl_training/
 ¦   activity_estimator.py  # Class ActivityEstimator: Computes aggregation weights based on the previous participation history
