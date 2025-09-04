@@ -44,7 +44,7 @@ pip install gekko cvxpy gurobipy Mosek
 # For gaussian processes-based synthetic availability matrices creation
 pip install tf-keras tensorflow-probability
 
-# for plots and results analaysis
+# for plots and results analysis
 pip install pandas matplotlib seaborn scipy scikit-learn
 
 # Miscellaneous
@@ -59,35 +59,35 @@ _Notes:_
 
 ## 3. Quickstart
 
-**3.1. Repository and requirements**
+**3.1. Repository and Requirements**
 
 Clone the repository and go inside the created folder. Checkout to the branch ``feat/model_quality``. Create and activate your virtual environment as specified in the previous section.
 
-**3.2. Building availability matrices**
+**3.2. Building Availability Matrices**
 
 All files related to building availability matrices are located in the folder ``building_availability_matrices/``. Availability matrices to be used for experiments should be **pasted** in the folder ``availability_matrices/``.
 
 **3.3. Experiments**
 
-The file `paper_experiments/mnist/run.sh` permits to run the experiments.
+The file `paper_experiments/mnist/run.sh` can be used to run the experiments.
 First select values for experiments' parameters by modifying variables in run.sh.
 
-In the section "Parameters to choose for dataset generation" please choose the following variables' values:
+In the section "Parameters to choose for dataset generation" please set the following variable values:
 ```python
 alpha="0.1" # distribution of data among clients: 0.1:non-iid, 100000:iid, 0: true iid
 generate_data=true #true/false true will regenerate the clients' datasets
 ```
 
-In the section "Parameters to choose for training" please choose the following variables' values:
+In the section "Parameters to choose for training" please set the following variable values:
 - for the availability matrix:
 ```python
 # Which availability matrix/matrices are you using?
 availabilities="alphaF-0.7cb-10ft" # space separated names of availability matrices
 
 # Does the av. mat. include a fine-tuning phase?
-fine_tuning=10 # number of finetuning step
+fine_tuning=10 # number of finetuning steps
 
-# How many training round does it include?
+# How many training rounds does it include?
 n_rounds="100" # number of training rounds
 ```
 - for the federated learning algorithm choice:
@@ -113,17 +113,16 @@ cd paper_experiments/mnist
 ./run.sh
 ```
 
-_Notes:_ 
-
+_Notes:_
 - the argument --by_labels_split is given to generate_data.py, and makes the distributions non-iid accross clients
 - one chooses the level of non-iid ness with the argument --alpha, where 0.1 is strongly non-iid and 100000 is similar to iid
 - hybrid means that we used an unbiased algorithm except for training rounds with all clients available
 
-**3.4. Displaying experiements results**
+**3.4. Displaying Experiments Results**
 
 **Displaying the results with the jupyter notebooks:**
 
-Several jupyter notebooks within the folder ``plots/`` permit to display results. Grapha are saved in the folder ``plots/figures/``.
+Several jupyter notebooks within the folder ``plots/`` permit to display results. Graphs are saved in the folder ``plots/figures/``.
 
 **Displaying the results with tensorboard:**
 
@@ -139,9 +138,9 @@ Go to *SCALARS* and use regular expression to filter results. For instance,
 
 ## 5. Appendix
 
-### 5.1. CI data
+### 5.1. CI Data
 
-The 2022 Cabon Intensity (CI) data comes from *Electricity Maps*: csv files for different countries can be freely downloaded (https://www.electricitymaps.com/data-portal).
+The 2022 Carbon Intensity (CI) data comes from *Electricity Maps*: csv files for different countries can be freely downloaded (https://www.electricitymaps.com/data-portal).
 Electricity maps also proposes a paid plan providing access, through an API, to historical, real-time and **forecasted (over the next 24 hours)** data.
 
 Description of the data:
@@ -149,15 +148,15 @@ Description of the data:
 - The CI is expressed in gram of CO2 equivalents per Watt-hour, or gCO2eq/kWh.
 
 
-### 5.2. Organization of this repository
+### 5.2. Organization of This Repository
 
 This repository is divided into 6 main folders:
 
 - `availability_matrices` contains FL training schedules, also called 'availability matrices` here, that are to be used for training.
-- `building_availability_matrices` contrains various jupyter noetooks to create availability matrices either based on Carbon Intensity data from Electricity maps, or artificially using Markov Chains or Gaussian processes. 
+- `building_availability_matrices` contrains various Jupyter Notebooks to create availability matrices either based on Carbon Intensity data from Electricity maps, or artificially using Markov Chains or Gaussian processes. 
 - `fl_training` contains the scripts for the federated learning training simulation. They will run the scripts generate_data.py and train.py with the mnist or cifar10 datasets.
 - `logs` contains training experiments logs.
-- `paper_experiments` constains sh script for running series of FL training experiments.
+- `paper_experiments` contains sh script for running series of FL training experiments.
 - `plots` contains various jupyter notebooks to analyse training experiments results in terms of accuracy.
 
 

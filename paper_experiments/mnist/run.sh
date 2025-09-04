@@ -50,9 +50,9 @@ fi
 availabilities="alphaF-0.7cb-10ft" # space separated names of availability matrices
 
 # Does the av. mat. include a fine-tuning phase?
-fine_tuning=10 # number of finetuning step
+fine_tuning=10 # number of finetuning steps
 
-# How many training round does it include?
+# How many training rounds does it include?
 n_rounds="100" # number of training rounds
 ###########################
 
